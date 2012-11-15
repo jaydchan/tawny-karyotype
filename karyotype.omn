@@ -1,0 +1,71 @@
+## This file was created by Clojure-OWL
+## It should not be edited by hand
+Prefix: kar: <http://ncl.ac.uk/karyotype#>
+Prefix: owl: <http://www.w3.org/2002/07/owl#>
+Prefix: rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+Prefix: xml: <http://www.w3.org/XML/1998/namespace>
+Prefix: xsd: <http://www.w3.org/2001/XMLSchema#>
+Prefix: rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+
+
+Ontology: <http://ncl.ac.uk/karyotype>
+
+
+ObjectProperty: kar:isBandOf
+
+    Characteristics: 
+        Functional
+    
+    Domain: 
+        kar:ChromosomeBand
+    
+    Range: 
+        kar:Chromosome
+    
+    InverseOf: 
+        kar:hasBand
+    
+    
+ObjectProperty: kar:hasBand
+
+    Domain: 
+        kar:Chromosome
+    
+    Range: 
+        kar:ChromosomeBand
+    
+    InverseOf: 
+        kar:isBandOf
+    
+    
+Class: kar:Karyotype
+
+    
+Class: kar:Centromere
+
+    SubClassOf: 
+        kar:ChromosomeComponent
+    
+    
+Class: kar:Chromosome
+
+    
+Class: kar:Telomere
+
+    SubClassOf: 
+        kar:ChromosomeComponent
+    
+    
+Class: kar:ChromosomeBand
+
+    SubClassOf: 
+        kar:ChromosomeComponent
+    
+    
+Class: kar:ChromosomeComponent
+
+    
+DisjointClasses: 
+    kar:Centromere,kar:ChromosomeBand,kar:Telomere
+
