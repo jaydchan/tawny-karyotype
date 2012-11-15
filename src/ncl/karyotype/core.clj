@@ -29,6 +29,6 @@
 (with-ontology ncl.karyotype.karyotype/karyotype
   (save-ontology))
 
-(with-ontology ncl.karyotype.karyotype/events
+(with-ontology ncl.karyotype.events/events
   (save-ontology))
 
