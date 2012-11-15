@@ -22,8 +22,6 @@
   (:require [owl [reasoner :as r]]
             [ncl.karyotype [karyotype :as k]]))
 
-(save-ontology)
-
 (defontology human
   :file "human.omn"
   :iri "http://ncl.ac.uk/karyotype/human"
