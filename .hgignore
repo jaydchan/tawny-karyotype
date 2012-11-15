@@ -3,4 +3,5 @@ syntax: glob
 lib/
 .lein-plugins
 .lein-deps-sum
-
+human.omn
+karyotype.omn
