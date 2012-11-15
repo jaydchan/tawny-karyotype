@@ -25,7 +25,6 @@
 
 (with-ontology ncl.karyotype.human/human
   (save-ontology)
-  (save-ontology (OWLXMLFormat.))
   )
 
 (with-ontology ncl.karyotype.karyotype/karyotype
