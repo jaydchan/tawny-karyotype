@@ -24,11 +24,14 @@
 
 
 (with-ontology ncl.karyotype.human/human
-  (save-ontology))
+  (save-ontology)
+  (save-ontology "human.owl" :owl))
 
 (with-ontology ncl.karyotype.karyotype/karyotype
-  (save-ontology))
+  (save-ontology)
+  (save-ontology "karyotype.owl" :owl))
 
 (with-ontology ncl.karyotype.events/events
-  (save-ontology))
+  (save-ontology)
+  (save-ontology "events.owl" :owl))
 
