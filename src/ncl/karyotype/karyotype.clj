@@ -22,7 +22,7 @@
 
 (defontology karyotype
   :file "karyotype.omn"
-  :iri "http://ncl.ac.uk/karyotype"
+  :iri "http://ncl.ac.uk/karyotype/karyotype"
   :prefix "kar:")
 
 (defclass Karyotype)
