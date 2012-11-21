@@ -35,7 +35,7 @@
   :domain k/Karyotype
   )
 
-(defoproperty affects
+(defoproperty isAffectedBy
   :range k/ChromosomeBand
   :domain Event
   )
