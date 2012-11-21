@@ -19,7 +19,7 @@
 
 (ns ncl.karyotype.core
   (:use [owl.owl])
-  (:require [ncl.karyotype human karyotype events])
+  (:require [ncl.karyotype human karyotype events named])
   )
 
 
@@ -35,3 +35,6 @@
   (save-ontology)
   (save-ontology "events.owl" :owl))
 
+(with-ontology ncl.karyotype.named/named
+  (save-ontology)
+  (save-ontology "named.owl" :owl))
