@@ -67,8 +67,6 @@
      (doall
       (map
        (fn [band]
-         (println band)
-         (println  (str bandgroup band))
          (intern *ns*
                  (symbol (str bandgroup band))
                  (owlclass (str bandgroup band)
