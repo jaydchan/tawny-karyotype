@@ -16,25 +16,24 @@
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
-
 (ns ncl.karyotype.core
   (:use [owl.owl])
-  (:require [ncl.karyotype human karyotype events named])
-  )
+  (:require [ncl.karyotype human karyotype events named]))
 
 
+;; Save ontologies in .omn and .owl format
 (with-ontology ncl.karyotype.human/human
-  (save-ontology)
+  (save-ontology "human.omn" :omn)
   (save-ontology "human.owl" :owl))
 
 (with-ontology ncl.karyotype.karyotype/karyotype
-  (save-ontology)
+  (save-ontology "karyotype.omn" :omn)
   (save-ontology "karyotype.owl" :owl))
 
 (with-ontology ncl.karyotype.events/events
-  (save-ontology)
+  (save-ontology "events.omn" :omn)
   (save-ontology "events.owl" :owl))
 
 (with-ontology ncl.karyotype.named/named
-  (save-ontology)
+  (save-ontology "named.omn" :omn)
   (save-ontology "named.owl" :owl))
