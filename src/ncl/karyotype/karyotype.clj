@@ -21,7 +21,6 @@
   (:require [owl [reasoner :as r]]))
 
 (defontology karyotype
-  :file "karyotype.omn"
   :iri "http://ncl.ac.uk/karyotype/karyotype"
   :prefix "kar:")
 
