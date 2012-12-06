@@ -23,9 +23,12 @@
             [ncl.karyotype [human :as h]]))
 
 (defontology events
-  :file "events.omn"
   :iri "http://ncl.ac.uk/karyotype/events"
   :prefix "evn:")
+
+;; import karyotype and human axioms
+;;(owlimport k/Karyotype)
+;;(owlimport h/Human)
 
 (defclass Event)
 
@@ -35,42 +38,57 @@
   :domain k/Karyotype
   )
 
-(defoproperty isAffectedBy
+(defoproperty effects
   :range k/ChromosomeBand
-  :domain Event
+  :domain k/Karyotype
   )
 
-(defoproperty hasBreakPoints
+(defoproperty hasBreakPoint
   :range k/ChromosomeBand
-  :domain Event
+  :domain k/Karyotype
   )
 
 ;; define all the events
+;; TODO define restrictions
 (as-disjoint-subclasses
  Event
-  (defclass addition)
-  (defclass deletion)
-  (defclass derivative_chromosome)
-  (defclass recombiant_chromosome)
-  (defclass isoderiviative_chromosome)
-  (defclass dicentric_chromosome)
-  (defclass isodicentric_chromosome)
-  (defclass pseudodicentric_chromosome)
-  (defclass pseudoisodicentric_chromosome)
-  (defclass duplication)
-  (defclass fission)
-  (defclass fragile_sites)
-  (defclass homogeneously_staining_region)
-  (defclass insertion)
-  (defclass inversions)
-  (defclass isochromosomes)
-  (defclass marker_chromosome)
-  (defclass neocentromere)
-  (defclass quadruplication)
-  (defclass ring_chromosome)
-  (defclass tricentric_ring_chromosome)
-  (defclass telomeric_associations)
-  (defclass translocations)
-  (defclass triplication))
-           
+  (defclass Addition)
+  (defclass Deletion)
+  (defclass Duplication)
+  (defclass Fission)
+  (defclass Insertion)
+  (defclass Inversion)
+  (defclass Quadruplication)
+  (defclass Translocation)
+  (defclass Triplication)
+)
+
+;; Potential new .clj file
+;; (defclass Feature)
+
+;; define object properties
+;; (defoproperty hasFeature
+;;   :range Feature
+;;   :domain k/Karyotype
+;;   )
+
+;; define all the structural features
+;; (as-disjoint-subclasses
+;;  Feature
+;;   (defclass derivative_chromosome)
+;;   (defclass dicentric_chromosome)
+;;   (defclass fragile_sites)
+;;   (defclass homogeneously_staining_region)
+;;   (defclass isoderiviative_chromosome)
+;;   (defclass isochromosomes)
+;;   (defclass isodicentric_chromosome)
+;;   (defclass marker_chromosome)
+;;   (defclass neocentromere)
+;;   (defclass pseudodicentric_chromosome)
+;;   (defclass pseudoisodicentric_chromosome)
+;;   (defclass recombiant_chromosome)
+;;   (defclass ring_chromosome)
+;;   (defclass telomeric_associations)
+;;   (defclass tricentric_ring_chromosome)
+;; )
 
