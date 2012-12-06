@@ -16,24 +16,25 @@
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
-
 (ns ncl.karyotype.human
   (:use [owl.owl])
   (:require [owl [reasoner :as r]]
             [ncl.karyotype [karyotype :as k]]))
 
 (defontology human
-  :file "human.omn"
   :iri "http://ncl.ac.uk/karyotype/human"
   :prefix "hum:")
 
+;;imports karyotype axioms
+;;(owlimport k/Karyotype)
 
 (defclass HumanChromosome
-  :subclass k/Chromosome
-  )
+  :subclass k/Chromosome)
 
+(defclass HumanAllosome
+  :subclass HumanChromosome)
 
-;; define all the human chromosomes
+;; define all the human chromosomes - allosomes
 (as-disjoint
  (doall
   (map
@@ -43,11 +44,28 @@
          *ns* (symbol classname)
          ;; human chromosome defns here.
          (owlclass classname
-                   :subclass HumanChromosome)
+                   :subclass HumanAllosome)
          
          )))
-   (flatten (list (range 1 23) "X" "Y")))))
+   (flatten (list (range 1 23))))))
 
+(defclass HumanAutosome
+  :subclass HumanChromosome)
+
+;; define all the human chromosomes - autosomes
+(as-disjoint
+ (doall
+  (map
+   #(do
+      (let [classname (str "HumanChromosome" %)]
+        (intern
+         *ns* (symbol classname)
+         ;; human chromosome defns here.
+         (owlclass classname
+                   :subclass HumanAutosome)
+         
+         )))
+   (flatten (list "X" "Y")))))
 
 ;; function to define all the human bands
 (defn humanbands [chromosome & bands]
