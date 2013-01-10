@@ -2,6 +2,5 @@
   :description "FIXME: write description"
   :plugins [[lein-swank "1.4.4"]]
   :dependencies [[org.clojure/clojure "1.4.0"]
-
                  [uk.org.russet/clojure-owl "0.3-SNAPSHOT"]
                  ])
