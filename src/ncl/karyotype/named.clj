@@ -317,14 +317,14 @@
   :label "The 46,XX,inv(2)(p21q31) karyotype"
   :subclass NamedKaryotype
   (owlsome derivedFrom k46_XX)
-  (exactly 1 e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint [h/HumanChromosome2Band2p21.3 h/HumanChromosome2Band2q31.3])))
+  (exactly 1 e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint h/HumanChromosome2Band2p21.3 h/HumanChromosome2Band2q31.3)))
   ;;h/HumanChromosome2Band2p21 == h/HumanChromosome2Band2p21.3 ;;h/HumanChromosome2Band2q31 == h/HumanChromosome2Band2q31.3
   ;;(owlsome effects [h/HumanChromosome2Band2p13 All bands between the two breakpoints h/HumanChromosome2Band2p23])
   )
 (defclass k46_XX_inv!2!!p13p23!
   :label "The 46,XX,inv(2)(p13p23) karyotype"
   :subclass NamedKaryotype
-  (owlsome derivedFrom k46_XX)
+  (owlsome derivedFrom k46_XX))
   ;; (exactly 1 e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint [h/HumanChromosome2Band2p13.3 h/HumanChromosome2Band2p23.3]))))
 ;; TODO hasEvent definitions
 (defclass k46_XY_t!12_16!!q13_p11.1!
@@ -426,7 +426,7 @@
   ;; (exactly 1 e/hasEvent e/Deletion) 
   )
  ;; TODO r(10)
- (defclass k50_XX_+1_del!1!!p13!_+dup!1!!q21q32!_+inv!1!!p31q41!_+8_r!10!!p12q25!_-21
+(defclass k50_XX_+1_del!1!!p13!_+dup!1!!q21q32!_+inv!1!!p31q41!_+8_r!10!!p12q25!_-21
   :label "The 50,XX,+1,del(1)(p13),+dup(1)(q21q32),+inv(1)(p31q41),+8,r(10)(p12q25),-21 karyotype"
   :subclass NamedKaryotype
   (owlsome derivedFrom k46_XX)
@@ -437,5 +437,5 @@
   ;; (exactly 1 e/hasEvent e/Duplication)
   ;; (exactly 1 e/hasEvent e/Inversion)
   )
-)
+
 
