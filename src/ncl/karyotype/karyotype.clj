@@ -17,8 +17,8 @@
 
 
 (ns ncl.karyotype.karyotype
-  (:use [owl.owl])
-  (:require [owl [reasoner :as r]]))
+  (:use [tawny.owl])
+  (:require [tawny [reasoner :as r]]))
 
 (defontology karyotype
   :iri "http://ncl.ac.uk/karyotype/karyotype"
