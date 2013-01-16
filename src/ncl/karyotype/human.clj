@@ -73,7 +73,7 @@
   (let [bandgroup (str
                    (.getFragment
                     (.getIRI
-                     (:entity chromosome))) "Band")]
+                     chromosome)) "Band")]
     
     (intern *ns*
             (symbol bandgroup)
