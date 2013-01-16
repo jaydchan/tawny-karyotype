@@ -17,7 +17,7 @@
 
 
 (ns ncl.karyotype.core
-  (:use [owl.owl])
+  (:use [tawny.owl])
   (:require [ncl.karyotype human karyotype events named]))
 
 
