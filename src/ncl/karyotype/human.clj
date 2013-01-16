@@ -25,9 +25,6 @@
   :iri "http://ncl.ac.uk/karyotype/human"
   :prefix "hum:")
 
-;;imports karyotype axioms
-;;(owlimport k/karyotype)
-
 (defclass HumanChromosome
   :subclass k/Chromosome)
 
