@@ -30,11 +30,6 @@
   :prefix "nmd:"
   )
 
-;;import karyotype, human and event axioms
-;; (owlimport k/karyotype)
-;; (owlimport h/human)
-;; (owlimport e/events)
-
 (defclass NamedKaryotype
   :subclass k/Karyotype)
 
@@ -42,10 +37,13 @@
   :subclass k/Karyotype)
 
 ;; define object properties
+
+;; TODO Should be transitive
 (defoproperty derivedFrom
   ;; :range k/Karyotype
   :domain NamedKaryotype)
 
+;; TODO Should be events
 (defoproperty hasLoss
   :range k/Chromosome
   :domain NamedKaryotype)
@@ -58,26 +56,31 @@
  ;;we have to pass these in as strings because they start with
  ;;integers which brings up an NumberFormatException therefore we
  ;;could use :name "46_XX" or :label "The 46,XX karyotype"
+
 ;; define all haploid base karyotypes
 (defclass k23_N
   :label "The 23,N karyotype"
   :subclass BaseKaryotype)
+;; TODO Should be disjoint
 (defclass k23_X
   :label "The 23,X karyotype"
   :subclass k23_N)
 (defclass k23_Y
   :label "The 23,Y karyotype"
   :subclass k23_N)
+
 ;; define all diploid base karyotypes
 (defclass k46_XN
   :label "The 46,XN karyotype"
   :subclass BaseKaryotype)
+;; TODO Should be disjoint
 (defclass k46_XX
   :label "The 46,XX karyotype"
   :subclass k46_XN)
 (defclass k46_XY
   :label "The 46,XY karyotype"
   :subclass k46_XN)
+
 ;; TODO
 ;; define all triploid base karyotypes
 (defclass k69_N
@@ -102,6 +105,8 @@
   :subclass k92_N)
 
 ;; Define the namedKaryotypes
+
+;; TODO Need to look at disjoint axioms
 
 ;; example numerical autosomal abnormal karyotypes
 (defclass k45_X
@@ -438,4 +443,38 @@
   ;; (exactly 1 e/hasEvent e/Inversion)
   )
 
+;; Define defined classes
+(defclass MaleKaryotype
+  :equivalent
+  (owlor k46_XY
+         (owlsome derivedFrom k46_XY)))
 
+;; ;; female diploid = those derived from 46,XX - as 46,XY is an asserted subclass of 46,XN cannot be included in the definition - what happens about 45,X?
+;; (deftest isFemale
+;;   (is (defclass Female
+;;   :eqivalent (owlsome n/derivedFrom k46_XX)) "Result"))
+
+;; ;; male diploid = those derived from 46,XY
+;; (deftest isMale
+;;   (is (owlclass Male
+;;         :equivalent (owlsome n/derivedFrom k46_XY)) "Result"))
+
+;; ;; numerical abnormality = those that have some loss
+;; (deftest hasLoss
+;;   (is (owlclass Loss
+;;         :equivalent (owlsome n/hasLoss k/Chromosome)) "Result"))
+
+;; ;; numerical abnormality = those that have some addition
+;; (deftest hasAddition
+;;   (is (owlclass Addition
+;;         :equivalent (owlsome n/hasAddition k/Chromosome)) "Result"))
+
+;; ;; numerical abnormality = those that have a loss or addition  
+;; (deftest hasNumericalAbnormality
+;;   (is (owlclass NumericalAbnormality
+;;         :equivalent (owlor (owlsome n/hasLoss k/Chromosome) (owlsome n/hasAddition k/Chromosome))) "Result"))
+
+;; ;; structural abnormality = those that have an event
+;; (deftest hasStructuralAbnormality
+;;   (is (owlclass StructuralAbnormality
+;;         :equivalent (owlsome e/hasEvent (owland e/Event (owlsome e/hasBreakPoint k/ChromosomeBand))) "Result"))
