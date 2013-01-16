@@ -26,10 +26,6 @@
   :iri "http://ncl.ac.uk/karyotype/events"
   :prefix "evn:")
 
-;; import karyotype and human axioms
-;;(owlimport k/Karyotype)
-;;(owlimport h/Human)
-
 (defclass Event)
 
 ;; define object properties
