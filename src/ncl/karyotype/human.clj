@@ -17,8 +17,8 @@
 
 
 (ns ncl.karyotype.human
-  (:use [owl.owl])
-  (:require [owl [reasoner :as r]]
+  (:use [tawny.owl])
+  (:require [tawny [reasoner :as r]]
             [ncl.karyotype [karyotype :as k]]))
 
 (defontology human
@@ -26,28 +26,10 @@
   :prefix "hum:")
 
 ;;imports karyotype axioms
-;;(owlimport k/Karyotype)
+;;(owlimport k/karyotype)
 
 (defclass HumanChromosome
   :subclass k/Chromosome)
-
-(defclass HumanAllosome
-  :subclass HumanChromosome)
-
-;; define all the human chromosomes - allosomes
-(as-disjoint
- (doall
-  (map
-   #(do
-      (let [classname (str "HumanChromosome" %)]
-        (intern
-         *ns* (symbol classname)
-         ;; human chromosome defns here.
-         (owlclass classname
-                   :subclass HumanAllosome)
-         
-         )))
-   (flatten (list (range 1 23))))))
 
 (defclass HumanAutosome
   :subclass HumanChromosome)
@@ -63,6 +45,24 @@
          ;; human chromosome defns here.
          (owlclass classname
                    :subclass HumanAutosome)
+         
+         )))
+   (flatten (list (range 1 23))))))
+
+(defclass HumanAllosome
+  :subclass HumanChromosome)
+
+;; define all the human chromosomes - allosomes
+(as-disjoint
+ (doall
+  (map
+   #(do
+      (let [classname (str "HumanChromosome" %)]
+        (intern
+         *ns* (symbol classname)
+         ;; human chromosome defns here.
+         (owlclass classname
+                   :subclass HumanAllosome)
          
          )))
    (flatten (list "X" "Y")))))
