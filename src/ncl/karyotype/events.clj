@@ -17,8 +17,8 @@
 
 
 (ns ncl.karyotype.events
-  (:use [owl.owl])
-  (:require [owl [reasoner :as r]]
+  (:use [tawny.owl])
+  (:require [tawny [reasoner :as r]]
             [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]))
 
@@ -34,7 +34,7 @@
 
 ;; define object properties
 (defoproperty hasEvent
-  :range Event
+  ;; :range Event
   :domain k/Karyotype
   )
 
@@ -63,7 +63,7 @@
   (defclass Triplication)
 )
 
-;; Potential new .clj file
+;; Potential new feature.clj file
 ;; (defclass Feature)
 
 ;; define object properties
@@ -92,3 +92,105 @@
 ;;   (defclass tricentric_ring_chromosome)
 ;; )
 
+
+;; Potential new disorder.clj file
+;; (defclass Disorder)
+
+;; define object properties
+;; (defoproperty hasDisorder
+;;   :range Disorder
+;;   :domain k/Karyotype
+;;   )
+
+;; Information from Registered Chromosome Disorders http://www.rarechromo.co.uk/html/bychromo.asp
+;; define all the structural features
+;; (as-disjoint-subclasses
+;;  Disorder
+;;   (defclass additional_unidentified_material)
+;;   (defclass balanced_translocation)
+;;   (defclass cornelia_de_lange)
+;;   (defclass deletion)
+;;   (defclass dicentric)
+;;   (defclass diploid_triploid_mosaicism)
+;;   (defclass diploid_triploid_tetraploid_mosaicism)
+;;   (defclass distal_deletion)
+;;   (defclass distal_duplication)
+;;   (defclass double_ring)
+;;   (defclass duplication)
+;;   (defclass enlarged_satellite)
+;;   (defclass fragile_site)
+;;   (defclass hexsomy_mosaic)
+;;   (defclass homozygosity)
+;;   (defclass interstitial)
+;;   (defclass interstitial_duplication)
+;;   (defclass inv_dup)
+;;   (defclass inv_dup_del)
+;;   (defclass additional_unidentified_material)
+;;   (defclass inversion)
+;;   (defclass inverted_triplication)
+;;   (defclass isochromosome)
+;;   (defclass isodicentric_!idic!)
+;;   (defclass jacobsen_+dup9p)
+;;   (defclass jumpimg_translocation)
+;;   (defclass maternal_uniparental_disomy)
+;;   (defclass mecp2_duplication)
+;;   (defclass microduplication)
+;;   (defclass microtriplication)
+;;   (defclass miller-diecker)
+;;   (defclass monosomy)
+;;   (defclass monosomy_mosaic)
+;;   (defclass mosaic_triple_x_syndrome)
+;;   (defclass partial_methylation)
+;;   (defclass partial_triplication)
+;;   (defclass pentasomy)
+;;   (defclass pentasomy mosaic)
+;;   (defclass premature_chromatid_separation)
+;;   (defclass rearrangement)
+;;   (defclass recombinant)
+;;   (defclass ring)
+;;   (defclass ring_15_mosaicism)
+;;   (defclass robertsonian_down_syndrome)
+;;   (defclass robertsonian_translocation)
+;;   (defclass single_gene_defect)
+;;   (defclass small_chromosome)
+;;   (defclass subtelomeric_deletion)
+;;   (defclass subtelomeric_duplication)
+;;   (defclass subtelomeric_microdeletion)
+;;   (defclass supernumerary)
+;;   (defclass telomeric_duplication)
+;;   (defclass tetraploidy)
+;;   (defclass tetraploidy_mosaic)
+;;   (defclass tetrasomy)
+;;   (defclass tetrasomy_mosaic)
+;;   (defclass total_premature_chromatid_separation)
+;;   (defclass triple_inverted_duplication)
+;;   (defclass triplication)
+;;   (defclass triploidy)
+;;   (defclass trisomy)
+;;   (defclass trisomy_mosaic)
+;;   (defclass unbalanced_translocation)
+;;   (defclass undiagnosed)
+;;   (defclass uniparental_disomy)
+;;   (defclass unknown)
+;;   (defclass unspecified)
+;;   (defclass unusual_banding_pattern)
+;;   (defclass variant)
+;;   (defclass von_willebrand_syndrome)
+;;   (defclass worster_drought)
+;;   (defclass x-autosomal_translocation)
+;;   (defclass x-linked_disorder)
+;;   (defclass x-linked_polymicrogyria)
+;;   (defclass xx_male)
+;;   (defclass xxx)
+;;   (defclass xxxx)
+;;   (defclass xxxxx)
+;;   (defclass xxxxxy)
+;;   (defclass xxxxy)
+;;   (defclass xxxy)
+;;   (defclass xxxyy)
+;;   (defclass xxy)
+;;   (defclass xy_female)
+;;   (defclass xyy)
+;;   (defclass xyyy)
+;;   (defclass xyyyy)
+;; )
