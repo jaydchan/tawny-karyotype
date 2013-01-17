@@ -28,6 +28,9 @@
 (defclass HumanChromosome
   :subclass k/Chromosome)
 
+(defclass HumanChromosomeBand
+  :subclass k/ChromosomeBand)
+
 (defclass HumanAutosome
   :subclass HumanChromosome)
 
@@ -75,7 +78,7 @@
     (intern *ns*
             (symbol bandgroup)
             (owlclass bandgroup
-                      :subclass k/ChromosomeBand))
+                      :subclass HumanChromosomeBand))
 
     
     (as-disjoint
@@ -170,7 +173,6 @@
  "2q24.1"
  "2q24.2"
  "2q24.3"
- "2q31.1"
  "2q31.1"
  "2q31.2"
  "2q31.3"
