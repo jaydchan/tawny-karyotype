@@ -15,7 +15,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-
 (ns ncl.karyotype.named
   (:use [tawny.owl])
   (:require [tawny [reasoner :as r]]
@@ -30,11 +29,10 @@
   :prefix "nmd:"
   )
 
-;; TOFIX
 ;; import all ncl.karyotype axioms
-;; (owlimport ncl.karyotype.human/human)
-;; (owlimport h/human)
-;; (owlimport e/events)
+(owlimport k/karyotype)
+(owlimport h/human)
+(owlimport e/events)
 
 (defclass NamedKaryotype
   :subclass k/Karyotype)
@@ -450,37 +448,37 @@
 
 ;; Define numerical abnormalities - in order for these to work, need to import the human axioms from h/human
 
-(defclass NumericalAbnormalAutosomalGainKaryotype
+(defclass NumericalAbnormalKaryotypeAutosomalGain
   :equivalent
   (owlsome e/hasEvent (owland e/Addition h/HumanAutosome)))
 
-(defclass NumericalAbnormalAutosomalLossKaryotype
+(defclass NumericalAbnormalKaryotypeAutosomalLoss
   :equivalent
   (owlsome e/hasEvent (owland e/Deletion h/HumanAutosome)))
 
-(defclass NumericalAbnormalAutosomalKaryotype
+(defclass NumericalAbnormalKaryotypeGainOrLoss
   :equivalent
   (owlor (owlsome e/hasEvent (owland e/Addition h/HumanAutosome))
          (owlsome e/hasEvent (owland e/Deletion h/HumanAutosome))))
 
-(defclass NumericalAbnormalAllosomalGainKaryotype
+(defclass NumericalAbnormalKaryotypeAllosomalGain
   :equivalent
   (owlsome e/hasEvent (owland e/Addition h/HumanAllosome)))
 
-(defclass NumericalAbnormalAllosomalLossKaryotype
+(defclass NumericalAbnormalKaryotypeAllosomalLoss
   :equivalent
   (owlsome e/hasEvent (owland e/Deletion h/HumanAllosome)))
 
-(defclass NumericalAbnormalAllosomalKaryotype
+(defclass NumericalAbnormalKaryotypeAllosomalGainOrLoss
   :equivalent
   (owlor (owlsome e/hasEvent (owland e/Addition h/HumanAllosome))
          (owlsome e/hasEvent (owland e/Deletion h/HumanAllosome))))
 
-(defclass NumericalAbnormalChromosomalGainKaryotype
+(defclass NumericalAbnormalKaryotypeChromosomalGain
   :equivalent
   (owlsome e/hasEvent (owland e/Addition h/HumanChromosome)))
 
-(defclass NumericalAbnormalChromosomalLossKaryotype
+(defclass NumericalAbnormalKaryotypeChromosomalLoss
   :equivalent
   (owlsome e/hasEvent (owland e/Deletion h/HumanChromosome)))
 
@@ -491,11 +489,11 @@
 
 ;; Define structural abnormalities - in order for these to work, need to import the human axioms from h/human and e/events
 
-(defclass StructuralAbnormalInsertionKaryotype
+(defclass StructuralAbnormalKaryotypeInsertion
   :equivalent
   (owlsome e/hasEvent (owland e/Insertion (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
-(defclass StructuralAbnormalInversionKaryotype
+(defclass StructuralAbnormalKaryotypeInversion
   :equivalent
   (owlsome e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
