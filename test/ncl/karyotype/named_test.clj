@@ -58,52 +58,48 @@
   )
 
 (deftest NumericalAbnormalKaryotypeGain
-  ;; FAILS due to failing owlimport
-  ;;(is (r/isuperclass? n/k47_XXX n/NumericalAbnormalChromosomalGainKaryotype))
+  (is (r/isuperclass? n/k47_XXX n/NumericalAbnormalKaryotypeChromosomalGain))
 
-  (is (not (r/isuperclass? n/k45_X n/NumericalAbnormalChromosomalGainKaryotype)))
-  (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalChromosomalGainKaryotype)))
+  (is (not (r/isuperclass? n/k45_X n/NumericalAbnormalKaryotypeChromosomalGain)))
+  (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalKaryotypeChromosomalGain)))
   )
 
 (deftest NumericalAbnormalKaryotypeLoss
-  ;;FAILS due to failing owlimport
-  ;;(is (r/isuperclass? n/k45_X n/NumericalAbnormalChromosomalLossKaryotype))
+  (is (r/isuperclass? n/k45_X n/NumericalAbnormalKaryotypeChromosomalLoss))
 
-  (is (not (r/isuperclass? n/k47_XXX n/NumericalAbnormalChromosomalLossKaryotype)))
-  (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalChromosomalLossKaryotype)))
+  (is (not (r/isuperclass? n/k47_XXX n/NumericalAbnormalKaryotypeChromosomalLoss)))
+  (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalKaryotypeChromosomalLoss)))
   )
 
 (deftest NumericalAbnormalKaryotype
-  ;;FAILS due to failing owlimport
-  ;;(is (r/isuperclass? n/k47_XXX n/NumericalAbnormalKaryotype))
-  ;;(is (r/isuperclass? n/k45_X n/NumericalAbnormalKaryotype))
+  (is (r/isuperclass? n/k47_XXX n/NumericalAbnormalKaryotype))
+  (is (r/isuperclass? n/k45_X n/NumericalAbnormalKaryotype))
 
   (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalKaryotype)))
   )
 
 (deftest StructuralAbnormalKaryotypeInsertion
-  ;;FAILS due to failing owlimport
-  ;;(is (r/isuperclass? n/k46_XX_ins!2!!q13p13p23! n/StructuralAbnormalInsertionKaryotype))
+  (is (r/isuperclass? n/k46_XX_ins!2!!q13p13p23! n/StructuralAbnormalKaryotypeInsertion))
 
-  ;;(is (not (r/isuperclass? n/k46_XX_inv!2!!p13p23! n/StructuralAbnormalInversionKaryotype)))
-  (is (not (r/isuperclass? n/k46_XX n/StructuralAbnormalInsertionKaryotype)))
+  (is (not (r/isuperclass? n/k46_XX_inv!2!!p13p23! n/StructuralAbnormalKaryotypeInsertion)))
+  (is (not (r/isuperclass? n/k46_XX n/StructuralAbnormalKaryotypeInsertion)))
   )
 
 (deftest StructuralAbnormalKaryotypeInversion
-  ;;FAILS due to failing owlimport 
-  ;;(is (r/isuperclass? n/k46_XX_inv!2!!p13p23! n/StructuralAbnormalInversionKaryotype))
+  (is (r/isuperclass? n/k46_XX_inv!2!!p13p23! n/StructuralAbnormalKaryotypeInversion))
 
-  ;;(is (not (r/isuperclass? n/k46_XX_ins!2!!q13p13p23! n/StructuralAbnormalInsertionKaryotype)))  
-  (is (not (r/isuperclass? n/k46_XX n/StructuralAbnormalInversionKaryotype)))
+  (is (not (r/isuperclass? n/k46_XX_ins!2!!q13p13p23! n/StructuralAbnormalKaryotypeInversion)))  
+  (is (not (r/isuperclass? n/k46_XX n/StructuralAbnormalKaryotypeInversion)))
   )
 
 (deftest StructuralAbnormalKaryotype
-  ;;FAILS due to failing owlimport
-  ;;(is (r/isuperclass? n/k46_XX_ins!2!!q13p13p23! n/StructuralAbnormalInsertionKaryotype))
-  ;;(is (r/isuperclass? n/k46_XX_inv!2!!p13p23! n/StructuralAbnormalInversionKaryotype))
+  (is (r/isuperclass? n/k46_XX_ins!2!!q13p13p23! n/StructuralAbnormalKaryotype))
+  (is (r/isuperclass? n/k46_XX_inv!2!!p13p23! n/StructuralAbnormalKaryotype))
   
   (is (not (r/isuperclass? n/k46_XX n/StructuralAbnormalKaryotype)))
   )
+
+;; Probe classes
 
 ;; Test when tawny supports it!
 ;; (is (not
