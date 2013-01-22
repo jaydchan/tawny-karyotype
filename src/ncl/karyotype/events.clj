@@ -15,7 +15,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-
 (ns ncl.karyotype.events
   (:use [tawny.owl])
   (:require [tawny [reasoner :as r]]
@@ -28,36 +27,95 @@
 
 (defclass Event)
 
+
+
 ;; define object properties
 (defoproperty hasEvent
-  ;; :range Event
-  :domain k/Karyotype
-  )
-
-(defoproperty effects
-  :range k/ChromosomeBand
-  :domain k/Karyotype
-  )
+  :range Event
+  :domain k/Karyotype)
 
 (defoproperty hasBreakPoint
   :range k/ChromosomeBand
-  :domain k/Karyotype
-  )
+  :domain k/Karyotype)
+
+(defoproperty hasReceivingChromosomeBreakPoint
+  :subpropertyof hasBreakPoint)
+
+(defoproperty hasProvidingChromosomeBreakPoint
+  :subpropertyof hasBreakPoint)
+
+
 
 ;; define all the events
 ;; TODO define restrictions
-(as-disjoint-subclasses
- Event
-  (defclass Addition)
-  (defclass Deletion)
-  (defclass Duplication)
-  (defclass Fission)
-  (defclass Insertion)
-  (defclass Inversion)
-  (defclass Quadruplication)
-  (defclass Translocation)
-  (defclass Triplication)
-)
+;; TODO Subclasses of each event i.e. inversion insertion
+
+;; Chromosomal Addition : exactly <#> hasEvent (owland Addition <HumanChromsome>)
+;; Chromosomal Band Addition : TODO
+(defclass Addition
+  :subclass Event)
+
+;; Chromosomal Deletion : exactly <#> hasEvent (owland Deletion <HumanChromsome>)
+;; Chromosomal Band Deletion : TODO
+(defclass Deletion
+  :subclass Event)
+
+;; TODO
+(defclass Duplication
+  :subclass Event)
+
+;; TODO
+(defclass Fission
+  :subclass Event)
+
+;; Choromosomal Band Insertion: exactly <#> hasEvent (owland Insertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand>))
+(defclass Insertion
+  :subclass Event)
+
+;; Chromosomal Band Inversion: exactly <#> hasEvent (owland Inversion (owlsome hasBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
+(defclass Inversion
+  :subclass Event)
+
+;; TODO
+(defclass Quadruplication
+  :subclass Event)
+
+;; TODO
+(defclass Translocation
+  :subclass Event)
+
+;;TODO
+(defclass Triplication
+  :subclass Event)
+
+
+
+;; TODECIDE!
+
+(defclass ForwardInsertion
+  :subclass Insertion)
+
+(defclass InverseInsertion
+  :subclass Insertion)
+
+;; THUS
+
+;; Choromosomal Band Insertion: exactly <#> hasEvent (owland Insertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
+
+;; Choromosomal Band InverseInsertion: exactly <#> hasEvent (owland InverseInsertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
+
+;; OR
+
+(defoproperty hasProvidingChromosomeBreakPointStart
+  :subpropertyof hasProvidingChromosomeBreakPoint)
+
+(defoproperty hasProvidingChromosomeBreakPointFinish
+  :subpropertyof hasProvidingChromosomeBreakPoint)
+
+;; THUS
+;; Choromosomal Band Insertion: exactly <#> hasEvent (owland Insertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPointStart <HumanChromosomeBand>) (owlsome hasProvidingBreakPointFinish <HumanChromosomeBand>))
+
+
 
 ;; Potential new feature.clj file
 ;; (defclass Feature)
@@ -87,7 +145,6 @@
 ;;   (defclass telomeric_associations)
 ;;   (defclass tricentric_ring_chromosome)
 ;; )
-
 
 ;; Potential new disorder.clj file
 ;; (defclass Disorder)
@@ -177,16 +234,5 @@
 ;;   (defclass x-linked_disorder)
 ;;   (defclass x-linked_polymicrogyria)
 ;;   (defclass xx_male)
-;;   (defclass xxx)
-;;   (defclass xxxx)
-;;   (defclass xxxxx)
-;;   (defclass xxxxxy)
-;;   (defclass xxxxy)
-;;   (defclass xxxy)
-;;   (defclass xxxyy)
-;;   (defclass xxy)
 ;;   (defclass xy_female)
-;;   (defclass xyy)
-;;   (defclass xyyy)
-;;   (defclass xyyyy)
 ;; )
