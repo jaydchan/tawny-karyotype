@@ -37,74 +37,95 @@
   (is (r/consistent?))
   (is (r/coherent?)))
 
-;; TODO Conditional karyotypes
-(deftest MaleKaryotype
-  (is (r/isuperclass? n/k45_Y n/MaleKaryotype))
-  (is (r/isuperclass? n/k46_XY n/MaleKaryotype))
+(deftest FemaleKaryotype
+  (is (r/isuperclass? n/k46_XX n/FemaleKaryotype))
 
-  (is (not (r/isuperclass? n/k45_X n/FemaleKaryotype)))
+  
+  (is (not (r/isuperclass? n/k46_XY n/FemaleKaryotype)))
+  (is (not (r/isuperclass? n/KlinefelterSyndromeAllVariations n/FemaleKaryotype)))
+  (is (not (r/isuperclass? n/KlinefelterSyndromeMostCommonVariation n/FemaleKaryotype)))
+  )
+
+(deftest MaleKaryotype
+  (is (r/isuperclass? n/k46_XY n/MaleKaryotype))
+  (is (r/isuperclass? n/KlinefelterSyndromeAllVariations n/MaleKaryotype))
+  (is (r/isuperclass? n/KlinefelterSyndromeMostCommonVariation n/MaleKaryotype))
+
+  
   (is (not (r/isuperclass? n/k46_XX n/MaleKaryotype)))
   )
 
-;; TODO Conditional karyotypes
-(deftest FemaleKaryotype
-  (is (r/isuperclass? n/k46_XX n/FemaleKaryotype))
-  (is (r/isuperclass? n/k47_XXX n/FemaleKaryotype))
+(deftest KlinefelterSyndromeAllVariations
+  (is (r/isuperclass? n/KlinefelterSyndromeMostCommonVariation n/KlinefelterSyndromeAllVariations))
 
-  ;; FAILS due to the current definition of Female
-  ;;(is (r/isuperclass? n/k45_X n/FemaleKaryotype))
-
-  (is (not (r/isuperclass? n/k45_X n/FemaleKaryotype)))
-  )
-
-(deftest NumericalAbnormalKaryotypeGain
-  (is (r/isuperclass? n/k47_XXX n/NumericalAbnormalKaryotypeChromosomalGain))
-
-  (is (not (r/isuperclass? n/k45_X n/NumericalAbnormalKaryotypeChromosomalGain)))
-  (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalKaryotypeChromosomalGain)))
-  )
-
-(deftest NumericalAbnormalKaryotypeLoss
-  (is (r/isuperclass? n/k45_X n/NumericalAbnormalKaryotypeChromosomalLoss))
-
-  (is (not (r/isuperclass? n/k47_XXX n/NumericalAbnormalKaryotypeChromosomalLoss)))
-  (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalKaryotypeChromosomalLoss)))
+  
   )
 
 (deftest NumericalAbnormalKaryotype
-  (is (r/isuperclass? n/k47_XXX n/NumericalAbnormalKaryotype))
-  (is (r/isuperclass? n/k45_X n/NumericalAbnormalKaryotype))
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeChromosomalGain n/NumericalAbnormalKaryotype))
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeChromosomalLoss n/NumericalAbnormalKaryotype))
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalGainOrLoss n/NumericalAbnormalKaryotype))  
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAutosomalGainOrLoss n/NumericalAbnormalKaryotype))
 
+  
   (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalKaryotype)))
   )
 
-(deftest StructuralAbnormalKaryotypeInsertion
-  (is (r/isuperclass? n/k46_XX_ins!2!!q13p13p23! n/StructuralAbnormalKaryotypeInsertion))
+(deftest NumericalAbnormalKaryotypeChromosomalGain
 
-  (is (not (r/isuperclass? n/k46_XX_inv!2!!p13p23! n/StructuralAbnormalKaryotypeInsertion)))
+  
+  (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalKaryotypeChromosomalGain)))
+  )
+
+(deftest NumericalAbnormalKaryotypeChromosomalLoss
+
+  
+  (is (not (r/isuperclass? n/k46_XX n/NumericalAbnormalKaryotypeChromosomalLoss)))
+  )
+
+(deftest NumericalAbnormalKaryotypeAllosomalGain
+  (is (r/isuperclass? n/KlinefelterSyndromeAllVariations n/NumericalAbnormalKaryotypeAllosomalGain))
+
+  
+  )
+
+(deftest NumericalAbnormalKaryotypeAutosomalGain
+  (is (r/isuperclass? n/DownSyndrome n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/EdwardsSyndrome n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/PatauSyndrome n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/Trisomy16 n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/Trisomy22 n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/Trisomy9 n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/WarkanySyndrome n/NumericalAbnormalKaryotypeAutosomalGain))
+
+  
+  )
+
+(deftest NumericalAbnormalKaryotypeAllosomalLoss
+  (is (r/isuperclass? n/TurnerSyndrome n/NumericalAbnormalKaryotypeAllosomalLoss))
+
+  
+  )
+
+(deftest StrutcuralAbnormalKaryotype
+  (is (r/isuperclass? n/StructuralAbnormalKaryotypeInsertion n/StructuralAbnormalKaryotype))  
+  (is (r/isuperclass? n/StructuralAbnormalKaryotypeInversion n/StructuralAbnormalKaryotype))
+
+
+  (is (not (r/isuperclass? n/k46_XX n/StructuralAbnormalKaryotype)))
+  )
+
+(deftest StructuralAbnormalKaryotypeInsertion
+
+  
   (is (not (r/isuperclass? n/k46_XX n/StructuralAbnormalKaryotypeInsertion)))
   )
 
 (deftest StructuralAbnormalKaryotypeInversion
-  (is (r/isuperclass? n/k46_XX_inv!2!!p13p23! n/StructuralAbnormalKaryotypeInversion))
 
-  (is (not (r/isuperclass? n/k46_XX_ins!2!!q13p13p23! n/StructuralAbnormalKaryotypeInversion)))  
+  
   (is (not (r/isuperclass? n/k46_XX n/StructuralAbnormalKaryotypeInversion)))
   )
 
-(deftest StructuralAbnormalKaryotype
-  (is (r/isuperclass? n/k46_XX_ins!2!!q13p13p23! n/StructuralAbnormalKaryotype))
-  (is (r/isuperclass? n/k46_XX_inv!2!!p13p23! n/StructuralAbnormalKaryotype))
-  
-  (is (not (r/isuperclass? n/k46_XX n/StructuralAbnormalKaryotype)))
-  )
-
-;; Probe classes
-
-;; Test when tawny supports it!
-;; (is (not
-;;      (with-probe-class
-;;        [joined (owlclass :subclass n/k46_XY n/k45_Y)]
-;;        (r/consistent? joined))))
 
 
