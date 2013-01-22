@@ -17,7 +17,7 @@
 
 (ns ncl.karyotype.core
   (:use [tawny.owl])
-  (:require [ncl.karyotype human karyotype events named])
+  (:require [ncl.karyotype human karyotype events named iscnexamples])
   (:gen-class))
 
 ;; to run:
@@ -42,6 +42,10 @@
   (with-ontology ncl.karyotype.named/named
     (save-ontology "named.omn" :omn)
     (save-ontology "named.owl" :owl))
+
+  (with-ontology ncl.karyotype.iscnexamples/iscnexamples
+    (save-ontology "iscnexamples.omn" :omn)
+    (save-ontology "iscnexamples.owl" :owl))
 )
 
 ;; to run (in swank)
