@@ -75,26 +75,14 @@
 
 ;; TODO
 ;; define all triploid base karyotypes
-(defclass k69_N
+(defclass k69_NNN
   :label "The 69,N karyotype"
   :subclass BaseKaryotype)
-(defclass k69_X
-  :label "The 69,X karyotype"
-  :subclass k69_N)
-(defclass k69_Y
-  :label "The 69,Y karyotype"
-  :subclass k69_N)
 ;; TODO
 ;; define all tetraploid base karyotypes
-(defclass k92_N
+(defclass k92_NNNN
   :label "The 92,N karyotype"
   :subclass BaseKaryotype)
-(defclass k92_X
-  :label "The 92,X karyotype"
-  :subclass k92_N)
-(defclass k92_Y
-  :label "The 92,Y karyotype"
-  :subclass k92_N)
 
 ;; Define the namedKaryotypes
 
@@ -102,7 +90,6 @@
 ;; Allosomal abnormalites
 
 ;; An (female) individual with only one sex chromosome = X ;;aka 45,X or 45,X0 ;;aka abnormal female
-
 (defclass TurnerSyndrome
   :subclass NamedKaryotype
   :equivalent
@@ -139,10 +126,12 @@
 (defclass Lethal
   :subclass NamedKaryotype)
 
+
+
 ;; Autsomal abnormalities
 
 ;; An individual with three copies of chromosome 8 ;;aka Trisomy8
-(defclass WarkanySyndrome
+(defclass Warkany2Syndrome
   :subclass NamedKaryotype
   :equivalent
   (owland
