@@ -264,19 +264,153 @@
 
 
 ;; example structural abnormal karyotypes
+
+;; ADDITION
+(defclass k46_XX_add!19!!p13.3!
+  :label "The 46,XX,add(19)(p13.3) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/Addition (owlsome e/hasBreakPoint h/HumanChromosome19Bandp13.3))))
+
+(defclass k46_XY_add!12!!q13!
+  :label "The 46,XY,add(12)(q13) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  (exactly 1 e/hasEvent (owland e/Addition (owlsome e/hasBreakPoint h/HumanChromosome12Bandq13.3)))) ;;TOFIX q13 == 13.3
+
+;; DELETION
+(defclass k46_XX_del!5!!q13!
+  :label "The 46,XX,del(5)(q13) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/Deletion (owlsome e/hasBreakPoint h/HumanChromosome5Bandq13.1 h/HumanChromosome5BandqTer)))) ;;TOFIX q13 == q13.1
+
+(defclass k46_XX_del!5!!q13q33!
+  :label "The 46,XX,del(5)(q13q33) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/Deletion (owlsome e/hasBreakPoint h/HumanChromosome5Bandq13.1 h/HumanChromosome5Bandq33.3)))) ;;TOFIX q13 == q13.1 && q33 == q33.3
+
+(defclass k46_XX_del!5!!q13q13!
+  :label "The 46,XX,del(5)(q13q13) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/Deletion (owlsome e/hasBreakPoint h/HumanChromosome5Bandq13.1)))) ;;TOFIX q13 == q13.1
+
+(defclass k46_Y_del!X!!p21p21!
+  :label "The 46,Y,del(X)(p21p21) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  (exactly 1 e/hasEvent (owland e/Deletion (owlsome e/hasBreakPoint h/HumanChromosomeXBandp21.3)))) ;;TOFIX p21 == p21.3
+
+;; DUPLICATIONS
+(defclass k46_XX_dup!1!!q22q25!
+  :label "The 46,XX,dup(1)(q22q25) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/DirectDuplication (owlsome e/hasBreakPoint h/HumanChromosome1Bandq22 h/HumanChromosome1Bandq25.3)))) ;;TOFIX q25 == q25.3
+
+;; TOFIX: Only the detailed system will clarify the location of the duplicated segment
+;; AKA pterq25q25q22q25qter or pterq22q25q22q22qter
+(defclass k46_XY_dup!1!!q25q22!
+  :label "The 46,XY,dup(1)(q25q22) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  (exactly 1 e/hasEvent (owland e/InverseDuplication (owlsome e/hasBreakPoint h/HumanChromosome1Bandq25.3 h/HumanChromosome1Bandq22)))) ;;TOFIX q25 == q25.3
+
+;; FISSION
+;; QUERY: p10 && q10 == Cen?
+(defclass k47_XY_-10_+fis!10!!p10!_+fis!10!!q10!
+  :label "The 47,XY,-10,+fis(10)(p10),+fis(10)(q10) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosome10))
+  (exactly 1 e/hasEvent (owland e/Fission (owlsome e/hasBreakPoint h/HumanChromosome10pTer h/HumanChromosome10BandCen)))
+  (exactly 1 e/hasEvent (owland e/Fission (owlsome e/hasBreakPoint h/HumanChromosome10qTer h/HumanChromosome10BandCen))))
+
+;; INVERSION
 (defclass k46_XX_inv!2!!p21q31!
   :label "The 46,XX,inv(2)(p21q31) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint h/HumanChromosome2Band2p21.3 h/HumanChromosome2Band2q31.3)))) ;;p21 == p21.3 && q31 == q31.3
+  (exactly 1 e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint h/HumanChromosome2Bandp21 h/HumanChromosome2Bandq31))))
+
 (defclass k46_XX_inv!2!!p13p23!
   :label "The 46,XX,inv(2)(p13p23) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint h/HumanChromosome2Band2p13.1 h/HumanChromosome2Band2p23.3)))) ;;p13 == p13.1 && p23 == p23.3
+  (exactly 1 e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint h/HumanChromosome2Bandp13 h/HumanChromosome2Bandp23))))
 
+(defclass k46_XX_inv!3!!q21q26.2!
+  :label "The 46,XX,inv(3)(q21q26.2) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint h/HumanChromosome3Bandq21 h/HumanChromosome3Bandq26.2))))
 
+(defclass k46_XY_inv!3!!p13q21!
+  :label "The 46,XY,inv(3)(p13q21) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  (exactly 1 e/hasEvent (owland e/Inversion (owlsome e/hasBreakPoint h/HumanChromosome3Bandp13 h/HumanChromosome3Bandq21))))
 
+;; INSERTIONS
+(defclass k46_X_ins!5_X!!p14_q21q25!
+  :label "The 46,X,ins(5;X)(p14;q21q25) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/DirectInsertion (owlsome e/hasReceivingBreakPoint h/HumanChromosome5Bandp14) (owlsome e/hasProvidingBreakPoint h/HumanChromosomeXBandq21.1 h/HumanChromosomeXBandq25)))) ;; TOFIX q21 == q21.1
+
+(defclass k46_XX_ins!2!!q13p13p23!
+  :label "The 46,XX,ins(2)(q13p13p23) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/InverseInsertion (owlsome e/hasReceivingBreakPoint h/HumanChromosome2Bandq13) (owlsome e/hasProvidingBreakPoint h/HumanChromosome2Bandp13 h/HumanChromosome2Bandp23))))
+
+(defclass k46_XX_ins!2!!q13p23p13!
+  :label "The 46,XX,ins(2)(q13p23p13) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/DirectInsertion (owlsome e/hasReceivingBreakPoint h/HumanChromosome2Bandq13) (owlsome e/hasProvidingBreakPoint h/HumanChromosome2Bandp23 h/HumanChromosome2Bandp13))))
+
+(defclass k46_XX_ins!2!!p13q21q31!
+  :label "The 46,XX,ins(2)(p13q21q31) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/DirectInsertion (owlsome e/hasReceivingBreakPoint h/HumanChromosome2Bandp13) (owlsome e/hasProvidingBreakPoint h/HumanChromosome2Bandq21.1 h/HumanChromosome2Bandq31)))) ;; TOFIX q21 == q21.1
+
+(defclass k46_XY_ins!2!!p13q31q21!
+  :label "The 46,XY,ins(2)(p13q31q21) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  (exactly 1 e/hasEvent (owland e/InverseInsertion (owlsome e/hasReceivingBreakPoint h/HumanChromosome2Bandp13) (owlsome e/hasProvidingBreakPoint h/HumanChromosome2Bandq31 h/HumanChromosome2Bandq21.1)))) ;; TOFIX q21 == q21.1
+
+(defclass k46_XY_ins!5_2!!p14_q22q32!
+  :label "The 46,XY,ins(5;2)(p14;q22q32) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  (exactly 1 e/hasEvent (owland e/DirectInsertion (owlsome e/hasReceivingBreakPoint h/HumanChromosome5Bandp14) (owlsome e/hasProvidingBreakPoint h/HumanChromosome2Bandq22 h/HumanChromosome2Bandq32.3)))) ;; TOFIX q32 == q32.3
+
+(defclass k46_XY_ins!5_2!!p14_q32q22!
+  :label "The 46,XY,ins(5;2)(p14;q32q22) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  (exactly 1 e/hasEvent (owland e/InverseInsertion (owlsome e/hasReceivingBreakPoint h/HumanChromosome5Bandp14) (owlsome e/hasProvidingBreakPoint h/HumanChromosome2Bandq32.3 h/HumanChromosome2Bandq22)))) ;;TOFIX q32 == q32.3
+
+;; TOFIX: This is actually a direct insertion
+(defclass k46_XX_ins!5_2!!q31_p13p23!
+  :label "The 46,XX,ins(5;2)(q31;p13p23) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/InverseInsertion (owlsome e/hasReceivingBreakPoint h/HumanChromosome5Bandq31.3) (owlsome e/hasProvidingBreakPoint h/HumanChromosome2Bandp13 h/HumanChromosome2Bandp23)))) ;;TOFIX q31 == q31.3
+
+;; TOFIX: Therefore this is actually a inverse insertion
+(defclass k46_XX_ins!5_2!!q31_p23p13!
+  :label "The 46,XX,ins(5;2)(q31;p23p13) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/DirectInsertion (owlsome e/hasReceivingBreakPoint h/HumanChromosome5Bandq31.3) (owlsome e/hasProvidingBreakPoint h/HumanChromosome2Bandp23 h/HumanChromosome2Bandp13)))) ;;TOFIX q31 == q31.3
+
+;; TRANSLOCATIONS
 ;; TODO hasEvent definitions for the following karyotypes
 (defclass k46_XY_t!12_16!!q13_p11.1!
   :label "The 46,XY,t(12;16)(q13;p11.1) karyotype"
@@ -290,35 +424,6 @@
   (owlsome n/derivedFrom n/k46_XN)
   ;; (exactly 1 e/hasEvent e/Translocation)
   )
-
-
-
-;; TOFIX
-;; When modelling insertions using hasBreakPoint - the order of the hasBreakPoints statements are important when dealing with one chromosome -- currently 46,XX,ins(2)(q13p13p23) and 46,XX,ins(2)(q13p23p13) are modelled the same but in fact are fact disjoint
-(defclass k46_X_ins!5_X!!p14_q21q25!
-  :label "The 46,X,ins(5;X)(p14;q21q25) karyotype"
-  :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom n/k46_XN)
-  (exactly 1 e/hasEvent (owland e/Insertion (owlsome e/hasReceivingChromosomeBreakPoint h/HumanChromosome5Band5p14.1) (owlsome e/hasProvidingChromosomeBreakPoint h/HumanChromosomeXBandXq21.1 h/HumanChromosomeXBandXq25)))) ;;5p14 == 5p14.1 && Xq21 == Xq21.1 && Xq25 == Xq25
-(defclass k46_XY_ins!5_2!!p14_q22q32!
-  :label "The 46,XY,ins(5;2)(p14;q22q32) karyotype"
-  :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Insertion (owlsome e/hasReceivingChromosomeBreakPoint h/HumanChromosome5Band5p14.1) (owlsome e/hasProvidingChromosomeBreakPoint h/HumanChromosome2Band2q22.1 h/HumanChromosome2Band2q32.2)))) ;;5p14 == 5p14.1 && 2q22 == 2q22.1 && 2q32 == 2q32.3
-(defclass k46_XX_ins!2!!q13p13p23!
-  :label "The 46,XX,ins(2)(q13p13p23) karyotype"
-  :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Insertion (owlsome e/hasReceivingChromosomeBreakPoint h/HumanChromosome2Band2q13) (owlsome e/hasProvidingChromosomeBreakPoint h/HumanChromosome2Band2p13.1 h/HumanChromosome2Band2p23.3)))) ;;q13 == q13 && p13 == p13.1 && p23 == p23.3
-(defclass k46_XX_ins!2!!q13p23p13!
-  :label "The 46,XX,ins(2)(q13p23p13) karyotype"
-  :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Insertion (owlsome e/hasReceivingChromosomeBreakPoint h/HumanChromosome2Band2q13) (owlsome e/hasProvidingChromosomeBreakPoint h/HumanChromosome2Band2p23.3 h/HumanChromosome2Band2p13.1)))) ;;q13 == q13 && p23 == p23.3 && p13 == p13.1
-
-
-
-;; TODO hasEvent definitions for the following karyotypes
 (defclass k46_XX_t!9_22_17!!q34_q11.2_q22!
   :label "The 46,XX,t(9;22;17)(q34;q11.2;q22) karyotype"
   :subclass ISCNExampleKaryotype
@@ -329,7 +434,7 @@
   :label "The 46,XY,t(X;15;18)(p11.1;p11.1;q11.1) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  ; (exactly 1 e/hasEvent e/Translocation)
+  ;; (exactly 1 e/hasEvent e/Translocation)
   )
 (defclass k46_XX_t!3_9_22_21!!p13_q34_q11.2_q21!
   :label "The 46,XX,t(3;9;22;21)(p13;q34;q11.2;q21) karyotype"
@@ -343,20 +448,52 @@
   (owlsome n/derivedFrom n/k46_XY)
   ;; (exactly 1 e/hasEvent e/Translocation)
   )
+(defclass k46_t!X_18!!p11.1_q11.2!_t!Y_1!!q11.2_p13!
+  :label "The 46,t(X;18)(p11.1;q11.2),t(Y;1)(q11.2;p13) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  ;; (exactly 1 e/hasEvent e/Translocation)
+  ;; (exactly 1 e/hasEvent e/Translocation)
+  )
+(defclass k46_Y_t!X_8!!p22.3_q24.1!
+  :label "The 46,Y,t(X;8)(p22.3;q24.1) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XY)
+  ;; (exactly 1 e/hasEvent e/Translocation)
+  )
+
+;; QUADRUPLICATIONS
+;; TOFIX: It is not possible to indicate the orientations of the segments with the short system!
+(defclass k46_XX_qdp!1!!q23q32!
+  :label "The 46,XX,qdp(1)(q23q32) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/Quadruplication (owlsome e/hasBreakPoint h/HumanChromosome1Bandq23.1 h/HumanChromosome1Bandq32.3))))
+
+;; TRIPLICATIONS
+;; TOFIX: It is not possible to indicate the orientations of the segments with the short system!
+(defclass k46_XX_trp!1!!q21q32!
+  :label "The 46,XX,trp(1)(q21q32) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/DirectTriplication (owlsome e/hasBreakPoint h/HumanChromosome1Bandq23.1 h/HumanChromosome1Bandq32.3))))
+
+(defclass k46_XX_invtrp!1!!q32q21!
+  :label "The 46,XX,inv trp(1)(q32q21) karyotype"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (exactly 1 e/hasEvent (owland e/InverseTriplication (owlsome e/hasBreakPoint h/HumanChromosome1Bandq23.1 h/HumanChromosome1Bandq32.3))))
+
+;; MIXTURE
 (defclass k47_X_t!X_13!!q27_q12!_inv!10!!p13q22!_+21
   :label "The 47,X,t(X;13)(q27;q12),inv(10)(p13q22),+21 karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome21))
-    ;; (exactly 1 e/hasEvent e/Translocation)
-    ;; (exactly 1 e/hasEvent e/Inversion)
-   )
-(defclass k46_t!X_18!!p11.1_q11.2!_t!Y_1!!q11.2_p13!
-  :label "The 46,t(X;18)(p11.1;q11.2),t(Y;1)(q11.2;p13) karyotype"
-  :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom n/k46_XY)
-  ;; (exactly 2 e/hasEvent e/Translocation)
+  ;; (exactly 1 e/hasEvent e/Translocation)
+  ;; (exactly 1 e/hasEvent e/Inversion)
   )
+
 (defclass k48_X_t!Y_12!!q11.2_p12!_del!6!!q11!_+8_t!9_22!!q34_q11.2!_+17_-21_+22
   :label "The 48,X,t(Y;12)(q11.2;p12),del(6)(q11),+8,t(9;22)(q34;q11.2),+17,-21,+22 karyotype"
   :subclass ISCNExampleKaryotype
@@ -365,10 +502,11 @@
   (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome17))
   (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome22))
   (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosome21))
+  (exactly 1 e/hasEvent (owland e/Deletion (owlsome e/hasBreakPoint h/HumanChromosome6Bandq11)))
   ;; (exactly 1 e/hasEvent e/Translocation)
-  ;; (exactly 1 e/hasEvent e/Deletion)
   ;; (exactly 1 e/hasEvent e/Translocation)
 )
+
 (defclass k49_X_inv!X!!p21q26!_+3_inv!3!!q21q26.2!_+7_+10_-20_del!20!!q11.2!_+21
   :label "The 49,X,inv(X)(p21q26),+3,inv(3)(q21q26.2),+7,+10,-20,del(20)(q11.2),+21  karyotype"
   :subclass ISCNExampleKaryotype
@@ -381,6 +519,7 @@
   ;; (exactly 2 e/hasEvent e/Inversion)
   ;; (exactly 1 e/hasEvent e/Deletion) 
   )
+
 (defclass k50_XX_+1_del!1!!p13!_+dup!1!!q21q32!_+inv!1!!p31q41!_+8_r!10!!p12q25!_-21
   :label "The 50,XX,+1,del(1)(p13),+dup(1)(q21q32),+inv(1)(p31q41),+8,r(10)(p12q25),-21 karyotype"
   :subclass ISCNExampleKaryotype
@@ -393,3 +532,38 @@
   ;; (exactly 1 e/hasEvent e/Inversion)
   ;; r(10)?
   )
+
+
+
+;; NOT HUMAN?
+;; 69,XXX,del(7)(p11.2)
+;; 69,XXY,del(7)(q22),inv(7)(p13q22),t(7;14)(p15;q11.1)
+;; 70,XXX,+del(7)(p11.2)
+;; 92,XXYY,del(7)(p11.2),t(7;14)(p15;q11.1)
+;; 92,XXYY,del(7)(p11.2),del(7)(q22),del(7)(q34)
+
+;; DICENTRIC
+;; 45,XX,dic(13;15)(q22;q24)
+
+;; DERIVATIVES
+;; 46,Y,der(X)t(X;8)(p22.3;q24.1)
+;; 46,XX,der(1)t(1;3)(p22;q13.1)
+;; 45,XY,der(1)t(1;3)(p22;q13.1),-3
+;; 46,XX,der(1)t(1;3)(p32;q21)t(1;11)(q25;q13)
+;; 46,XY,der(1)t(1;3)(p32;q21)t(3;7)(q28;q11.2)
+;; 46,XX,der(1)t(1;11)(p32;q13)t(1;3)(q25;q21)
+;; 46,XY,der(1)t(t1;3)(p22;q13.1)
+;; 45,XY,-10,der(10)t(10;17)(q22;p12)              
+
+;; 46,XY,der(1)t(1;3)(p32;q21)dup(1)(q25q42)
+;; 46,XY,der(9)del(9)(p12)t(9;13)(q34;q11)
+;; 46,XY,der(9)del(9)(p12)del(9)(q31)
+;; 46,XY,der(9)inv(9)(p13p23)del(9)(q22q33)
+;; 46,XX,der(7)add(7)(p22)add(7)(q22)
+;; 46,XX,der(5)add(5)(p15.1)del(5)(q13)
+;; 46,XX,der(5)add(5)(p15.3)add(5)(q23)
+
+;; 46,XX,rec(6)dup(6p)inv(6)(p22.2q25.2)mat
+
+
+
