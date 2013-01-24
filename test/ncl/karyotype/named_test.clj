@@ -96,7 +96,7 @@
   (is (r/isuperclass? n/Trisomy16 n/NumericalAbnormalKaryotypeAutosomalGain))
   (is (r/isuperclass? n/Trisomy22 n/NumericalAbnormalKaryotypeAutosomalGain))
   (is (r/isuperclass? n/Trisomy9 n/NumericalAbnormalKaryotypeAutosomalGain))
-  (is (r/isuperclass? n/WarkanySyndrome n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/Warkany2Syndrome n/NumericalAbnormalKaryotypeAutosomalGain))
 
   
   )
