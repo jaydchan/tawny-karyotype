@@ -38,10 +38,10 @@
   :range k/ChromosomeBand
   :domain k/Karyotype)
 
-(defoproperty hasReceivingChromosomeBreakPoint
+(defoproperty hasReceivingBreakPoint
   :subpropertyof hasBreakPoint)
 
-(defoproperty hasProvidingChromosomeBreakPoint
+(defoproperty hasProvidingBreakPoint
   :subpropertyof hasBreakPoint)
 
 
@@ -51,32 +51,63 @@
 ;; TODO Subclasses of each event i.e. inversion insertion
 
 ;; Chromosomal Addition : exactly <#> hasEvent (owland Addition <HumanChromsome>)
-;; Chromosomal Band Addition : TODO
+;; Chromosomal Band Addition : exactly <#> hasEvent (owland Addition (owlsome hasBreakPoint <HumanChromosomeBand>)
 (defclass Addition
   :subclass Event)
 
 ;; Chromosomal Deletion : exactly <#> hasEvent (owland Deletion <HumanChromsome>)
-;; Chromosomal Band Deletion : TODO
+;; Chromosomal Band Deletion : exactly <#> hasEvent (owland Deletion (owlsome hasBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
+;; Terminal deletion with a break : in <HumanChromosomeBand> (aka HumanChromosomeBand && qTer) OR Interstitial deletion with breakage and reuinion (::) of bands <HumanChromosome>x2 (If equivalent then just state 1)
+;; Invovles only 1 chromosome
 (defclass Deletion
   :subclass Event)
 
-;; TODO
+;; Can be preceeded by the triplets dir or inv to indicate direct or inverted direction
+;; There shouldn't be any of this type
 (defclass Duplication
   :subclass Event)
 
-;; TODO
+;; Chromosomal Band ForwardDuplication : exactly <#> hasEvent (owland ForwardDuplication (owlsome hasBreakPoint <HumanChromosomeBand>))
+;; Invovles only 1 chromosome
+(defclass DirectDuplication
+  :subclass Duplication)
+
+;; Chromosomal Band InverseDuplication : exactly <#> hasEvent (owland InverseDuplication (owlsome hasBreakPoint <HumanChromosomeBand>))
+;; Invovles only 1 chromosome
+(defclass InverseDuplication
+  :subclass Duplication)
+
+;; Chromosomal Band Fission : exactly <#> hasEvent (owland Fission (owlsome hasBreakPoint <HumanChromosome>))
+;; AKA Centric fission - break in the centromere
+;; Involves only 1 chromosome
+;; QUERY: always come in 2's?
 (defclass Fission
   :subclass Event)
 
-;; Choromosomal Band Insertion: exactly <#> hasEvent (owland Insertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand>))
+;; Can be preceeded by the triplets dir or inv to indicate direct or inverted direction
+;; Rules: p only/ q only (big to small) = Direct insertion
+;; QUERY: How do we classify ins(1)(p13p11q21)? Direct or Inverse?
+;; There shouldn't be any of this type
 (defclass Insertion
   :subclass Event)
 
+;; Choromosomal Band ForwardInsertion: exactly <#> hasEvent (owland ForwardInsertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
+;; Involves at most 2 chromosomes
+(defclass DirectInsertion
+  :subclass Insertion)
+
+;; Choromosomal Band InverseInsertion: exactly <#> hasEvent (owland InverseInsertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
+;; Involves at most 2 chromosomes
+(defclass InverseInsertion
+  :subclass Insertion)
+
 ;; Chromosomal Band Inversion: exactly <#> hasEvent (owland Inversion (owlsome hasBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
+;; Involves both paracentric (involves only 1 arm) and pericentric (involves both arms) inversion
+;; Involves only 1 chromosome
 (defclass Inversion
   :subclass Event)
 
-;; TODO
+;; TOFIX: It is not possible to indicate the orientations of the segments with the short system!
 (defclass Quadruplication
   :subclass Event)
 
@@ -84,36 +115,14 @@
 (defclass Translocation
   :subclass Event)
 
-;;TODO
+;; QUERY: Book says "It is not possible to indicate the orientations of the segments with the short system" however the example shown seem to show the orientations fine. What other detailed systems occur for the first example?
+;; Similar to Duplication
 (defclass Triplication
   :subclass Event)
-
-
-
-;; TODECIDE!
-
-(defclass ForwardInsertion
-  :subclass Insertion)
-
-(defclass InverseInsertion
-  :subclass Insertion)
-
-;; THUS
-
-;; Choromosomal Band Insertion: exactly <#> hasEvent (owland Insertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
-
-;; Choromosomal Band InverseInsertion: exactly <#> hasEvent (owland InverseInsertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
-
-;; OR
-
-(defoproperty hasProvidingChromosomeBreakPointStart
-  :subpropertyof hasProvidingChromosomeBreakPoint)
-
-(defoproperty hasProvidingChromosomeBreakPointFinish
-  :subpropertyof hasProvidingChromosomeBreakPoint)
-
-;; THUS
-;; Choromosomal Band Insertion: exactly <#> hasEvent (owland Insertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPointStart <HumanChromosomeBand>) (owlsome hasProvidingBreakPointFinish <HumanChromosomeBand>))
+(defclass DirectTriplication
+  :subclass Triplication)
+(defclass InverseTriplication
+  :subclass Triplication)
 
 
 
