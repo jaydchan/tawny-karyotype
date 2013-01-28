@@ -73,16 +73,14 @@
  (defclass k46_XY
    :label "The 46,XY karyotype"))
 
-;; TODO
-;; define all triploid base karyotypes
-(defclass k69_NNN
-  :label "The 69,N karyotype"
-  :subclass BaseKaryotype)
-;; TODO
-;; define all tetraploid base karyotypes
-(defclass k92_NNNN
-  :label "The 92,N karyotype"
-  :subclass BaseKaryotype)
+;; ;; TODO define all triploid base karyotypes
+;; (defclass k69_NNN
+;;   :label "The 69,N karyotype"
+;;   :subclass BaseKaryotype)
+;; ;; TODO define all tetraploid base karyotypes
+;; (defclass k92_NNNN
+;;   :label "The 92,N karyotype"
+;;   :subclass BaseKaryotype)
 
 ;; Define the namedKaryotypes
 
@@ -260,7 +258,32 @@
 
 ;; example defined classes
 
+;; Ploidy descriptions
+
+(defclass HaploidKaryotype
+  :equivalent
+  (owlor k23_N
+         (owlsome derivedFrom k23_N)))
+
+(defclass DiploidKaryotype
+  :equivalent
+  (owlor k46_XN
+         (owlsome derivedFrom k46_XN)))
+
+;; TODO Ploidy description for triploid and tetraploid karyotypes when the base karyotypes have been implemented
+;; (defclass TriploidKaryotype
+;;   :equivalent
+;;   (owlor k69_NNN
+;;          (owlsome derivedFrom k69_NNN)))
+
+;; (defclass TetraploidKaryotype
+;;   :equivalent
+;;   (owlor k92_NNNN
+;;          (owlsome derivedFrom k92_NNNN)))
+
 ;; Define gender
+
+;; TODO Description of Female/Male karyotypes for haploid, triploid, and tetraploid?
 
 ;; male diploid only
 (defclass MaleKaryotype
@@ -332,6 +355,30 @@
 
 ;; Define structural abnormalities - in order for these to work, need to import the axioms from h/human and e/events
 
+(defclass StructuralAbnormalKaryotypeAddition
+  :equivalent
+  (owlsome e/hasEvent
+           (owland e/Addition
+                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+
+(defclass StructuralAbnormalKaryotypeDeletion
+  :equivalent
+  (owlsome e/hasEvent
+           (owland e/Deletion
+                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+
+(defclass StructuralAbnormalKaryotypeDuplication
+  :equivalent
+  (owlsome e/hasEvent
+           (owland e/Duplication
+                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+
+(defclass StructuralAbnormalKaryotypeFission
+  :equivalent
+  (owlsome e/hasEvent
+           (owland e/Insertion
+                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+
 (defclass StructuralAbnormalKaryotypeInsertion
   :equivalent
   (owlsome e/hasEvent
@@ -342,6 +389,24 @@
   :equivalent
   (owlsome e/hasEvent
            (owland e/Inversion
+                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+
+(defclass StructuralAbnormalKaryotypeQuadruplication
+  :equivalent
+  (owlsome e/hasEvent
+           (owland e/Insertion
+                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+
+(defclass StructuralAbnormalKaryotypeTranslocation
+  :equivalent
+  (owlsome e/hasEvent
+           (owland e/Insertion
+                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+
+(defclass StructuralAbnormalKaryotypeTriplication
+  :equivalent
+  (owlsome e/hasEvent
+           (owland e/Insertion
                    (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotype
