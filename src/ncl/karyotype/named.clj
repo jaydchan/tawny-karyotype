@@ -95,11 +95,6 @@
    (owlsome derivedFrom k46_XN)
    (exactly 1 e/hasEvent
             (owland e/Deletion h/HumanAllosome))
-   ;; TOFIX
-   ;; Does not compile - Exception in thread "main" java.lang.IllegalArgumentException: Expecting a class. Got: false
-   ;; (not
-   ;;  (owlsome e/hasEvent
-   ;;           (owland e/Addition h/HumanAllosome)))
    ))
 
 ;; An (male) individual with an extra X chromosome ;;aka 47,XXY ;;aka abnormal male
@@ -109,7 +104,11 @@
   (owland
    (owlsome derivedFrom k46_XY)
    (exactly 1 e/hasEvent
-            (owland e/Addition h/HumanChromosomeX))))
+            (owland e/Addition h/HumanChromosomeX))
+   (owlnot
+    (owlsome e/hasEvent  
+             (owland e/Addition h/HumanChromosomeY)))
+   ))
 
 ;; An (male) individual with extra X chromosomes ;;aka abnormal male
 (defclass KlinefelterSyndromeAllVariations 
@@ -376,7 +375,7 @@
 (defclass StructuralAbnormalKaryotypeFission
   :equivalent
   (owlsome e/hasEvent
-           (owland e/Insertion
+           (owland e/Fission
                    (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeInsertion
@@ -394,19 +393,19 @@
 (defclass StructuralAbnormalKaryotypeQuadruplication
   :equivalent
   (owlsome e/hasEvent
-           (owland e/Insertion
+           (owland e/Quadruplication
                    (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeTranslocation
   :equivalent
   (owlsome e/hasEvent
-           (owland e/Insertion
+           (owland e/Translocation
                    (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeTriplication
   :equivalent
   (owlsome e/hasEvent
-           (owland e/Insertion
+           (owland e/Triplication
                    (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotype
