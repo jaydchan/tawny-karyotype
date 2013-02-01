@@ -55,12 +55,43 @@
 (defclass Addition
   :subclass Event)
 
+;; TOFIX
+(defn addition
+  ;; if chromosome then
+  ([n chromosome] (exactly n hasEvent (owland Addition chromosome)))
+  ;; else
+  ;; ([n band] (exactly n hasEvent (owland Addition (owlsome hasBreakPoint band))))
+  )
+
+;; TOFIX
+(defn band_addition
+  ([n band] (exactly n hasEvent (owland Addition (owlsome hasBreakPoint band))))
+  )
+
 ;; Chromosomal Deletion : exactly <#> hasEvent (owland Deletion <HumanChromsome>)
 ;; Chromosomal Band Deletion : exactly <#> hasEvent (owland Deletion (owlsome hasBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
 ;; Terminal deletion with a break : in <HumanChromosomeBand> (aka HumanChromosomeBand && qTer) OR Interstitial deletion with breakage and reuinion (::) of bands <HumanChromosome>x2 (If equivalent then just state 1)
 ;; Invovles only 1 chromosome
 (defclass Deletion
   :subclass Event)
+
+;; TOFIX
+(defn deletion
+  ;; if chromosome then
+  ([n chromosome] (exactly n hasEvent (owland Deletion chromosome)))
+  ;; else
+  ;; ([n band] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band))))
+  ([n band1 band2] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1 band2))))
+  )
+
+;; TOFIX
+(defn band_deletion
+  ;; if there is only variable provided then its a terminal deletion
+  ([n band] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band))))
+  ([n band1 band2] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1 band2))))
+  ;; if band1 == band2 
+  ;;([n band1 band2] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1))))
+  )
 
 ;; Can be preceeded by the triplets dir or inv to indicate direct or inverted direction
 ;; There shouldn't be any of this type
