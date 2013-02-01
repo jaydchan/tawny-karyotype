@@ -48,125 +48,125 @@
   :label "The 45,X karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XN)
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanAllosome)))
+  (e/deletion 1 h/HumanAllosome))
 (defclass k45_Y
   :label "The 45,Y karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeX)))
+  (e/deletion 1 h/HumanChromosomeX))
 (defclass k46_YY
   :label "The 46,YY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeX))
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeY)))
+  (e/deletion 1 h/HumanChromosomeX)
+  (e/addition 1 h/HumanChromosomeY))
 (defclass k47_XXX
   :label "The 47,XXX karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (e/addition 1 h/HumanChromosomeX))
 (defclass k47_XXY
   :label "The 47,XXY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (e/addition 1 h/HumanChromosomeX))
 (defclass k47_XYY
   :label "The 47,XYY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeY)))
+  (e/addition 1 h/HumanChromosomeY))
 (defclass k47_YYY
   :label "The 47,YYY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 2 e/hasEvent (owland e/Addition h/HumanChromosomeY))
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeX)))
+  (e/addition 2 h/HumanChromosomeY)
+  (e/deletion 1 h/HumanChromosomeX))
 (defclass k48_XXXX
   :label "The 48,XXXX karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 2 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (e/addition 2 h/HumanChromosomeX))
 (defclass k48_XXXY
   :label "The 48,XXXY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 2 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (e/addition 2 h/HumanChromosomeX))
 (defclass k48_XXYY
   :label "The 48,XXYY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX))
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeY)))
+  (e/addition 1 h/HumanChromosomeX)
+  (e/addition 1 h/HumanChromosomeY))
 (defclass k48_XYYY
   :label "The 48,XYYY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 2 e/hasEvent (owland e/Addition h/HumanChromosomeY)))
+  (e/addition 2 h/HumanChromosomeY))
 (defclass k48_YYYY
   :label "The 48,YYYY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 3 e/hasEvent (owland e/Addition h/HumanChromosomeY))
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeX)))
+  (e/addition 3 h/HumanChromosomeY)
+  (e/deletion 1 h/HumanChromosomeX))
 (defclass k49_XXXXX
   :label "The 49,XXXXX karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 3 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (e/addition 3 h/HumanChromosomeX))
 (defclass k49_XXXXY
   :label "The 49,XXXXY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 3 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (e/addition 3 h/HumanChromosomeX))
 (defclass k49_XXXYY
   :label "The 49,XXXYY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeY))
-  (exactly 2 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (e/addition 1 h/HumanChromosomeY)
+  (e/addition 2 h/HumanChromosomeX))
 (defclass k49_XXYYY
   :label "The 49,XXYYY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 2 e/hasEvent (owland e/Addition h/HumanChromosomeY))
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (e/addition 2 h/HumanChromosomeY)
+  (e/addition 1 h/HumanChromosomeX))
 (defclass k49_XYYYY
   :label "The 49,XYYYY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 3 e/hasEvent (owland e/Addition h/HumanChromosomeY)))
+  (e/addition 3 h/HumanChromosomeY))
 (defclass k49_YYYYY
   :label "The 49,YYYYY karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 4 e/hasEvent (owland e/Addition h/HumanChromosomeY))
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeX)))
+  (e/addition 4 h/HumanChromosomeY)
+  (e/deletion 1 h/HumanChromosomeX))
 (defclass k47_XX_+X
   :label "The 47,XX,+X karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (e/addition 1 h/HumanChromosomeX))
 (defclass k45_X_-X
   :label "The 45,X,-X karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeX)))
+  (e/deletion 1 h/HumanChromosomeX))
 (defclass k45_X_-Y
   :label "The 45,X,-Y karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeY)))
+  (e/deletion 1 h/HumanChromosomeY))
 (defclass k45_Y_-X
   :label "The 45,Y,-X karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeX)))
+  (e/deletion 1 h/HumanChromosomeX))
 (defclass k48_XY_+X_+Y
   :label "The 48,XY,+X,+Y karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX))
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeY)))
+  (e/addition 1 h/HumanChromosomeX)
+  (e/addition 1 h/HumanChromosomeY))
 
 
 ;; example ploidy karyotypes
@@ -175,26 +175,26 @@
   :label "The 26,X,+4,+6,+21 karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k23_X)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome4))
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome6))
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome21)))
+  (e/addition 1 h/HumanChromosome4)
+  (e/addition 1 h/HumanChromosome6)
+  (e/addition 1 h/HumanChromosome21))
 ;; example triploid karyotype
 ;; TODO n/derivedFrom
 (defclass k71_XXX_+8_+10
   :label "The 71,XXX,+8,+10 karyotype"
   :subclass ISCNExampleKaryotype
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome8))
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome10)))
+  (e/addition 1 h/HumanChromosome8)
+  (e/addition 1 h/HumanChromosome10))
 ;; example tetraploid karyotype
 ;; TODO n/derivedFrom
 (defclass k89_XXYY_-1_-3_-5_+8_-21
   :label "The 89,XXYY,-1,-3,-5,+8,-21 karyotype"
   :subclass ISCNExampleKaryotype
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome8))
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosome1))
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosome3))
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosome5))
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosome21)))
+  (e/addition 1 h/HumanChromosome8)
+  (e/deletion 1 h/HumanChromosome1)
+  (e/deletion 1 h/HumanChromosome3)
+  (e/deletion 1 h/HumanChromosome5)
+  (e/deletion 1 h/HumanChromosome21))
 
 
 
@@ -203,24 +203,24 @@
   :label "The 45,XX,-22 karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosome22)))
+  (e/deletion 1 h/HumanChromosome22))
 (defclass k46_XX_+8_-21
   :label "The 46,XX,+8,-21 karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome8))
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosome21)))
+  (e/addition 1 h/HumanChromosome8)
+  (e/deletion 1 h/HumanChromosome21))
 (defclass k47_XX_+21
   :label "The 47,XX,+21 karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome21)))
+  (e/addition 1 h/HumanChromosome21))
 (defclass k48_XX_+13_+21
   :label "The 48,XX,+13,+21 karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome13))
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome21)))
+  (e/addition 1 h/HumanChromosome13)
+  (e/addition 1 h/HumanChromosome21))
 
 
 
@@ -228,38 +228,38 @@
 (defclass k48_XXYc_+X
   :label "The 48,XXYc,+X karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX)))) ;;aka 47,XXY
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX))) ;;aka 47,XXY
+  (e/addition 1 h/HumanChromosomeX))
 (defclass k46_Xc_+X
   :label "The 46,Xc,+X karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (exactly 1 e/hasEvent (owland e/Deletion h/HumanAutosome)))) ;;aka 45,X
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX)))
+  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (e/deletion 1 h/HumanAutosome))) ;;aka 45,X
+  (e/addition 1 h/HumanChromosomeX))
 (defclass k46_XXYc_-X
   :label "The 46,XXYc,-X karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosomeX)))) ;;aka 47,XXY    
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeX)))
+  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX))) ;;aka 47,XXY    
+  (e/deletion 1 h/HumanChromosomeX))
 (defclass k44_Xc_-X
   :label "The 44,Xc,-X karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (exactly 1 e/hasEvent (owland e/Deletion h/HumanAllosome)))) ;;aka 45,X 
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosomeX)))
+  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (e/deletion 1 h/HumanAllosome))) ;;aka 45,X 
+  (e/deletion 1 h/HumanChromosomeX))
 (defclass k46_Xc_+21
   :label "The 46,Xc,+21 karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (exactly 1 e/hasEvent (owland e/Deletion h/HumanAllosome)))) ;;aka 45,X
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome21)))
+  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (e/deletion 1 h/HumanAllosome))) ;;aka 45,X
+  (e/addition 1 h/HumanChromosome21))
 (defclass k48_XY_+21c_+21
   :label "The 48,XY,+21c,+21 karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome21)))) ;;aka 47,XY,+21
-  (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome21)))
+  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosome21))) ;;aka 47,XY,+21
+  (e/addition 1 h/HumanChromosome21))
 (defclass k46_XY_+21c_-21
   :label "The 46,XY,+21c,-21 karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (exactly 1 e/hasEvent (owland e/Addition h/HumanChromosome21)))) ;;aka 47,XY,+21 
-  (exactly 1 e/hasEvent (owland e/Deletion h/HumanChromosome21)))
+  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosome21))) ;;aka 47,XY,+21 
+  (e/deletion 1 h/HumanChromosome21))
 
 
 
@@ -270,38 +270,38 @@
   :label "The 46,XX,add(19)(p13.3) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Addition (owlsome e/hasBreakPoint h/HumanChromosome19Bandp13.3))))
+  (e/band_addition 1 h/HumanChromosome19Bandp13.3))
 
 (defclass k46_XY_add!12!!q13!
   :label "The 46,XY,add(12)(q13) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Addition (owlsome e/hasBreakPoint h/HumanChromosome12Bandq13.3)))) ;;TOFIX q13 == 13.3
+  (e/band_addition 1 h/HumanChromosome12Bandq13.3)) ;;TOFIX q13 == 13.3
 
 ;; DELETION
 (defclass k46_XX_del!5!!q13!
   :label "The 46,XX,del(5)(q13) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Deletion (owlsome e/hasBreakPoint h/HumanChromosome5Bandq13.3 h/HumanChromosome5BandqTer)))) ;;TOFIX q13 == q13.3
+  (e/band_deletion 1 h/HumanChromosome5Bandq13.3 h/HumanChromosome5BandqTer)) ;;TOFIX q13 == q13.3
 
 (defclass k46_XX_del!5!!q13q33!
   :label "The 46,XX,del(5)(q13q33) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Deletion (owlsome e/hasBreakPoint h/HumanChromosome5Bandq13.3 h/HumanChromosome5Bandq33.3)))) ;;TOFIX q13 == q13.3 && q33 == q33.3
+  (e/band_deletion 1 h/HumanChromosome5Bandq13.3 h/HumanChromosome5Bandq33.3)) ;;TOFIX q13 == q13.3 && q33 == q33.3
 
 (defclass k46_XX_del!5!!q13q13!
   :label "The 46,XX,del(5)(q13q13) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/Deletion (owlsome e/hasBreakPoint h/HumanChromosome5Bandq13.3)))) ;;TOFIX q13 == q13.3
+  (e/band_deletion 1 h/HumanChromosome5Bandq13.3)) ;;TOFIX q13 == q13.3
 
 (defclass k46_Y_del!X!!p21p21!
   :label "The 46,Y,del(X)(p21p21) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (exactly 1 e/hasEvent (owland e/Deletion (owlsome e/hasBreakPoint h/HumanChromosomeXBandp21.3)))) ;;TOFIX p21 == p21.3
+  (e/band_deletion 1 h/HumanChromosomeXBandp21.3)) ;;TOFIX p21 == p21.3
 
 ;; DUPLICATIONS
 (defclass k46_XX_dup!1!!q22q25!
