@@ -55,17 +55,20 @@
 (defclass Addition
   :subclass Event)
 
-;; TOFIX
 (defn addition
-  ;; if chromosome then
-  ([n chromosome] (exactly n hasEvent (owland Addition chromosome)))
-  ;; else
-  ;; ([n band] (exactly n hasEvent (owland Addition (owlsome hasBreakPoint band))))
-  )
-
-;; TOFIX
-(defn band_addition
-  ([n band] (exactly n hasEvent (owland Addition (owlsome hasBreakPoint band))))
+  ([n chrom_band]
+     (with-ontology
+       ncl.karyotype.human/human
+       (cond
+        (subclass? h/HumanChromosome chrom_band)
+        (exactly n hasEvent (owland Addition chrom_band))
+        (subclass? h/HumanChromosomeBand chrom_band)
+        (exactly n hasEvent (owland Addition (owlsome hasBreakPoint chrom_band)))
+        :default
+        (throw
+         (IllegalArgumentException.
+          (str "Deletion expects a Chromosome or ChromosomeBand. Got:"
+               chrom_band))))))
   )
 
 ;; Chromosomal Deletion : exactly <#> hasEvent (owland Deletion <HumanChromsome>)
@@ -76,21 +79,24 @@
   :subclass Event)
 
 ;; TOFIX
+;; NOTE Cannot use superclass? for Bands as it does not know to handle isBandOf ObjectProperty
 (defn deletion
-  ;; if chromosome then
-  ([n chromosome] (exactly n hasEvent (owland Deletion chromosome)))
-  ;; else
-  ;; ([n band] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band))))
-  ([n band1 band2] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1 band2))))
-  )
-
-;; TOFIX
-(defn band_deletion
-  ;; if there is only variable provided then its a terminal deletion
-  ([n band] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band))))
-  ([n band1 band2] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1 band2))))
-  ;; if band1 == band2 
-  ;;([n band1 band2] (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1))))
+  ([n chrom_band]
+     (with-ontology
+       ncl.karyotype.human/human
+       (cond
+        (subclass? h/HumanChromosome chrom_band)
+        (exactly n hasEvent (owland Deletion chrom_band))
+        (subclass? h/HumanChromosomeBand chrom_band)
+        (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint chrom_band)))
+        :default
+        (throw
+         (IllegalArgumentException.
+          (str "Deletion expects a Chromosome or ChromosomeBand. Got:"
+               chrom_band))))))
+  ([n band1 band2]
+     ;; if band1 == band2 
+     (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1 band2))))
   )
 
 ;; Can be preceeded by the triplets dir or inv to indicate direct or inverted direction
@@ -103,10 +109,18 @@
 (defclass DirectDuplication
   :subclass Duplication)
 
+(defn direct_duplication
+  ([n band1 band2]
+     (exactly 1 hasEvent (owland DirectDuplication (owlsome hasBreakPoint band1 band2)))))
+
 ;; Chromosomal Band InverseDuplication : exactly <#> hasEvent (owland InverseDuplication (owlsome hasBreakPoint <HumanChromosomeBand>))
 ;; Invovles only 1 chromosome
 (defclass InverseDuplication
   :subclass Duplication)
+
+(defn inverse_duplication
+  ([n band1 band2]
+     (exactly 1 hasEvent (owland InverseDuplication (owlsome hasBreakPoint band1 band2)))))
 
 ;; Chromosomal Band Fission : exactly <#> hasEvent (owland Fission (owlsome hasBreakPoint <HumanChromosome>))
 ;; AKA Centric fission - break in the centromere
@@ -115,6 +129,15 @@
 (defclass Fission
   :subclass Event)
 
+;;TOFIX
+(defn fission
+  ([n band1 band2]
+     (exactly 1 hasEvent (owland Fission (owlsome hasBreakPoint band1 band2))))
+  
+  ;; Input chromsome
+  ;; ([n chromosome] (list (deletion n chromosome) (fission n pter cen) (fission n qter cen)))
+  )
+
 ;; Can be preceeded by the triplets dir or inv to indicate direct or inverted direction
 ;; Rules: p only/ q only (big to small) = Direct insertion
 ;; QUERY: How do we classify ins(1)(p13p11q21)? Direct or Inverse?
@@ -122,15 +145,27 @@
 (defclass Insertion
   :subclass Event)
 
+;; TOFIX IS it possible to automatically assign whether the insertion is direct or inverse?
+;; (defn insertion
+;;   ([n band1 band2]))
+
 ;; Choromosomal Band ForwardInsertion: exactly <#> hasEvent (owland ForwardInsertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
 ;; Involves at most 2 chromosomes
 (defclass DirectInsertion
   :subclass Insertion)
 
+(defn direct_insertion
+  ([n band1 band2 band3]
+     (exactly 1 hasEvent (owland DirectInsertion (owlsome hasReceivingBreakPoint band1) (owlsome hasProvidingBreakPoint band2 band3)))))
+
 ;; Choromosomal Band InverseInsertion: exactly <#> hasEvent (owland InverseInsertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
 ;; Involves at most 2 chromosomes
 (defclass InverseInsertion
   :subclass Insertion)
+
+(defn inverse_insertion
+  ([n band1 band2 band3]
+     (exactly 1 hasEvent (owland InverseInsertion (owlsome hasReceivingBreakPoint band1) (owlsome hasProvidingBreakPoint band2 band3)))))
 
 ;; Chromosomal Band Inversion: exactly <#> hasEvent (owland Inversion (owlsome hasBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
 ;; Involves both paracentric (involves only 1 arm) and pericentric (involves both arms) inversion
@@ -138,13 +173,38 @@
 (defclass Inversion
   :subclass Event)
 
+(defn inversion
+  ([n band1 band2]
+     (exactly n hasEvent (owland Inversion (owlsome hasBreakPoint band1 band2))))) 
+
 ;; TOFIX: It is not possible to indicate the orientations of the segments with the short system!
 (defclass Quadruplication
   :subclass Event)
 
+(defn quadruplication
+  ([n band1 band2]
+     (exactly 1 hasEvent (owland Quadruplication (owlsome hasBreakPoint band1 band2))))) 
+
 ;; TODO
 (defclass Translocation
   :subclass Event)
+
+;; (defn translocation
+;;   ([n band1 band2 band3 band4 band5 band6]
+;;      (exactly 1 e/hasEvent
+;;               (owland e/Translocation
+;;                       (owland
+;;                        (owlsome e/hasProvidingBreakPoint band1)
+;;                        (owlsome e/hasProvidingBreakPoint band2)
+;;                        (owlsome e/hasReceivingBreakPoint band3))
+;;                       (owland
+;;                        (owlsome e/hasProvidingBreakPoint band3)
+;;                        (owlsome e/hasProvidingBreakPoint band4)
+;;                        (owlsome e/hasReceivingBreakPoint band5))
+;;                       (owland
+;;                        (owlsome e/hasProvidingBreakPoint band5)
+;;                        (owlsome e/hasProvidingBreakPoint band6)
+;;                        (owlsome e/hasReceivingBreakPoint band1))))))
 
 ;; QUERY: Book says "It is not possible to indicate the orientations of the segments with the short system" however the example shown seem to show the orientations fine. What other detailed systems occur for the first example?
 ;; Similar to Duplication
@@ -157,34 +217,7 @@
 
 
 
-;; Potential new feature.clj file
-;; (defclass Feature)
 
-;; define object properties
-;; (defoproperty hasFeature
-;;   :range Feature
-;;   :domain k/Karyotype
-;;   )
-
-;; define all the structural features
-;; (as-disjoint-subclasses
-;;  Feature
-;;   (defclass derivative_chromosome)
-;;   (defclass dicentric_chromosome)
-;;   (defclass fragile_sites)
-;;   (defclass homogeneously_staining_region)
-;;   (defclass isoderiviative_chromosome)
-;;   (defclass isochromosomes)
-;;   (defclass isodicentric_chromosome)
-;;   (defclass marker_chromosome)
-;;   (defclass neocentromere)
-;;   (defclass pseudodicentric_chromosome)
-;;   (defclass pseudoisodicentric_chromosome)
-;;   (defclass recombiant_chromosome)
-;;   (defclass ring_chromosome)
-;;   (defclass telomeric_associations)
-;;   (defclass tricentric_ring_chromosome)
-;; )
 
 ;; Potential new disorder.clj file
 ;; (defclass Disorder)
