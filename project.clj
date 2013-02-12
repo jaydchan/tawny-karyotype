@@ -3,7 +3,7 @@
   :plugins [[lein-swank "1.4.4"]]
 
   :dependencies [[org.clojure/clojure "1.4.0"]
-                 [uk.org.russet/tawny-owl "0.9-SNAPSHOT"]
+                 [uk.org.russet/tawny-owl "0.10-SNAPSHOT"]
                  ]
 
   :main ncl.karyotype.core
