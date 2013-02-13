@@ -125,6 +125,19 @@
                                  (owlsome k/isBandOf chromosome)))))
            bands)))))))
 
+(defn- find_parent [bandgroup child]
+  (if (> (.length child) 2)
+    (if-not (subclass? HumanChromosomeBand (str bandgroup child))
+      (let [parent (subs child 0 (- (.length child) 1))]
+        (if (re-find #"[.]" (subs parent (- (.length parent) 1) (.length parent)))
+          (find_parent bandgroup (subs parent 0 (- (.length parent) 1)))
+          (find_parent bandgroup parent)))
+      child)
+    "***ERROR***"))
+
+(defn find_parent2 [bandgroup child]
+  (filter (str bandgroup (subs child 0 1)) (ns-interns *ns*)))
+
 ;; TOFIX
 ;; function to define all the human bands
 (defn humanbands2 [chromosome & bands]
@@ -142,20 +155,11 @@
           (map
            (fn [band]
              ;; if band !exist then... (else do nothing)
-             (if (not (subclass? HumanChromosomeBand (str bandgroup band)))
-               (if (re-find #"[.]" (subs band 0 (- (.length band) 1)))
-                 (let [bandsub (subs band 0 (- (.length band) 2))] 
-                   (if (not (subclass? HumanChromosomeBand (str bandgroup bandsub)))
-                     (print (str band " " bandsub " does not\n"))
-                     (print (str band " " bandsub " does exist\n"))))
-                 (let [bandsub (subs band 0 (- (.length band) 1))]
-                   (if (not (subclass? HumanChromosomeBand (str bandgroup bandsub)))
-                     (print (str band " " bandsub " does not\n"))
-                     (print (str band " " bandsub " does exist\n")))))
-               (print (str band " does exist\n"))))
+             (if-not (subclass? HumanChromosomeBand (str bandgroup band))
+               (print (str "Parent for " bandgroup band " is " bandgroup(find_parent bandgroup band) "\n"))))
            bands)))))))
-             
-             ;; ;; if band contains a p or q
+
+;; ;; if band contains a p or q
              ;; (if (re-find #"[pq]" band)
              ;;   ;; if band contains a p
              ;;   (if (re-find #"[p]" band)
@@ -176,7 +180,7 @@
              ;;           (owlclass (str bandgroup band)
              ;;                     :subclass bandgroup
              ;;                     (owlsome k/isBandOf chromosome)))))
-
+  
 ;; function to define all the human bands
 (defn humanbands_original [chromosome & bands]
   
