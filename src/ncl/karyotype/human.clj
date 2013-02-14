@@ -125,18 +125,18 @@
                                  (owlsome k/isBandOf chromosome)))))
            bands)))))))
 
+(defn- find_parent2 [bandgroup child]
+  (first (filter #(re-find (re-pattern child) (str %)) (filter #(re-find (re-pattern (str bandgroup (subs child 0 1))) (str %)) (keys (ns-interns 'ncl.karyotype.human))))))
+
 (defn- find_parent [bandgroup child]
   (if (> (.length child) 2)
-    (if-not (subclass? HumanChromosomeBand (str bandgroup child))
+    (if (find_parent2 bandgroup child)
+      (find_parent2 bandgroup child)
       (let [parent (subs child 0 (- (.length child) 1))]
         (if (re-find #"[.]" (subs parent (- (.length parent) 1) (.length parent)))
-          (find_parent bandgroup (subs parent 0 (- (.length parent) 1)))
-          (find_parent bandgroup parent)))
-      child)
+          (find_parent2 bandgroup (subs parent 0 (- (.length parent) 1)))
+          (find_parent2 bandgroup parent))))
     "***ERROR***"))
-
-(defn find_parent2 [bandgroup child]
-  (filter (str bandgroup (subs child 0 1)) (ns-interns *ns*)))
 
 ;; TOFIX
 ;; function to define all the human bands
@@ -145,42 +145,19 @@
   (let [bandgroup (str
                    (.getFragment
                     (.getIRI
-                     chromosome)) "Band")]
-
-    (let [bandgroupp (str bandgroup "p")]
-      (let [bandgroupq (str bandgroup "q")]
-        
+                     chromosome)) "Band")]      
         (as-disjoint
          (doall
           (map
            (fn [band]
-             ;; if band !exist then... (else do nothing)
              (if-not (subclass? HumanChromosomeBand (str bandgroup band))
-               (print (str "Parent for " bandgroup band " is " bandgroup(find_parent bandgroup band) "\n"))))
-           bands)))))))
+               (intern *ns*
+                         (symbol (str bandgroup band))
+                         (owlclass (str bandgroup band)
+                                   :subclass (owlclass (find_parent bandgroup band))
+                                   (owlsome k/isBandOf chromosome)))))
+           bands)))))
 
-;; ;; if band contains a p or q
-             ;; (if (re-find #"[pq]" band)
-             ;;   ;; if band contains a p
-             ;;   (if (re-find #"[p]" band)
-             ;;     (intern *ns*
-             ;;             (symbol (str bandgroup band))
-             ;;             (owlclass (str bandgroup band)
-             ;;                       :subclass bandgroupp
-             ;;                       (owlsome k/isBandOf chromosome)))
-             ;;     ;; else band contains a q
-             ;;     (intern *ns*
-             ;;             (symbol (str bandgroup band))
-             ;;             (owlclass (str bandgroup band)
-             ;;                       :subclass bandgroupq
-             ;;                       (owlsome k/isBandOf chromosome))))
-             ;;   ;; else (cen)
-             ;;   (intern *ns*
-             ;;           (symbol (str bandgroup band))
-             ;;           (owlclass (str bandgroup band)
-             ;;                     :subclass bandgroup
-             ;;                     (owlsome k/isBandOf chromosome)))))
-  
 ;; function to define all the human bands
 (defn humanbands_original [chromosome & bands]
   
@@ -776,7 +753,6 @@
 
 (humanbands2
  HumanChromosome3
- "3"
 "pTer"
 "p26"
 "p25"
