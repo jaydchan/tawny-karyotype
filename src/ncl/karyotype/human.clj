@@ -125,6 +125,7 @@
                                  (owlsome k/isBandOf chromosome)))))
            bands)))))))
 
+;; TOFIX - find the most applicable not the first
 (defn- find_parent2 [bandgroup child]
   (first (filter #(re-find (re-pattern child) (str %)) (filter #(re-find (re-pattern (str bandgroup (subs child 0 1))) (str %)) (keys (ns-interns 'ncl.karyotype.human))))))
 
@@ -134,11 +135,10 @@
       (find_parent2 bandgroup child)
       (let [parent (subs child 0 (- (.length child) 1))]
         (if (re-find #"[.]" (subs parent (- (.length parent) 1) (.length parent)))
-          (find_parent2 bandgroup (subs parent 0 (- (.length parent) 1)))
-          (find_parent2 bandgroup parent))))
+          (find_parent bandgroup (subs parent 0 (- (.length parent) 1)))
+          (find_parent bandgroup parent))))
     "***ERROR***"))
 
-;; TOFIX
 ;; function to define all the human bands
 (defn humanbands2 [chromosome & bands]
   
@@ -151,11 +151,13 @@
           (map
            (fn [band]
              (if-not (subclass? HumanChromosomeBand (str bandgroup band))
-               (intern *ns*
-                         (symbol (str bandgroup band))
-                         (owlclass (str bandgroup band)
-                                   :subclass (owlclass (find_parent bandgroup band))
-                                   (owlsome k/isBandOf chromosome)))))
+               (let [child (str (find_parent bandgroup band))]
+                 (try 
+                   (intern *ns*
+                           (symbol (str bandgroup band))
+                           (owlclass (str bandgroup band)
+                                     :subclass (str bandgroup (subs child (.length bandgroup)))))
+                 (catch Exception e (print "***ERROR***" bandgroup band "has no parent:" child "\n"))))))
            bands)))))
 
 ;; function to define all the human bands
