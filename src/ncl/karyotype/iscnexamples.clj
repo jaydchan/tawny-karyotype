@@ -284,7 +284,7 @@
   :label "The 46,XX,del(5)(q13) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/deletion 1 h/HumanChromosome5Bandq13 h/HumanChromosome5BandqTer))
+  (e/deletion 1 h/HumanChromosome5Bandq13))
 
 (defclass k46_XX_del!5!!q13q33!
   :label "The 46,XX,del(5)(q13q33) karyotype"
@@ -296,13 +296,13 @@
   :label "The 46,XX,del(5)(q13q13) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/deletion 1 h/HumanChromosome5Bandq13))
+  (e/deletion 1 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq13))
 
 (defclass k46_Y_del!X!!p21p21!
   :label "The 46,Y,del(X)(p21p21) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/deletion 1 h/HumanChromosomeXBandp21))
+  (e/deletion 1 h/HumanChromosomeXBandp21 h/HumanChromosomeXBandp21))
 
 ;; DUPLICATIONS
 (defclass k46_XX_dup!1!!q22q25!
@@ -326,8 +326,14 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
   (e/deletion 1 h/HumanChromosome10)
-  (e/fission 1 h/HumanChromosome10BandpTer h/HumanChromosome10BandCen)
-  (e/fission 1 h/HumanChromosome10BandqTer h/HumanChromosome10BandCen))
+  (e/fission 1 h/HumanChromosome10pTer h/HumanChromosome10Cen) ;; include 'addition' event
+  (e/fission 1 h/HumanChromosome10qTer h/HumanChromosome10Cen)) ;; include 'addition' event
+
+;; (defclass k47_XY_-10_+fis!10!!p10!_+fis!10!!q10!
+;;   :label "The 47,XY,-10,+fis(10)(p10),+fis(10)(q10) karyotype"
+;;   :subclass ISCNExampleKaryotype
+;;   (owlsome n/derivedFrom n/k46_XY)
+;;   (flatten (e/fission 1 h/HumanChromosome10)))
 
 ;; INVERSION
 (defclass k46_XX_inv!2!!p21q31!
@@ -416,7 +422,7 @@
   (owlsome n/derivedFrom n/k46_XY)
   (exactly 1 e/hasEvent
            (owland e/Translocation
-                   (owlsome e/hasBreakPoint h/HumanChromosome2Bandq21 h/HumanChromosome2BandqTer h/HumanChromosome5Bandq31 h/HumanChromosome5BandqTer))))
+                   (owlsome e/hasBreakPoint h/HumanChromosome2Bandq21 h/HumanChromosome2qTer h/HumanChromosome5Bandq31 h/HumanChromosome5qTer))))
 
 (defclass k46_XY_t!2_5!!p12_q31!
   :label "The 46,XY,t(2;5)(p12;q31) karyotype"
@@ -424,7 +430,7 @@
   (owlsome n/derivedFrom n/k46_XY)
   (exactly 1 e/hasEvent
            (owland e/Translocation
-                   (owlsome e/hasBreakPoint h/HumanChromosome2BandpTer h/HumanChromosome2Bandp12 h/HumanChromosome5Bandq31 h/HumanChromosome5BandqTer))))
+                   (owlsome e/hasBreakPoint h/HumanChromosome2pTer h/HumanChromosome2Bandp12 h/HumanChromosome5Bandq31 h/HumanChromosome5qTer))))
 
 (defclass k46_X_t!X_13!!q27_q12!
   :label "The 46,X,t(X;13)(q27;q12) karyotype"
@@ -432,7 +438,7 @@
   (owlsome n/derivedFrom n/k46_XX)
   (exactly 1 e/hasEvent
            (owland e/Translocation
-                   (owlsome e/hasBreakPoint h/HumanChromosomeXBandq27 h/HumanChromosomeXBandqTer h/HumanChromosome13Bandq12 h/HumanChromosome13BandqTer))))
+                   (owlsome e/hasBreakPoint h/HumanChromosomeXBandq27 h/HumanChromosomeXqTer h/HumanChromosome13Bandq12 h/HumanChromosome13qTer))))
 
 ;; ERROR in book! - there is no resolution band for Y q11.2
 ;; (defclass k46_t!X_Y!!q22_q11.2!
@@ -550,7 +556,7 @@
   (owlsome n/derivedFrom n/k46_XY)
   (exactly 1 e/hasEvent
            (owland e/Translocation
-                   (owlsome e/hasBreakPoint h/HumanChromosome1BandCen h/HumanChromosome1BandpTer h/HumanChromosome3BandCen h/HumanChromosome3BandqTer)))) 
+                   (owlsome e/hasBreakPoint h/HumanChromosome1Cen h/HumanChromosome1pTer h/HumanChromosome3Cen h/HumanChromosome3qTer)))) 
 
 ;; CORRECT?
 (defclass k46_XY_t!1_3!!p10_p10!
@@ -559,7 +565,7 @@
   (owlsome n/derivedFrom n/k46_XY)
   (exactly 1 e/hasEvent
            (owland e/Translocation
-                   (owlsome e/hasBreakPoint h/HumanChromosome1BandCen h/HumanChromosome1BandpTer h/HumanChromosome3BandCen h/HumanChromosome3BandpTer)))) 
+                   (owlsome e/hasBreakPoint h/HumanChromosome1Cen h/HumanChromosome1pTer h/HumanChromosome3Cen h/HumanChromosome3pTer)))) 
 
 ;; TODO hasEvent definitions for the following karyotypes
 (defclass k46_XY_t!12_16!!q13_p11.1!
@@ -648,7 +654,7 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
   ;; (exactly 1 e/hasEvent e/Translocation)
-  (e/deletion 1 h/HumanChromosome6Bandq11 h/HumanChromosome6BandqTer)
+  (e/deletion 1 h/HumanChromosome6Bandq11)
   (e/addition 1 h/HumanChromosome8)
   ;; (exactly 1 e/hasEvent e/Translocation)
   (e/addition 1 h/HumanChromosome17)
@@ -666,7 +672,7 @@
   (e/addition 1 h/HumanChromosome7)
   (e/addition 1 h/HumanChromosome10)
   (e/deletion 1 h/HumanChromosome20)
-  (e/deletion 1 h/HumanChromosome20Bandq11.2 h/HumanChromosome20BandqTer)
+  (e/deletion 1 h/HumanChromosome20Bandq11.2)
   (e/addition 1 h/HumanChromosome21))
 
 (defclass k50_XX_+1_del!1!!p13!_+dup!1!!q21q32!_+inv!1!!p31q41!_+8_r!10!!p12q25!_-21
@@ -674,7 +680,7 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (e/addition 1 h/HumanChromosome1)
-  (e/deletion 1 h/HumanChromosome1Bandp13 h/HumanChromosome1BandpTer)
+  (e/deletion 1 h/HumanChromosome1Bandp13)
   ;; (exactly 1 e/hasEvent (owland e/addition 1 h/HumanChromosome1) (owland e/duplication 1 h/HumanChromosome1q21 h/HumanChromosome1q32))
   ;; (exactly 1 e/hasEvent (e/addition e/inversion) Addition and Inversion
   (e/addition 1 h/HumanChromosome8)
