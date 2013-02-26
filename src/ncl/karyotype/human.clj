@@ -31,8 +31,26 @@
 (defclass HumanChromosomeBand
   :subclass k/ChromosomeBand)
 
+(defclass HumanCentromere
+  :subclass k/Centromere)
+
+(defclass HumanTelomere
+  :subclass k/Telomere)
+
 (defclass HumanAutosome
   :subclass HumanChromosome)
+
+(defclass HumanAllosome
+  :subclass HumanChromosome)
+
+;; define object properties
+(defoproperty isPartOf
+  :range HumanChromosomeBand
+  :domain HumanChromosomeBand)
+
+(defoproperty isComponentOf
+  :range k/ChromosomeComponent
+  :domain k/Chromosome)
 
 ;; define all the human chromosomes - autosomes
 (as-disjoint
@@ -49,9 +67,6 @@
          )))
    (flatten (list (range 1 23))))))
 
-(defclass HumanAllosome
-  :subclass HumanChromosome)
-
 ;; define all the human chromosomes - allosomes
 (as-disjoint
  (doall
@@ -66,10 +81,6 @@
          
          )))
    (flatten (list "X" "Y")))))
-
-(defoproperty isPartOf
-  :range HumanChromosomeBand
-  :domain HumanChromosomeBand)
 
 (defn- humanbands2
   ([parent name]
@@ -96,10 +107,12 @@
   (re-find #"p" band))
 
 (defn pqband? [band]
-  (re-find #"[pq]" band))
+  (not (re-find #"Cen|Ter" band)))
+
+(defn ter? [band]
+  (re-find #"Ter" band))
 
 (defn- humanbands3 [chromosome is_a part_of bands]
-
  (let [bandgroup (str
                    (.getFragment
                     (.getIRI
@@ -118,10 +131,11 @@
 ;; function to define all the human bands
 (defn humanbands [chromosome & bands]
   
-  (let [bandgroup (str
-                   (.getFragment
-                    (.getIRI
-                     chromosome)) "Band")
+  (let [group (str
+               (.getFragment
+                (.getIRI
+                 chromosome)))
+        bandgroup (str group "Band")
         bandgroupp (str bandgroup "p")
         bandgroupq (str bandgroup "q")]
     
@@ -141,7 +155,9 @@
              (if (pband? (str band))
                (humanbands2 chromosome bandgroupp (str bandgroup band))
                (humanbands2 chromosome bandgroupq (str bandgroup band)))
-             (humanbands2 chromosome bandgroup (str bandgroup band)))))
+             (if (ter? band)
+               (humanbands2 chromosome HumanTelomere (str group band))
+               (humanbands2 chromosome HumanCentromere (str group band))))))
        bands)))))
 
 (as-disjoint
