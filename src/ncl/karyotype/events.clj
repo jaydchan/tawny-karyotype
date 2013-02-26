@@ -60,14 +60,14 @@
      (with-ontology
        ncl.karyotype.human/human
        (cond
-        (subclass? h/HumanChromosome chrom_band)
+        (superclass? chrom_band h/HumanChromosome )
         (exactly n hasEvent (owland Addition chrom_band))
-        (subclass? h/HumanChromosomeBand chrom_band)
+        (superclass? chrom_band h/HumanChromosomeBand)
         (exactly n hasEvent (owland Addition (owlsome hasBreakPoint chrom_band)))
         :default
         (throw
          (IllegalArgumentException.
-          (str "Deletion expects a Chromosome or ChromosomeBand. Got:"
+          (str "Addition expects a Chromosome or ChromosomeBand. Got:"
                chrom_band))))))
   )
 
@@ -78,25 +78,36 @@
 (defclass Deletion
   :subclass Event)
 
-;; TOFIX
-;; NOTE Cannot use superclass? for Bands as it does not know to handle isBandOf ObjectProperty
+(defn- getTerminal
+  ([band]
+     (if (h/pband? (str band))
+       (str (second (clojure.string/split (str band) #"human#|Band")) "pTer")
+       (str (second (clojure.string/split (str band) #"human#|Band")) "qTer")))
+  ([chromosome type]
+     (if (h/pband? (str type))
+       (str chromosome "pTer")
+       (str chromosome "qTer"))))
+
 (defn deletion
+  ;; AKA Chromosomal deletion or Terminal deletion with a break
   ([n chrom_band]
      (with-ontology
        ncl.karyotype.human/human
        (cond
-        (subclass? h/HumanChromosome chrom_band)
+        (superclass? chrom_band h/HumanChromosome)
         (exactly n hasEvent (owland Deletion chrom_band))
-        (subclass? h/HumanChromosomeBand chrom_band)
-        (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint chrom_band)))
+        (superclass? chrom_band h/HumanChromosomeBand)
+        (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint chrom_band (getTerminal chrom_band))))
         :default
         (throw
          (IllegalArgumentException.
           (str "Deletion expects a Chromosome or ChromosomeBand. Got:"
                chrom_band))))))
+  ;; AKA Interstitial deletion with breakage and reunion
   ([n band1 band2]
-     ;; if band1 == band2 
-     (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1 band2))))
+     (if (= (str band1) (str band2))
+       (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1)))
+       (exactly n hasEvent (owland Deletion (owlsome hasBreakPoint band1 band2)))))
   )
 
 ;; Can be preceeded by the triplets dir or inv to indicate direct or inverted direction
@@ -129,14 +140,19 @@
 (defclass Fission
   :subclass Event)
 
+(defn- getCentromere [chromosome]
+  (str chromosome "Cen"))
+
 ;;TOFIX
 (defn fission
   ([n band1 band2]
      (exactly 1 hasEvent (owland Fission (owlsome hasBreakPoint band1 band2))))
-  
-  ;; Input chromsome
-  ;; ([n chromosome] (list (deletion n chromosome) (fission n pter cen) (fission n qter cen)))
-  )
+  ([n chromosome]
+     (deletion n chromosome)
+     (fission n (getTerminal chromosome "p")
+              (getCentromere chromosome))
+     (fission n (getCentromere chromosome)
+              (getTerminal chromosome "q"))))
 
 ;; Can be preceeded by the triplets dir or inv to indicate direct or inverted direction
 ;; Rules: p only/ q only (big to small) = Direct insertion
