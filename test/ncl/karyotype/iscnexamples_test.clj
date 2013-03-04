@@ -172,8 +172,6 @@
   (is (r/isuperclass? i/k46_XY_t!2_5!!q21_q31! n/StructuralAbnormalKaryotypeTranslocation))
   (is (r/isuperclass? i/k46_XY_t!2_5!!p12_q31! n/StructuralAbnormalKaryotypeTranslocation))
   (is (r/isuperclass? i/k46_X_t!X_13!!q27_q12! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_t!X_Y!!q22_q11.2! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_t!X_18!!p11.2_q11.2!_t!Y_1!!q11.2_p31! n/StructuralAbnormalKaryotypeTranslocation))
   (is (r/isuperclass? i/k46_XX_t!2_7_5!!p21_q22_q23! n/StructuralAbnormalKaryotypeTranslocation))
   (is (r/isuperclass? i/k46_X_t!X_22_1!!q24_q11.2_p33! n/StructuralAbnormalKaryotypeTranslocation))
   (is (r/isuperclass? i/k46_XX_t!3_9_22_21!!p13_q34_q11.2_q21! n/StructuralAbnormalKaryotypeTranslocation))
@@ -183,6 +181,8 @@
   (is (r/isuperclass? i/k46_XY_t!1_3!!p10_p10! n/StructuralAbnormalKaryotypeTranslocation))
 
   ;; TOFIX
+  ;; (is (r/isuperclass? i/k46_t!X_Y!!q22_q11.2! n/StructuralAbnormalKaryotypeTranslocation)) ;; Yq11.2 doesnt exist!
+  ;; (is (r/isuperclass? i/k46_t!X_18!!p11.2_q11.2!_t!Y_1!!q11.2_p31! n/StructuralAbnormalKaryotypeTranslocation)) ;; Yq11.2 doesnt exist!
   ;; (is (r/isuperclass? i/k46_XY_t!12_16!!q13_p11.1! n/StructuralAbnormalKaryotypeTranslocation))
   ;; (is (r/isuperclass? i/k46_X_t!X_18!!p11.1_q11.1! n/StructuralAbnormalKaryotypeTranslocation))
   ;; (is (r/isuperclass? i/k46_XX_t!9_22_17!!q34_q11.2_q22! n/StructuralAbnormalKaryotypeTranslocation))
