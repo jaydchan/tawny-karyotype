@@ -15,6 +15,8 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
+;; TODO : Consider disjoints!
+
 
 (ns ncl.karyotype.human
   (:use [tawny.owl])
@@ -48,9 +50,9 @@
   :range HumanChromosomeBand
   :domain HumanChromosomeBand)
 
-(defoproperty isComponentOf
-  :range k/ChromosomeComponent
-  :domain k/Chromosome)
+(defoproperty hasPart
+  :range HumanChromosomeBand
+  :domain HumanChromosomeBand)
 
 ;; define all the human chromosomes - autosomes
 (as-disjoint
@@ -82,6 +84,9 @@
          )))
    (flatten (list "X" "Y")))))
 
+(defn pqband? [band]
+  (not (re-find #"Cen|Ter" band)))
+
 (defn- humanbands2
   ([parent name]
      (intern *ns*
@@ -89,11 +94,17 @@
              (owlclass name
                        :subclass parent)))
   ([chromosome parent name]
-     (intern *ns*
-             (symbol name)
-             (owlclass name
-                       :subclass parent
-                       (owlsome k/isBandOf chromosome))))
+     (if (pqband? name)
+       (intern *ns*
+               (symbol name)
+               (owlclass name
+                         :subclass parent
+                         (owlsome k/isBandOf chromosome)))
+       (intern *ns*
+               (symbol name)
+               (owlclass name
+                         :subclass parent
+                         (owlsome k/isComponentOf chromosome)))))
   ([chromosome parent name band]
      (intern *ns*
              (symbol name)
@@ -113,20 +124,19 @@
   (re-find #"Ter" band))
 
 (defn- humanbands3 [chromosome is_a part_of bands]
- (let [bandgroup (str
+  (let [bandgroup (str
                    (.getFragment
                     (.getIRI
                      chromosome)) "Band")]
-  
-  (humanbands2 chromosome is_a (str bandgroup part_of))
-  (as-disjoint
-   (doall
-    (map
-     (fn [band]
-       (if (vector? band)
-         (humanbands3 chromosome is_a (first band) (rest band))
-         (humanbands2 chromosome is_a (str bandgroup band) (str bandgroup part_of))))
-     bands)))))
+    
+    (humanbands2 chromosome is_a (str bandgroup part_of))
+    (doall
+     (map
+      (fn [band]
+        (if (vector? band)
+          (humanbands3 chromosome is_a (first band) (rest band))
+          (humanbands2 chromosome is_a (str bandgroup band) (str bandgroup part_of))))
+      bands))))
 
 ;; function to define all the human bands
 (defn humanbands [chromosome & bands]
@@ -143,24 +153,22 @@
     (humanbands2 bandgroup bandgroupp)
     (humanbands2 bandgroup bandgroupq)
     
-    (as-disjoint
-     (doall
-      (map
-       (fn [band]
-         (if (vector? band)
-           (if (pband? (first band))
-             (humanbands3 chromosome bandgroupp (first band) (rest band))
-             (humanbands3 chromosome bandgroupq (first band) (rest band)))
-           (if (pqband? (str band))
-             (if (pband? (str band))
-               (humanbands2 chromosome bandgroupp (str bandgroup band))
-               (humanbands2 chromosome bandgroupq (str bandgroup band)))
-             (if (ter? band)
-               (humanbands2 chromosome HumanTelomere (str group band))
-               (humanbands2 chromosome HumanCentromere (str group band))))))
-       bands)))))
+    (doall
+     (map
+      (fn [band]
+        (if (vector? band)
+          (if (pband? (first band))
+            (humanbands3 chromosome bandgroupp (first band) (rest band))
+            (humanbands3 chromosome bandgroupq (first band) (rest band)))
+          (if (pqband? (str band))
+            (if (pband? (str band))
+              (humanbands2 chromosome bandgroupp (str bandgroup band))
+              (humanbands2 chromosome bandgroupq (str bandgroup band)))
+            (if (ter? band)
+              (humanbands2 chromosome HumanTelomere (str group band))
+              (humanbands2 chromosome HumanCentromere (str group band))))))
+      bands))))
 
-(as-disjoint
  
 (humanbands
  HumanChromosome1 
@@ -765,5 +773,3 @@
  "q12"
  "qTer"
  )
-
-)
