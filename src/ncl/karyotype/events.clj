@@ -30,20 +30,41 @@
 
 
 ;; define object properties
-(defoproperty hasEvent
-  :range Event
-  :domain k/Karyotype)
+(as-inverse
+ (defoproperty hasEvent
+   :range Event
+   :domain k/Karyotype)
+ 
+ (defoproperty hasEvent
+   :range k/Karyotype
+   :domain Event)
+ )
 
-(defoproperty hasBreakPoint
-  :range k/ChromosomeBand
-  :domain k/Karyotype)
+(as-inverse
+ (defoproperty hasBreakPoint
+   :range k/ChromosomeComponent
+   :domain k/Karyotype)
 
-(defoproperty hasReceivingBreakPoint
-  :subpropertyof hasBreakPoint)
+  (defoproperty isBreakPointOf
+   :range k/Karyotype
+   :domain k/ChromosomeComponent)
+ )
 
-(defoproperty hasProvidingBreakPoint
-  :subpropertyof hasBreakPoint)
+(as-inverse
+ (defoproperty hasReceivingBreakPoint
+   :subpropertyof hasBreakPoint)
 
+  (defoproperty isReceivingBreakPointOf
+   :subpropertyof isBreakPointOf)
+ )
+
+(as-inverse
+ (defoproperty hasProvidingBreakPoint
+   :subpropertyof hasBreakPoint)
+
+  (defoproperty isProvidingBreakPointOf
+   :subpropertyof isBreakPointOf)
+ )
 
 
 ;; define all the events
