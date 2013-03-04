@@ -51,13 +51,10 @@
 (as-inverse
  (defoproperty isBandOf
    :subpropertyof isComponentOf
-   :domain ChromosomeBand
-   :range Chromosome
-   :characteristics functional)
+   :domain ChromosomeBand)
  
  (defoproperty hasBand
    :subpropertyof hasComponent
-   :domain Chromosome
    :range ChromosomeBand)
  )
 
