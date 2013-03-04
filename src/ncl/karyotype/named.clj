@@ -41,10 +41,17 @@
   :subclass k/Karyotype)
 
 ;; define object properties
-(defoproperty derivedFrom
-  :characteristics transitive
-;;  :range k/Karyotype
-  :domain NamedKaryotype)
+(as-inverse
+ (defoproperty derivedFrom
+   :characteristics transitive
+   ;; :range k/Karyotype
+   :domain NamedKaryotype)
+ 
+ (defoproperty derivedTo
+   :characteristics transitive
+   ;; :range NamedKaryotype
+   :domain k/Karyotype)
+ )
 
 ;; define all the baseKaryotypes
  ;;we have to pass these in as strings because they start with
@@ -354,6 +361,8 @@
 
 ;; Define structural abnormalities - in order for these to work, need to import the axioms from h/human and e/events
 
+;; TO FIX: consider if they are h/HumanChromosomeBand, h/HumanChromosomeCentromere, h/HumanChromosomeComponent, etc...
+
 (defclass StructuralAbnormalKaryotypeAddition
   :equivalent
   (owlsome e/hasEvent
@@ -376,7 +385,7 @@
   :equivalent
   (owlsome e/hasEvent
            (owland e/Fission
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+                   (owlsome e/hasBreakPoint h/HumanCentromere))))
 
 (defclass StructuralAbnormalKaryotypeInsertion
   :equivalent
@@ -400,7 +409,7 @@
   :equivalent
   (owlsome e/hasEvent
            (owland e/Translocation
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+                   (owlsome e/hasBreakPoint k/ChromosomeComponent))))
 
 (defclass StructuralAbnormalKaryotypeTriplication
   :equivalent
@@ -412,4 +421,4 @@
   :equivalent
   (owlsome e/hasEvent
            (owland e/Event
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+                   (owlsome e/hasBreakPoint k/ChromosomeComponent))))
