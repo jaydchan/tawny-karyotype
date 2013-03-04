@@ -38,12 +38,25 @@
  (defclass Telomere))
 
 (as-inverse
+ (defoproperty isComponentOf
+   :domain ChromosomeComponent
+   :range Chromosome
+   :characteristics functional)
+ 
+ (defoproperty hasComponent
+   :domain Chromosome
+   :range ChromosomeComponent)
+ )
+
+(as-inverse
  (defoproperty isBandOf
+   :subpropertyof isComponentOf
    :domain ChromosomeBand
    :range Chromosome
    :characteristics functional)
  
  (defoproperty hasBand
+   :subpropertyof hasComponent
    :domain Chromosome
    :range ChromosomeBand)
  )
