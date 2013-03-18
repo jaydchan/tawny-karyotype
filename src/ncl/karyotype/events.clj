@@ -27,18 +27,18 @@
 
 (defclass Event)
 
-
-
 ;; define object properties
 (as-inverse
  (defoproperty hasEvent
+   ;; :characteristics transitive ;; TODO
    :range Event
    :domain k/Karyotype)
  
- (defoproperty hasEvent
+ (defoproperty isEventOf
+   ;; :characteristics transitive ;; TODO
    :range k/Karyotype
    :domain Event)
- )
+)
 
 (as-inverse
  (defoproperty hasBreakPoint
@@ -85,6 +85,8 @@
         (exactly n hasEvent (owland Addition chrom_band))
         (superclass? chrom_band h/HumanChromosomeBand)
         (exactly n hasEvent (owland Addition (owlsome hasBreakPoint chrom_band)))
+        ;; :else
+        ;; (exactly n hasEvent (owland Addition chrom_band))
         :default
         (throw
          (IllegalArgumentException.
@@ -101,13 +103,13 @@
 
 (defn- getTerminal
   ([band]
-     (if (h/pband? (str band))
+     (if (h/pband? (second (clojure.string/split (str band) #"human#")))
        (str (second (clojure.string/split (str band) #"human#|Band")) "pTer")
        (str (second (clojure.string/split (str band) #"human#|Band")) "qTer")))
   ([chromosome type]
-     (if (h/pband? (str type))
-       (str chromosome "pTer")
-       (str chromosome "qTer"))))
+       (if (h/pband? (str type))
+         (str (second (clojure.string/split (str chromosome) #"human#|>")) "pTer")
+         (str (second (clojure.string/split (str chromosome) #"human#|>")) "qTer"))))
 
 (defn deletion
   ;; AKA Chromosomal deletion or Terminal deletion with a break
@@ -143,7 +145,7 @@
 
 (defn direct_duplication
   ([n band1 band2]
-     (exactly 1 hasEvent (owland DirectDuplication (owlsome hasBreakPoint band1 band2)))))
+     (exactly n hasEvent (owland DirectDuplication (owlsome hasBreakPoint band1 band2)))))
 
 ;; Chromosomal Band InverseDuplication : exactly <#> hasEvent (owland InverseDuplication (owlsome hasBreakPoint <HumanChromosomeBand>))
 ;; Invovles only 1 chromosome
@@ -152,28 +154,28 @@
 
 (defn inverse_duplication
   ([n band1 band2]
-     (exactly 1 hasEvent (owland InverseDuplication (owlsome hasBreakPoint band1 band2)))))
+     (exactly n hasEvent (owland InverseDuplication (owlsome hasBreakPoint band1 band2)))))
 
 ;; Chromosomal Band Fission : exactly <#> hasEvent (owland Fission (owlsome hasBreakPoint <HumanChromosome>))
 ;; AKA Centric fission - break in the centromere
 ;; Involves only 1 chromosome
-;; QUERY: always come in 2's?
 (defclass Fission
   :subclass Event)
 
 (defn- getCentromere [chromosome]
-  (str chromosome "Cen"))
+  (str (second (clojure.string/split (str chromosome) #"human#|>")) "Cen"))
 
-;;TOFIX
 (defn fission
   ([n band1 band2]
-     (exactly 1 hasEvent (owland Fission (owlsome hasBreakPoint band1 band2))))
+     (with-ontology
+       ncl.karyotype.human/human
+       (exactly n hasEvent (owland Fission (owlsome hasBreakPoint band1 band1)))))
   ([n chromosome]
-     (deletion n chromosome)
+     [(deletion n chromosome)
      (fission n (getTerminal chromosome "p")
               (getCentromere chromosome))
      (fission n (getCentromere chromosome)
-              (getTerminal chromosome "q"))))
+              (getTerminal chromosome "q"))]))
 
 ;; Can be preceeded by the triplets dir or inv to indicate direct or inverted direction
 ;; Rules: p only/ q only (big to small) = Direct insertion
@@ -182,7 +184,7 @@
 (defclass Insertion
   :subclass Event)
 
-;; TOFIX IS it possible to automatically assign whether the insertion is direct or inverse?
+;; TODO Is it possible to automatically assign whether the insertion is direct or inverse?
 ;; (defn insertion
 ;;   ([n band1 band2]))
 
@@ -193,7 +195,7 @@
 
 (defn direct_insertion
   ([n band1 band2 band3]
-     (exactly 1 hasEvent (owland DirectInsertion (owlsome hasReceivingBreakPoint band1) (owlsome hasProvidingBreakPoint band2 band3)))))
+     (exactly n hasEvent (owland DirectInsertion (owlsome hasReceivingBreakPoint band1) (owlsome hasProvidingBreakPoint band2 band3)))))
 
 ;; Choromosomal Band InverseInsertion: exactly <#> hasEvent (owland InverseInsertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
 ;; Involves at most 2 chromosomes
@@ -202,7 +204,7 @@
 
 (defn inverse_insertion
   ([n band1 band2 band3]
-     (exactly 1 hasEvent (owland InverseInsertion (owlsome hasReceivingBreakPoint band1) (owlsome hasProvidingBreakPoint band2 band3)))))
+     (exactly n hasEvent (owland InverseInsertion (owlsome hasReceivingBreakPoint band1) (owlsome hasProvidingBreakPoint band2 band3)))))
 
 ;; Chromosomal Band Inversion: exactly <#> hasEvent (owland Inversion (owlsome hasBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
 ;; Involves both paracentric (involves only 1 arm) and pericentric (involves both arms) inversion
@@ -214,34 +216,58 @@
   ([n band1 band2]
      (exactly n hasEvent (owland Inversion (owlsome hasBreakPoint band1 band2))))) 
 
-;; TOFIX: It is not possible to indicate the orientations of the segments with the short system!
+;; Note: It is not possible to indicate the orientations of the segments with the short system!
 (defclass Quadruplication
   :subclass Event)
 
 (defn quadruplication
   ([n band1 band2]
-     (exactly 1 hasEvent (owland Quadruplication (owlsome hasBreakPoint band1 band2))))) 
+     (exactly n hasEvent (owland Quadruplication (owlsome hasBreakPoint band1 band2))))) 
+
+(defn- getParent [band]
+  (second (clojure.string/split (str band) #"Band|[pq]Ter|Cen|human#")))
 
 ;; TODO
 (defclass Translocation
   :subclass Event)
 
-;; (defn translocation
-;;   ([n band1 band2 band3 band4 band5 band6]
-;;      (exactly 1 e/hasEvent
-;;               (owland e/Translocation
-;;                       (owland
-;;                        (owlsome e/hasProvidingBreakPoint band1)
-;;                        (owlsome e/hasProvidingBreakPoint band2)
-;;                        (owlsome e/hasReceivingBreakPoint band3))
-;;                       (owland
-;;                        (owlsome e/hasProvidingBreakPoint band3)
-;;                        (owlsome e/hasProvidingBreakPoint band4)
-;;                        (owlsome e/hasReceivingBreakPoint band5))
-;;                       (owland
-;;                        (owlsome e/hasProvidingBreakPoint band5)
-;;                        (owlsome e/hasProvidingBreakPoint band6)
-;;                        (owlsome e/hasReceivingBreakPoint band1))))))
+;; (defn translocation3 [receive1 receive2 provide1 provide2]
+;;   (owland
+;;    (owlsome hasReceivingBreakPoint receive1)
+;;    (owlsome hasReceivingBreakPoint receive2)
+;;    (owlsome hasProvidingBreakPoint provide1)
+;;    (owlsome hasProvidingBreakPoint provide2)))
+
+;; (defn translocation2 [bands]
+;;   (with-ontology
+;;     ncl.karyotype.human/human
+
+;;     (print (str "Receive1 " (first bands) "\n"))
+;;     (print (str "Receive2 " (second bands) "\n"))
+;;     (print (str "Provide1 " (second (rest bands)) "\n"))
+;;     (print (str "Provide2 " (second (rest (rest bands))) "\n"))
+
+;;     [
+;;      (if (= (getParent (first bands)) (getParent (second bands)))
+;;        (if (= (getParent (first (rest (rest bands)))) (getParent (second (rest (rest bands)))))
+;;          (translocation3 (first bands) (second bands) (second (rest bands)) (second (rest (rest bands))))
+;;          (translocation3 (first bands) (second bands) (second (rest bands)) (getTerminal (second (rest bands)))))
+;;        (if (= (getParent (first (rest bands))) (getParent (second (rest bands))))
+;;          (translocation3 (first bands) (getTerminal (first bands)) (second bands) (second (rest bands)))
+;;          (translocation3 (first bands) (getTerminal (first bands)) (second bands) (getTerminal (second bands)))))
+
+;;      (if (= (getParent (first bands)) (getParent (second bands)))
+;;        (if (> (count (rest (rest bands))) 1)
+;;          (translocation2 (rest (rest bands))))
+;;        (if (> (count (rest bands)) 1)
+;;          (translocation2 (rest bands))))
+;;     ]
+;; ))
+
+;; (defn translocation [n chrom_no & bands]
+;;   (exactly 1 hasEvent (owland Translocation (take (- chrom_no 1) (flatten (translocation2 bands)))))
+;; )
+
 
 ;; QUERY: Book says "It is not possible to indicate the orientations of the segments with the short system" however the example shown seem to show the orientations fine. What other detailed systems occur for the first example?
 ;; Similar to Duplication
