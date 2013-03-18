@@ -49,10 +49,11 @@
   (is (r/isuperclass? i/k46_Xc_+X n/DiploidKaryotype))
   )
 
-;; TODO Complete when base karyotypes for triploid and tetraploid are implemented
+;; TODO Complete when base karyotypes for triploid are implemented
 ;; (deftest TriploidKaryotype
 ;;   )
 
+;; TODO Complete when base karyotypes for tetraploid are implemented
 ;; (deftest TetraploidKaryotype
 ;;   )
 
@@ -60,20 +61,23 @@
 ;; TODO Extend definition to include haploid, triploid and tetraploid?
 ;; TODO Test conditional karyotypes
 (deftest FemaleKaryotype
-  ;; TODO
+  ;; TODO Complete
+  (is (r/isuperclass? i/k45_X_-X n/FemaleKaryotype))
+  (is (r/isuperclass? i/k46_XX_+8_-21 n/FemaleKaryotype))
 
   ;; FAILS due to the current definition of Female
   ;; (is (r/isuperclass? i/k45_X n/FemaleKaryotype))
   )
 
 (deftest MaleKaryotype
-  ;; TODO
+  ;; TODO Complete
+  (is (r/isuperclass? i/k45_Y n/MaleKaryotype))
+  (is (r/isuperclass? i/k46_XXYc_-X n/MaleKaryotype))
+
   )
 
 ;; Numerical Abnormalities
 (deftest NumericalAbnormalKaryotype
-  (is (r/isuperclass? i/k47_XXX n/NumericalAbnormalKaryotype))
-  (is (r/isuperclass? i/k45_X n/NumericalAbnormalKaryotype))
   )
 
 (deftest NumericalAbnormalKaryotypeAllosomalGain
@@ -82,6 +86,7 @@
   (is (r/isuperclass? i/k47_XX_+X n/NumericalAbnormalKaryotypeAllosomalGain))
   (is (r/isuperclass? i/k47_XXX n/NumericalAbnormalKaryotypeAllosomalGain))
   (is (r/isuperclass? i/k47_XYY n/NumericalAbnormalKaryotypeAllosomalGain))
+  (is (r/isuperclass? i/k47_YYY n/NumericalAbnormalKaryotypeAllosomalGain))
   (is (r/isuperclass? i/k48_XXXX n/NumericalAbnormalKaryotypeAllosomalGain))
   (is (r/isuperclass? i/k48_XYYY n/NumericalAbnormalKaryotypeAllosomalGain))
   (is (r/isuperclass? i/k48_YYYY n/NumericalAbnormalKaryotypeAllosomalGain))
@@ -101,7 +106,7 @@
   (is (r/isuperclass? i/k48_YYYY n/NumericalAbnormalKaryotypeAllosomalLoss))
   (is (r/isuperclass? i/k49_YYYYY n/NumericalAbnormalKaryotypeAllosomalLoss))
 
-  ;; TODO CHECK! Not a numerical abnormal karyotype but there has been some allosomal loss...
+  ;; TODO CHECK - Not a numerical abnormal karyotype but there has been some allosomal loss...
   ;; (is (not (r/isuperclass? i/k46_XXYc_-X n/NumericalAbnormalKaryotypeAllosomalLoss)))
   )
 
@@ -162,40 +167,42 @@
   (is (r/isuperclass? i/k46_XX_inv!2!!p21q31! n/StructuralAbnormalKaryotypeInversion))
   (is (r/isuperclass? i/k46_XX_inv!3!!q21q26.2! n/StructuralAbnormalKaryotypeInversion))
   (is (r/isuperclass? i/k46_XY_inv!3!!p13q21! n/StructuralAbnormalKaryotypeInversion))
+  (is (r/isuperclass? i/k47_X_t!Z_13!!q27_q12!_inv!10!!p13q22!_+21 n/StructuralAbnormalKaryotypeInversion))
+  (is (r/isuperclass? i/k49_X_inv!X!!p21q26!_+3_inv!3!!p21q26.2!_+7_+10_-20_del!20!!q11.2!_+21 n/StructuralAbnormalKaryotypeInversion))
   )
 
 (deftest StructuralAbnormalKaryotypeQuadruplication
   (is (r/isuperclass? i/k46_XX_qdp!1!!q23q32! n/StructuralAbnormalKaryotypeQuadruplication))
   )
 
-(deftest StructuralAbnormalKaryotypeTranslocation
-  (is (r/isuperclass? i/k46_XY_t!2_5!!q21_q31! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_XY_t!2_5!!p12_q31! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_X_t!X_13!!q27_q12! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_XX_t!2_7_5!!p21_q22_q23! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_X_t!X_22_1!!q24_q11.2_p33! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_XX_t!3_9_22_21!!p13_q34_q11.2_q21! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_XY_t!5_6!!q13q23_q15q23! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_XX_t!5_14_9!!q13q23_q24q21_p12p23! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_XY_t!1_3!!p10_q10! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_XY_t!1_3!!p10_p10! n/StructuralAbnormalKaryotypeTranslocation))
+;; (deftest StructuralAbnormalKaryotypeTranslocation
+;;   (is (r/isuperclass? i/k46_XY_t!2_5!!q21_q31! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_XY_t!2_5!!p12_q31! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_X_t!X_13!!q27_q12! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_XX_t!2_7_5!!p21_q22_q23! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_X_t!X_22_1!!q24_q11.2_p33! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_XX_t!3_9_22_21!!p13_q34_q11.2_q21! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_XY_t!5_6!!q13q23_q15q23! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_XX_t!5_14_9!!q13q23_q24q21_p12p23! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_XY_t!1_3!!p10_q10! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_XY_t!1_3!!p10_p10! n/StructuralAbnormalKaryotypeTranslocation))
 
-  ;; TOFIX
-  ;; (is (r/isuperclass? i/k46_t!X_Y!!q22_q11.2! n/StructuralAbnormalKaryotypeTranslocation)) ;; Yq11.2 doesnt exist!
-  ;; (is (r/isuperclass? i/k46_t!X_18!!p11.2_q11.2!_t!Y_1!!q11.2_p31! n/StructuralAbnormalKaryotypeTranslocation)) ;; Yq11.2 doesnt exist!
-  ;; (is (r/isuperclass? i/k46_XY_t!12_16!!q13_p11.1! n/StructuralAbnormalKaryotypeTranslocation))
-  ;; (is (r/isuperclass? i/k46_X_t!X_18!!p11.1_q11.1! n/StructuralAbnormalKaryotypeTranslocation))
-  ;; (is (r/isuperclass? i/k46_XX_t!9_22_17!!q34_q11.2_q22! n/StructuralAbnormalKaryotypeTranslocation))
-  ;; (is (r/isuperclass? i/k46_XY_t!X_15_18!!p11.1_p11.1_q11.1! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_XX_t!3_9_22_21!!p13_q34_q11.2_q21! n/StructuralAbnormalKaryotypeTranslocation))
-  (is (r/isuperclass? i/k46_XY_t!5_6!!q13q23_q15q23! n/StructuralAbnormalKaryotypeTranslocation))
-  ;; (is (r/isuperclass? i/k46_t!X_18!!p11.1_q11.2!_t!Y_1!!q11.2_p13! n/StructuralAbnormalKaryotypeTranslocation))
-  ;; (is (r/isuperclass? i/k46_Y_t!X_8!!p22.3_q24.1! n/StructuralAbnormalKaryotypeTranslocation))  
+;;   ;; TOFIX
+;;   ;; (is (r/isuperclass? i/k46_t!X_Y!!q22_q11.2! n/StructuralAbnormalKaryotypeTranslocation)) ;; Yq11.2 doesnt exist!
+;;   ;; (is (r/isuperclass? i/k46_t!X_18!!p11.2_q11.2!_t!Y_1!!q11.2_p31! n/StructuralAbnormalKaryotypeTranslocation)) ;; Yq11.2 doesnt exist!
+;;   ;; (is (r/isuperclass? i/k46_XY_t!12_16!!q13_p11.1! n/StructuralAbnormalKaryotypeTranslocation))
+;;   ;; (is (r/isuperclass? i/k46_X_t!X_18!!p11.1_q11.1! n/StructuralAbnormalKaryotypeTranslocation))
+;;   ;; (is (r/isuperclass? i/k46_XX_t!9_22_17!!q34_q11.2_q22! n/StructuralAbnormalKaryotypeTranslocation))
+;;   ;; (is (r/isuperclass? i/k46_XY_t!X_15_18!!p11.1_p11.1_q11.1! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_XX_t!3_9_22_21!!p13_q34_q11.2_q21! n/StructuralAbnormalKaryotypeTranslocation))
+;;   (is (r/isuperclass? i/k46_XY_t!5_6!!q13q23_q15q23! n/StructuralAbnormalKaryotypeTranslocation))
+;;   ;; (is (r/isuperclass? i/k46_t!X_18!!p11.1_q11.2!_t!Y_1!!q11.2_p13! n/StructuralAbnormalKaryotypeTranslocation))
+;;   ;; (is (r/isuperclass? i/k46_Y_t!X_8!!p22.3_q24.1! n/StructuralAbnormalKaryotypeTranslocation))  
 
-  ;; TODO When implemeneted
-  ;; k46,XX,t(3;7;7*)(q21;q22;p13)
-  ;; 46,XX,t(3;9;9*;22)(p13;q22;q34;q11.2)
-  )
+;;   ;; TODO When implemeneted
+;;   ;; k46,XX,t(3;7;7*)(q21;q22;p13)
+;;   ;; 46,XX,t(3;9;9*;22)(p13;q22;q34;q11.2)
+;;   )
 
 (deftest StructuralAbnormalKaryotypeTriplication
   (is (r/isuperclass? i/k46_XX_invtrp!1!!q32q21! n/StructuralAbnormalKaryotypeTriplication))
@@ -261,7 +268,8 @@
   (is (r/isuperclass? i/k48_XX_+13_+21 n/DownSyndrome))
   (is (r/isuperclass? i/k49_X_inv!X!!p21q26!_+3_inv!3!!q21q26.2!_+7_+10_-20_del!20!!q11.2!_+21 n/DownSyndrome))
 
-  (is (r/isuperclass? i/k48_XY_+21c_+21 n/DownSyndrome)) ;; TOFIX - NOT TRUE - THE DEFINITION FOR DOWN SYNDROMES UPDATING
+  ;; TODO - NOT TRUE - THE DEFINITION FOR DOWN SYNDROMES UPDATING
+  ;; (is (not (r/isuperclass? i/k48_XY_+21c_+21 n/DownSyndrome)))
   )
 
 (deftest Trisomy22
