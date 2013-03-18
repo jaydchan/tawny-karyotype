@@ -48,7 +48,6 @@
    :domain NamedKaryotype)
  
  (defoproperty derivedTo
-   :characteristics transitive
    ;; :range NamedKaryotype
    :domain k/Karyotype)
  )
@@ -100,9 +99,7 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (exactly 1 e/hasEvent
-            (owland e/Deletion h/HumanAllosome))
-   ))
+   (e/deletion 1 h/HumanAllosome)))
 
 ;; An (male) individual with an extra X chromosome ;;aka 47,XXY ;;aka abnormal male
 (defclass KlinefelterSyndromeMostCommonVariation
@@ -110,8 +107,7 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XY)
-   (exactly 1 e/hasEvent
-            (owland e/Addition h/HumanChromosomeX))
+   (e/addition 1 h/HumanChromosomeX)
    (owlnot
     (owlsome e/hasEvent  
              (owland e/Addition h/HumanChromosomeY)))
@@ -126,11 +122,9 @@
    (owlsome e/hasEvent
             (owland e/Addition h/HumanChromosomeX))))
 
-;; An individual with no X chromosome
+;; TODO An individual with no X chromosome
 (defclass Lethal
   :subclass NamedKaryotype)
-
-
 
 ;; Autsomal abnormalities
 
@@ -140,8 +134,7 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (exactly 1 e/hasEvent
-            (owland e/Addition h/HumanChromosome8))))
+   (e/addition 1 h/HumanChromosome8)))
 
 ;; An individual with three copies of chromosome 9
 (defclass Trisomy9
@@ -149,8 +142,7 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (exactly 1 e/hasEvent
-            (owland e/Addition h/HumanChromosome9))))
+   (e/addition 1 h/HumanChromosome9)))
 
 ;; An individual with three copies of chromosome 13 ;;aka Trisomy13
 (defclass PatauSyndrome
@@ -158,8 +150,7 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (exactly 1 e/hasEvent
-            (owland e/Addition h/HumanChromosome13))))
+   (e/addition 1 h/HumanChromosome13)))
 
 ;; An individual with three copies of chromosome 16
 (defclass Trisomy16
@@ -167,8 +158,7 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (exactly 1 e/hasEvent
-            (owland e/Addition h/HumanChromosome16))))
+   (e/addition 1 h/HumanChromosome16)))
   
 ;; An individual with three copies of chromosome 18 ;;aka Trisomy18
 (defclass EdwardsSyndrome
@@ -176,8 +166,7 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (exactly 1 e/hasEvent
-            (owland e/Addition h/HumanChromosome18))))
+   (e/addition 1 h/HumanChromosome18)))
 
 ;; An individual with three copies of chromosome 21 ;;aka Trisomy21
 (defclass DownSyndrome
@@ -185,8 +174,7 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (exactly 1 e/hasEvent
-            (owland e/Addition h/HumanChromosome21))))
+   (e/addition 1 h/HumanChromosome21)))
 
 ;; An individual with three copies of chromosome 22
 (defclass Trisomy22
@@ -194,18 +182,15 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (exactly 1 e/hasEvent
-            (owland e/Addition h/HumanChromosome22))))
+   (e/addition 1 h/HumanChromosome22)))
 
 ;; Named Karyotypes that are caused by structural abnormalities
 
-;; TODO Definitions for the following structural named karyotypes
-
-;; An individual with loss of part of the short arm of chromosome 1
+;; TODO An individual with loss of part of the short arm of chromosome 1
 (defclass DeletionSyndrome1p36
   :subclass NamedKaryotype)
 
-;; An individual with the partial deletion of chromosomal material of the short arm of chromosome 4 ;;aka del(4p16.3) ;;WHS, Chromosome Deletion Dillian 4p Syndrome, Pitt-Rogers-Danks Syndrome, PRDS, Pitt Syndrome
+;; TODO An individual with the partial deletion of chromosomal material of the short arm of chromosome 4 ;;aka del(4p16.3) ;;WHS, Chromosome Deletion Dillian 4p Syndrome, Pitt-Rogers-Danks Syndrome, PRDS, Pitt Syndrome
 (defclass WolfHirschhornSydrome
   :subclass NamedKaryotype)
 
@@ -218,47 +203,47 @@
 ;;             (owland e/Deletion
 ;;                     (exactly 2 e/hasBreakPoint HumanChromosome4Band4p16.3)))))
   
-;; An individual with a truncated short arm on chromosome 5 ;;aka cry of the cat
+;; TODO An individual with a truncated short arm on chromosome 5 ;;aka cry of the cat
 (defclass CriDuChat
   :subclass NamedKaryotype)
 
-;; An individual with ... chromosome 5
+;; TODO An individual with ... chromosome 5
 (defclass DeletionSyndrome5q
   :subclass NamedKaryotype)
 
-;; An individual with ... chromosome 7
+;; TODO An individual with ... chromosome 7
 (defclass WilliamsSyndrome
   :subclass NamedKaryotype)
 
-;; An individual with ... chromosome 11
+;; TODO An individual with ... chromosome 11
 (defclass JacobsenSyndrome
   :subclass NamedKaryotype)
 
-;; An individual with a segment of the long arm of chromosome 15 missing
+;; TODO An individual with a segment of the long arm of chromosome 15 missing
 (defclass AngelmanSyndrome
   :subclass NamedKaryotype)
 
-;; An individual with a segment of the long arm of chromosome 15 missing
+;; TODO An individual with a segment of the long arm of chromosome 15 missing
 (defclass PraderWilliSyndrome
   :subclass NamedKaryotype)
 
-;; An individual with ... chromosome 17
+;; TODO An individual with ... chromosome 17
 (defclass MillerDiekerSyndrome
   :subclass NamedKaryotype)
 
-;; An individual with ... chromosome 17
+;; TODO An individual with ... chromosome 17
 (defclass SmithMagenisSyndrome
   :subclass NamedKaryotype)
 
-;; An individual with ... chromosome 18
+;; TODO An individual with ... chromosome 18
 (defclass DeletionSyndrome18q
   :subclass NamedKaryotype)
 
-;; An individual with ... chromosome 22
+;; TODO An individual with ... chromosome 22
 (defclass DiGeorgeSyndrome
   :subclass NamedKaryotype)
 
-;; An individual with ... chromosome 22
+;; TODO An individual with ... chromosome 22
 (defclass CatEyeSyndrome
   :subclass NamedKaryotype)
 
@@ -361,7 +346,7 @@
 
 ;; Define structural abnormalities - in order for these to work, need to import the axioms from h/human and e/events
 
-;; TO FIX: consider if they are h/HumanChromosomeBand, h/HumanChromosomeCentromere, h/HumanChromosomeComponent, etc...
+;; TODO: consider if they are h/HumanChromosomeBand, h/HumanChromosomeCentromere, h/HumanChromosomeComponent, etc...
 
 (defclass StructuralAbnormalKaryotypeAddition
   :equivalent
