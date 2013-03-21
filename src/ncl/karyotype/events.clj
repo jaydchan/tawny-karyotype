@@ -67,6 +67,7 @@
  )
 
 
+(as-disjoint
 ;; define all the events
 ;; TODO define restrictions
 ;; TODO Subclasses of each event i.e. inversion insertion
@@ -103,9 +104,9 @@
 
 (defn- getTerminal
   ([band]
-     (if (h/pband? (second (clojure.string/split (str band) #"human#")))
-       (str (second (clojure.string/split (str band) #"human#|Band")) "pTer")
-       (str (second (clojure.string/split (str band) #"human#|Band")) "qTer")))
+       (if (h/pband? (second (clojure.string/split (str band) #"human#")))
+         (str (second (clojure.string/split (str band) #"human#|Band")) "pTer")
+         (str (second (clojure.string/split (str band) #"human#|Band")) "qTer")))
   ([chromosome type]
        (if (h/pband? (str type))
          (str (second (clojure.string/split (str chromosome) #"human#|>")) "pTer")
@@ -137,24 +138,6 @@
 ;; There shouldn't be any of this type
 (defclass Duplication
   :subclass Event)
-
-;; Chromosomal Band ForwardDuplication : exactly <#> hasEvent (owland ForwardDuplication (owlsome hasBreakPoint <HumanChromosomeBand>))
-;; Invovles only 1 chromosome
-(defclass DirectDuplication
-  :subclass Duplication)
-
-(defn direct_duplication
-  ([n band1 band2]
-     (exactly n hasEvent (owland DirectDuplication (owlsome hasBreakPoint band1 band2)))))
-
-;; Chromosomal Band InverseDuplication : exactly <#> hasEvent (owland InverseDuplication (owlsome hasBreakPoint <HumanChromosomeBand>))
-;; Invovles only 1 chromosome
-(defclass InverseDuplication
-  :subclass Duplication)
-
-(defn inverse_duplication
-  ([n band1 band2]
-     (exactly n hasEvent (owland InverseDuplication (owlsome hasBreakPoint band1 band2)))))
 
 ;; Chromosomal Band Fission : exactly <#> hasEvent (owland Fission (owlsome hasBreakPoint <HumanChromosome>))
 ;; AKA Centric fission - break in the centromere
@@ -188,6 +171,118 @@
 ;; (defn insertion
 ;;   ([n band1 band2]))
 
+;; Chromosomal Band Inversion: exactly <#> hasEvent (owland Inversion (owlsome hasBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
+;; Involves both paracentric (involves only 1 arm) and pericentric (involves both arms) inversion
+;; Involves only 1 chromosome
+(defclass Inversion
+  :subclass Event)
+
+(defn inversion
+  ([n band1 band2]
+     (exactly n hasEvent (owland Inversion (owlsome hasBreakPoint band1 band2)))))
+
+;; Note: It is not possible to indicate the orientations of the segments with the short system!
+(defclass Quadruplication
+  :subclass Event)
+
+(defn quadruplication
+  ([n band1 band2]
+     (exactly n hasEvent (owland Quadruplication (owlsome hasBreakPoint band1 band2)))))
+
+(defn- getParent [band]
+  (second (clojure.string/split (str band) #"Band|[pq]Ter|Cen|human#")))
+
+;; Must involve more than one chromosome/band
+(defclass Translocation
+  :subclass Event)
+
+(defn translocation3 [receive1 receive2 provide1 provide2]
+  (owland
+   (owlsome hasReceivingBreakPoint receive1)
+   (owlsome hasReceivingBreakPoint receive2)
+   (owlsome hasProvidingBreakPoint provide1)
+   (owlsome hasProvidingBreakPoint provide2)))
+
+(defn translocation2 [provide1 provide2 bands]
+  (with-ontology
+    ncl.karyotype.human/human
+
+    [
+     (cond
+      (= (count bands) 1)
+      (translocation3 (first bands) (getTerminal (first bands)) provide1 provide2)
+      (= (count bands) 2)
+      (if (= (getParent (first bands)) (getParent (second bands)))
+        (translocation3 (first bands) (second bands) provide1 provide2)
+        (flatten [(translocation3 (first bands) (getTerminal (first bands)) (second bands) (getTerminal (second bands)))
+                  (translocation2 provide1 provide2 (rest bands))]))
+      (= (count bands) 3)
+      (if (or (= (getParent (first bands)) (getParent (second bands))) (= (getParent (second bands)) (getParent (second (rest bands)))))
+        (if (= (getParent (first bands)) (getParent (second bands)))
+          (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (getTerminal (second (rest bands)))) 
+            (translocation2 provide1 provide2 (rest (rest bands)))])
+          (flatten [(translocation3 (first bands) (getTerminal (first bands)) (second bands) (second (rest bands)))
+            (translocation3 provide1 provide2 (rest bands))]))
+        (flatten [(translocation2 provide1 provide2 (rest bands))
+                  (translocation3 (first bands) (getTerminal (first bands)) (second bands) (getTerminal (second bands)))]))
+      (> (count bands) 3)
+      (if (= (getParent (first bands)) (getParent (second bands)))
+        (if (= (getParent (second (rest bands))) (getParent (second (rest (rest bands)))))
+          (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (second (rest (rest bands))))
+                    (translocation2 provide1 provide2 (rest (rest bands)))])
+          (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (getTerminal (second (rest bands))))
+                    (translocation2 provide1 provide2 (rest (rest bands)))]))
+        (if (= (getParent (first (rest bands))) (getParent (second (rest bands))))
+          (flatten [(translocation3 (first bands) (getTerminal (first bands)) (second bands) (second (rest bands)))
+                    (translocation2 provide1 provide2 (rest bands))])
+          (flatten [(translocation3 (first bands) (getTerminal (first bands)) (second bands) (getTerminal (second bands)))
+                    (translocation2 provide1 provide2 (rest bands))])))
+      :default
+      (throw
+       (IllegalArgumentException.
+        (str "Problem with translocation macro. Got:"
+             bands))))
+    ]
+
+))
+
+(defn translocation [n chrom_no & bands]
+  (if (> (count bands) 1)
+    (if (= (getParent (first bands)) (getParent (second bands)))
+      (exactly 1 hasEvent (owland Translocation (take chrom_no (flatten (translocation2 (first bands) (second bands) bands)))))
+      (exactly 1 hasEvent (owland Translocation (take chrom_no (flatten (translocation2 (first bands) (getTerminal (first bands)) bands))))))
+    (throw
+     (IllegalArgumentException.
+      (str "There should be at least 2 band parameters. Got:"
+           bands)))))
+
+;; QUERY: Book says "It is not possible to indicate the orientations of the segments with the short system" however the example shown seem to show the orientations fine. What other detailed systems occur for the first example?
+;; Similar to Duplication
+(defclass Triplication
+  :subclass Event)
+)
+
+(as-disjoint
+;; Chromosomal Band ForwardDuplication : exactly <#> hasEvent (owland ForwardDuplication (owlsome hasBreakPoint <HumanChromosomeBand>))
+;; Invovles only 1 chromosome
+(defclass DirectDuplication
+  :subclass Duplication)
+
+(defn direct_duplication
+  ([n band1 band2]
+     (exactly n hasEvent (owland DirectDuplication (owlsome hasBreakPoint band1 band2)))))
+
+;; Chromosomal Band InverseDuplication : exactly <#> hasEvent (owland InverseDuplication (owlsome hasBreakPoint <HumanChromosomeBand>))
+;; Invovles only 1 chromosome
+(defclass InverseDuplication
+  :subclass Duplication)
+
+(defn inverse_duplication
+  ([n band1 band2]
+     (exactly n hasEvent (owland InverseDuplication (owlsome hasBreakPoint band1 band2)))))
+)
+
+(as-disjoint
 ;; Choromosomal Band ForwardInsertion: exactly <#> hasEvent (owland ForwardInsertion (owlsome hasRecievingBreakPoint <HumanChromosomeBand>) (owlsome hasProvidingBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
 ;; Involves at most 2 chromosomes
 (defclass DirectInsertion
@@ -205,82 +300,14 @@
 (defn inverse_insertion
   ([n band1 band2 band3]
      (exactly n hasEvent (owland InverseInsertion (owlsome hasReceivingBreakPoint band1) (owlsome hasProvidingBreakPoint band2 band3)))))
+)
 
-;; Chromosomal Band Inversion: exactly <#> hasEvent (owland Inversion (owlsome hasBreakPoint <HumanChromosomeBand> <HumanChromosomeBand>))
-;; Involves both paracentric (involves only 1 arm) and pericentric (involves both arms) inversion
-;; Involves only 1 chromosome
-(defclass Inversion
-  :subclass Event)
-
-(defn inversion
-  ([n band1 band2]
-     (exactly n hasEvent (owland Inversion (owlsome hasBreakPoint band1 band2))))) 
-
-;; Note: It is not possible to indicate the orientations of the segments with the short system!
-(defclass Quadruplication
-  :subclass Event)
-
-(defn quadruplication
-  ([n band1 band2]
-     (exactly n hasEvent (owland Quadruplication (owlsome hasBreakPoint band1 band2))))) 
-
-(defn- getParent [band]
-  (second (clojure.string/split (str band) #"Band|[pq]Ter|Cen|human#")))
-
-;; TODO
-(defclass Translocation
-  :subclass Event)
-
-;; (defn translocation3 [receive1 receive2 provide1 provide2]
-;;   (owland
-;;    (owlsome hasReceivingBreakPoint receive1)
-;;    (owlsome hasReceivingBreakPoint receive2)
-;;    (owlsome hasProvidingBreakPoint provide1)
-;;    (owlsome hasProvidingBreakPoint provide2)))
-
-;; (defn translocation2 [bands]
-;;   (with-ontology
-;;     ncl.karyotype.human/human
-
-;;     (print (str "Receive1 " (first bands) "\n"))
-;;     (print (str "Receive2 " (second bands) "\n"))
-;;     (print (str "Provide1 " (second (rest bands)) "\n"))
-;;     (print (str "Provide2 " (second (rest (rest bands))) "\n"))
-
-;;     [
-;;      (if (= (getParent (first bands)) (getParent (second bands)))
-;;        (if (= (getParent (first (rest (rest bands)))) (getParent (second (rest (rest bands)))))
-;;          (translocation3 (first bands) (second bands) (second (rest bands)) (second (rest (rest bands))))
-;;          (translocation3 (first bands) (second bands) (second (rest bands)) (getTerminal (second (rest bands)))))
-;;        (if (= (getParent (first (rest bands))) (getParent (second (rest bands))))
-;;          (translocation3 (first bands) (getTerminal (first bands)) (second bands) (second (rest bands)))
-;;          (translocation3 (first bands) (getTerminal (first bands)) (second bands) (getTerminal (second bands)))))
-
-;;      (if (= (getParent (first bands)) (getParent (second bands)))
-;;        (if (> (count (rest (rest bands))) 1)
-;;          (translocation2 (rest (rest bands))))
-;;        (if (> (count (rest bands)) 1)
-;;          (translocation2 (rest bands))))
-;;     ]
-;; ))
-
-;; (defn translocation [n chrom_no & bands]
-;;   (exactly 1 hasEvent (owland Translocation (take (- chrom_no 1) (flatten (translocation2 bands)))))
-;; )
-
-
-;; QUERY: Book says "It is not possible to indicate the orientations of the segments with the short system" however the example shown seem to show the orientations fine. What other detailed systems occur for the first example?
-;; Similar to Duplication
-(defclass Triplication
-  :subclass Event)
+(as-disjoint
 (defclass DirectTriplication
   :subclass Triplication)
 (defclass InverseTriplication
   :subclass Triplication)
-
-
-
-
+)
 
 ;; Potential new disorder.clj file
 ;; (defclass Disorder)
