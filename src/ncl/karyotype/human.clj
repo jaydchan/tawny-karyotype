@@ -15,8 +15,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-;; TODO : Consider disjoints! 
-
 
 (ns ncl.karyotype.human
   (:use [tawny.owl])
@@ -39,11 +37,12 @@
 (defclass HumanTelomere
   :subclass k/Telomere)
 
-(defclass HumanAutosome
-  :subclass HumanChromosome)
-
-(defclass HumanAllosome
-  :subclass HumanChromosome)
+(as-disjoint
+ (defclass HumanAutosome
+   :subclass HumanChromosome)
+ 
+ (defclass HumanAllosome
+   :subclass HumanChromosome))
 
 ;; define object properties
 (defoproperty isPartOf
@@ -138,6 +137,8 @@
           (humanbands2 chromosome is_a (str bandgroup band) (str bandgroup part_of))))
       bands))))
 
+
+;; TODO disjoints for subclasses of HumanCentromere, HumanTelomere, HumanChromosomeBands
 ;; function to define all the human bands
 (defn humanbands [chromosome & bands]
   
