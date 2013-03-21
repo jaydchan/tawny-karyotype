@@ -262,8 +262,6 @@
   (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosome21))) ;;aka 47,XY,+21 
   (e/deletion 1 h/HumanChromosome21))
 
-
-
 ;; example structural abnormal karyotypes
 
 ;; ADDITION
@@ -411,20 +409,19 @@
   :label "The 46,XY,t(2;5)(q21;q31) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  ;; (e/translocation 1 h/HumanChromosome2Bandq21 h/HumanChromosome5Bandq31)
-  )
+  (e/translocation 1 2 h/HumanChromosome2Bandq21 h/HumanChromosome5Bandq31))
+
 (defclass k46_XY_t!2_5!!p12_q31!
   :label "The 46,XY,t(2;5)(p12;q31) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  ;; (e/translocation 1 h/HumanChromosome2Bandp12 h/HumanChromosome5Bandq31)
-  )
+  (e/translocation 1 2 h/HumanChromosome2Bandp12 h/HumanChromosome5Bandq31))
+
 (defclass k46_X_t!X_13!!q27_q12!
   :label "The 46,X,t(X;13)(q27;q12) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  ;; (e/translocation 1 h/HumanChromosomeXBandq27 h/HumanChromosome13Bandq12)
-  )
+  (e/translocation 1 2 h/HumanChromosomeXBandq27 h/HumanChromosome13Bandq12))
 
 ;; ;; ERROR in book! - there is no resolution band for Y q11.2
 ;; (defclass k46_t!X_Y!!q22_q11.2!
@@ -445,14 +442,14 @@
   :label "The 46,XX,t(2;7;5)(p21;q22;q23) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  ;; (e/translocation 1 h/HumanChromosome2Bandp21 h/HumanChromosome7Bandq22 h/HumanChromosome5Bandq23)
-  )
+  (e/translocation 1 3 h/HumanChromosome2Bandp21 h/HumanChromosome7Bandq22 h/HumanChromosome5Bandq23))
+
 (defclass k46_X_t!X_22_1!!q24_q11.2_p33!
   :label "The 46,X,t(X;22;1)(q24;q11.2;p33) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  ;; (e/translocation 1 h/HumanChromosomeXBandq24 h/HumanChromosome22Bandq11.2 h/HumanChromosome1Bandp33)
-  )
+  (e/translocation 1 3 h/HumanChromosomeXBandq24 h/HumanChromosome22Bandq11.2 h/HumanChromosome1Bandp33))
+
 ;; TODO How do I model that 2 distinct Chromosomes 7 are involved?
 (defclass k46_XX_t!3_7_7*!!q21_q22_p13!
   :label "The 46,XX,t(3;7;7*)(q21;q22;p13) karyotype"
@@ -460,12 +457,13 @@
   (owlsome n/derivedFrom n/k46_XX)
   ;; (e/translocation 1 h/HumanChromosome3Bandq21 h/HumanChromosome7Bandq22 h/HumanChromosome7*Bandp13)
   )
+
 (defclass k46_XX_t!3_9_22_21!!p13_q34_q11.2_q21!
   :label "The 46,XX,t(3;9;22;21)(p13;q34;q11.2;q21) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  ;; (e/translocation 1 h/HumanChromosome3Bandp13 h/HumanChromosome9q34 h/HumanChromosome22Bandq11.2 h/HumanChromosome21Bandq21)
-  )
+  (e/translocation 1 4 h/HumanChromosome3Bandp13 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2 h/HumanChromosome21Bandq21))
+
 ;; TODO How do I model that 2 distinct Chromosomes 7 are involved?
 (defclass k46_XX_t!3_9_9*_22!!p13_q22_q34_q11.2!
   :label "The 46,XX,t(3;9;9*;22)(p13;q22;q34;q11.2) karyotype"
@@ -473,77 +471,77 @@
   (owlsome n/derivedFrom n/k46_XX)
   ;; (e/translocation 1 h/HumanChromosome3Bandp13 h/HumanChromosome9Bandq22 h/HumanChromosome9*Bandq34 h/HumanChromosome22Bandq11.2)
   )
+
 (defclass k46_XY_t!5_6!!q13q23_q15q23!
   :label "The 46,XY,t(5;6)(q13q23;q15q23) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  ;; (e/translocation 1 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23 h/HumanChromosome6Bandq15 h/HumanChromosome6Bandq23)
-  )
+  (e/translocation 1 2 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23 h/HumanChromosome6Bandq15 h/HumanChromosome6Bandq23))
 
 (defclass k46_XX_t!5_14_9!!q13q23_q24q21_p12p23!
   :label "The 46,XX,t(5;14;9)(q13q23;q24q21;p12p23) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  ;; (e/translocation 1 3 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23 h/HumanChromosome14Bandq24 h/HumanChromosome14Bandq21 h/HumanChromosome9Bandp12 h/HumanChromosome9Bandp23)
-  )
+  (e/translocation 1 3 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23 h/HumanChromosome14Bandq24 h/HumanChromosome14Bandq21 h/HumanChromosome9Bandp12 h/HumanChromosome9Bandp23))
 
+;; TODO
 (defclass k46_XY_t!1_3!!p10_q10!
   :label "The 46,XY,t(1;3)(p10;q10) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  ;;(e/translocation 1 h/HumanChromosome1Cen h/HumanChromosome3Cen)
+  ;; (e/translocation 1 2 h/HumanChromosome1Cen h/HumanChromosome3Cen)
   )
 
-;; TODO hasEvent definitions for the following karyotypes
 (defclass k46_XY_t!12_16!!q13_p11.1!
   :label "The 46,XY,t(12;16)(q13;p11.1) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  ;; (e/translocation 1 h/HumanChromosome12Bandq13 h/HumanChromosome16Bandp11.1)
-  )
+  (e/translocation 1 2 h/HumanChromosome12Bandq13 h/HumanChromosome16Bandp11.1))
+
 (defclass k46_X_t!X_18!!p11.1_q11.1!
   :label "The 46,X,t(X;18)(p11.1;q11.1) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XN)
-  ;; (e/translocation 1 h/HumanChromosomeXBandp11.1 h/HumanChromosome18Bandq11.1)
-  )
+  (e/translocation 1 2 h/HumanChromosomeXBandp11.1 h/HumanChromosome18Bandq11.1))
+
 (defclass k46_XX_t!9_22_17!!q34_q11.2_q22!
   :label "The 46,XX,t(9;22;17)(q34;q11.2;q22) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  ;; (e/translocation 1 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2 h/HumanChromosome17Bandq22)
-  )
+  (e/translocation 1 3 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2 h/HumanChromosome17Bandq22))
+
 (defclass k46_XY_t!X_15_18!!p11.1_p11.1_q11.1!
   :label "The 46,XY,t(X;15;18)(p11.1;p11.1;q11.1) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  ;; (e/translocation 1 h/HumanChromosomeXBandp11.1 h/HumanChromosome15Bandp11.1 h/HumanChromosome18Bandq11.1)
-  )
+  (e/translocation 1 3 h/HumanChromosomeXBandp11.1 h/HumanChromosome15Bandp11.1 h/HumanChromosome18Bandq11.1))
+
 (defclass k46_XX_t!3_9_22_21!!p13_q34_q11.2_q21!
   :label "The 46,XX,t(3;9;22;21)(p13;q34;q11.2;q21) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  ;; (e/translocation 1 h/HumanChromosome3Bandp13 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2 h/HumanChromosome21Bandq21)
-  )
+  (e/translocation 1 4 h/HumanChromosome3Bandp13 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2 h/HumanChromosome21Bandq21))
+
 (defclass k46_XY_t!5_6!!q13q23_q15q23!
   :label "The 46,XY,t(5;6)(q13q23;q15q23) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  ;; (e/translocation 1 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23 h/HumanChromosome6Bandq15 h/HumanChromosome6Bandq23)
-  )
-(defclass k46_t!X_18!!p11.1_q11.2!_t!Y_1!!q11.2_p13!
-  :label "The 46,t(X;18)(p11.1;q11.2),t(Y;1)(q11.2;p13) karyotype"
-  :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom n/k46_XY)
-  ;; (e/translocation 1 h/HumanChromosomeXBandp11.1 h/HumanChromosome18Bandq11.2)
-  ;; (e/translocation 1 h/HumanChromosomeYBand11.2 h/HumanChromosome1Bandp13)
-  )
+  (e/translocation 1 2 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23 h/HumanChromosome6Bandq15 h/HumanChromosome6Bandq23))
+
+;; ;; ERROR in book! - there is no resolution band for Y q11.2
+;; (defclass k46_t!X_18!!p11.1_q11.2!_t!Y_1!!q11.2_p13!
+;;   :label "The 46,t(X;18)(p11.1;q11.2),t(Y;1)(q11.2;p13) karyotype"
+;;   :subclass ISCNExampleKaryotype
+;;   (owlsome n/derivedFrom n/k46_XY)
+;;   (e/translocation 1 2 h/HumanChromosomeXBandp11.1 h/HumanChromosome18Bandq11.2)
+;;   (e/translocation 1 2 h/HumanChromosomeYBandq11.2 h/HumanChromosome1Bandp13)
+;;   )
+
 (defclass k46_Y_t!X_8!!p22.3_q24.1!
   :label "The 46,Y,t(X;8)(p22.3;q24.1) karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  ;; (e/translocation 1 h/HumanChromosomeXBandp22.3 h/HumanChromosome8Bandq24.1)
-  )
+  (e/translocation 1 2 h/HumanChromosomeXBandp22.3 h/HumanChromosome8Bandq24.1))
 
 ;; QUADRUPLICATIONS
 ;; NOTE: It is not possible to indicate the orientations of the segments with the short system!
@@ -572,22 +570,23 @@
   :label "The 47,X,t(X;13)(q27;q12),inv(10)(p13q22),+21 karyotype"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  ;; (e/translocation 1 h/HumanChromosomeXBandq27 h/HumanChromosome13Bandq12)
+  (e/translocation 1 2 h/HumanChromosomeXBandq27 h/HumanChromosome13Bandq12)
   (e/inversion 1 h/HumanChromosome10Bandp13 h/HumanChromosome10Bandq22)
   (e/addition 1 h/HumanChromosome21))
 
-(defclass k48_X_t!Y_12!!q11.2_p12!_del!6!!q11!_+8_t!9_22!!q34_q11.2!_+17_-21_+22
-  :label "The 48,X,t(Y;12)(q11.2;p12),del(6)(q11),+8,t(9;22)(q34;q11.2),+17,-21,+22 karyotype"
-  :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom n/k46_XY)
-  ;; (e/translocation 1 h/HumanChromosomeYBandq11.2 h/HumanChromosome12Bandp12)
-  (e/deletion 1 h/HumanChromosome6Bandq11)
-  (e/addition 1 h/HumanChromosome8)
-  ;; (e/translocation 1 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2)
-  (e/addition 1 h/HumanChromosome17)
-  (e/deletion 1 h/HumanChromosome21)
-  (e/addition 1 h/HumanChromosome22)
-)
+;; ;; ERROR in book! - there is no resolution band for Y q11.2
+;; (defclass k48_X_t!Y_12!!q11.2_p12!_del!6!!q11!_+8_t!9_22!!q34_q11.2!_+17_-21_+22
+;;   :label "The 48,X,t(Y;12)(q11.2;p12),del(6)(q11),+8,t(9;22)(q34;q11.2),+17,-21,+22 karyotype"
+;;   :subclass ISCNExampleKaryotype
+;;   (owlsome n/derivedFrom n/k46_XY)
+;;   (e/translocation 1 2 h/HumanChromosomeYBandq11.2 h/HumanChromosome12Bandp12)
+;;   (e/deletion 1 h/HumanChromosome6Bandq11)
+;;   (e/addition 1 h/HumanChromosome8)
+;;   (e/translocation 1 2 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2)
+;;   (e/addition 1 h/HumanChromosome17)
+;;   (e/deletion 1 h/HumanChromosome21)
+;;   (e/addition 1 h/HumanChromosome22)
+;; )
 
 (defclass k49_X_inv!X!!p21q26!_+3_inv!3!!q21q26.2!_+7_+10_-20_del!20!!q11.2!_+21
   :label "The 49,X,inv(X)(p21q26),+3,inv(3)(q21q26.2),+7,+10,-20,del(20)(q11.2),+21  karyotype"
