@@ -24,11 +24,13 @@
   :iri "http://ncl.ac.uk/karyotype/karyotype"
   :prefix "kar:")
 
-(defclass Karyotype)
+(as-disjoint
+ (defclass Karyotype)
 
-(defclass Chromosome)
+ (defclass Chromosome)
 
-(defclass ChromosomeComponent)
+ (defclass ChromosomeComponent)
+)
 
 (as-disjoint-subclasses
  ChromosomeComponent
