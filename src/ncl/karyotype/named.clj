@@ -272,17 +272,15 @@
 ;;   (owlor k92_NNNN
 ;;          (owlsome derivedFrom k92_NNNN)))
 
-;; Define gender
+;; Define gender - diploid only
 
-;; TODO Description of Female/Male karyotypes for haploid, triploid, and tetraploid?
-
-;; male diploid only
+;; male
 (defclass MaleKaryotype
   :equivalent
   (owlor k46_XY
          (owlsome derivedFrom k46_XY)))
 
-;; female diploid only = those derived from 46,XX - as 46,XY is an asserted subclass of 46,XN cannot be included in the definition - what happens about 45,X?
+;; female = those derived from 46,XX - as 46,XY is an asserted subclass of 46,XN cannot be included in the definition - what happens about 45,X?
 (defclass FemaleKaryotype
   :equivalent
   (owlor k46_XX
