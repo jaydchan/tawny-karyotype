@@ -86,8 +86,6 @@
         (exactly n hasEvent (owland Addition chrom_band))
         (superclass? chrom_band h/HumanChromosomeBand)
         (exactly n hasEvent (owland Addition (owlsome hasBreakPoint chrom_band)))
-        ;; :else
-        ;; (exactly n hasEvent (owland Addition chrom_band))
         :default
         (throw
          (IllegalArgumentException.
