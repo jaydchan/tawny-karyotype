@@ -44,6 +44,10 @@
 (as-disjoint-subclasses
  Feature
   (defclass DerivativeChromosome)
+
+  (defn derivative [n chromosome & events]
+    (exactly n hasFeature (owland DerivativeChromosome chromosome events)))
+
   (defclass DicentricChromosome)
   (defclass FragileSites)
   (defclass HomogeneouslyStainingRegion)
