@@ -52,9 +52,12 @@
   (defn derivative [n chromosome & events]
     (exactly n hasFeature (owland DerivativeChromosome chromosome events)))
 
-  ;; MUST be defined before dicentric as dicentric calls isodicentric function!
-  (defclass Isochromosomes)
+  (defclass Isochromosome)
+  (defn isochromosome [n band]
+    (exactly n hasFeature (owland Isochromosome (owlsome e/hasBreakPoint band))))
+
   (defclass IsodicentricChromosome)
+  ;; MUST be defined before dicentric as dicentric calls isodicentric function!
   (defn isodicentric [n band]
     (exactly n hasFeature (owland IsodicentricChromosome (owlsome e/hasBreakPoint band))))
 
@@ -80,6 +83,9 @@
     (exactly n hasFeature (owland IsoderivativeChromosome chromosome arm events)))
 
   (defclass MarkerChromosome)
+  (defn marker [n]
+    (exactly n hasFeature (owland MarkerChromosome h/HumanChromosome)))
+
   (defclass Neocentromere)
   
   (defclass PseudodicentricChromosome)
@@ -91,7 +97,31 @@
     (exactly n hasFeature (owland PseudoisodicentricChromosome (owlsome e/hasBreakPoint band))))
 
   (defclass RecombiantChromosome)
+
   (defclass RingChromosome)
+  ;; TOFIX - ORDER IS IMPORTANT
+  (defn ring
+    ([n chromosome]
+       (exactly n hasFeature (owland RingChromosome chromosome)))
+    ([n band1 band2]
+       (exactly n hasFeature (owland RingChromosome (owlsome e/hasBreakPoint band1 band2))))
+    ([n band1 band2 band3 band4]
+       (exactly n hasFeature (owland RingChromosome (owlsome e/hasBreakPoint band1 band2 band3 band4))))
+    ([n band1 band2 band3 band4 band5]
+       (exactly n hasFeature (owland RingChromosome (owlsome e/hasBreakPoint band1 band2 band3 band4 band5)))))
+
   (defclass TelomericAssociations)
+
   (defclass TricentricRingChromosome)
+
+  (defclass UniparentalDisomy)
+  ;; (defn upd [n chromosome parent]
+  ;;   (exactly n hasFeature (owland UniparentalDisomy chromosome parent)))
+
 )
+
+(as-disjoint-subclasses
+ RingChromosome
+ (defclass MonoCentricRingChromosome)
+ (defclass DicentricRingChromosome)
+ (defclass TricentricRingChromosome))
