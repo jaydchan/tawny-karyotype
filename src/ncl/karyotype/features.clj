@@ -48,7 +48,9 @@
 ;; define all the structural features
 (as-disjoint-subclasses
  Feature
+
   (defclass DerivativeChromosome)
+  ;; if whole arm translocation can be defined as either rob or der
   (defn derivative [n chromosome & events]
     (exactly n hasFeature (owland DerivativeChromosome chromosome events)))
 
@@ -98,6 +100,11 @@
 
   (defclass RecombiantChromosome)
 
+  ;; if whole arm translocation can be defined as either rob or der
+  (defclass RobertsonianTranslocation)
+  (defn robertsonian [n band1 band2]
+    (exactly n hasFeature (owland RobertsonianTranslocation (owlsome e/hasBreakPoint band1 band2))))
+
   (defclass RingChromosome)
   ;; TOFIX - ORDER IS IMPORTANT
   (defn ring
@@ -111,6 +118,11 @@
        (exactly n hasFeature (owland RingChromosome (owlsome e/hasBreakPoint band1 band2 band3 band4 band5)))))
 
   (defclass TelomericAssociations)
+
+  ;; TOFIX - hard-coded!
+  (defclass TricentricChromosome)
+  (defn tricentric [n band1 band2 band3 band4]
+      (exactly n hasFeature (owland TricentricChromosome (owlsome e/hasBreakPoint band1 band2 band3 band4))))
 
   (defclass TricentricRingChromosome)
 
