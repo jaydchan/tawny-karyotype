@@ -79,14 +79,33 @@
  (defclass k46_XY
    :label "The 46,XY karyotype"))
 
-;; ;; TODO define all triploid base karyotypes
-;; (defclass k69_NNN
-;;   :label "The 69,N karyotype"
-;;   :subclass BaseKaryotype)
-;; ;; TODO define all tetraploid base karyotypes
-;; (defclass k92_NNNN
-;;   :label "The 92,N karyotype"
-;;   :subclass BaseKaryotype)
+;; define all triploid base karyotypes
+(defclass k69_XNN
+  :label "The 69,XNN karyotype"
+  :subclass BaseKaryotype)
+(as-disjoint-subclasses
+ k69_XNN
+ (defclass k69_XXX
+   :label "The 69,XXX karyotype")
+ (defclass k69_XXY
+   :label "The 69,XXY karyotype")
+ (defclass k69_XYY
+   :label "The 69,XYY karyotype"))
+
+;; define all tetraploid base karyotypes #CHECK
+(defclass k92_XNNN
+  :label "The 92,XNNN karyotype"
+  :subclass BaseKaryotype)
+(as-disjoint-subclasses
+ k92_XNNN
+ (defclass k92_XXXX
+   :label "The 92,XXXX karyotype")
+ (defclass k92_XXXY
+   :label "The 92,XXXY karyotype")
+ (defclass k92_XXYY
+   :label "The 92,XXYY karyotype")
+ (defclass k92_XYYY
+   :label "The 92,XYYY karyotype"))
 
 ;; Define the namedKaryotypes
 
@@ -122,7 +141,7 @@
    (owlsome e/hasEvent
             (owland e/Addition h/HumanChromosomeX))))
 
-;; TODO An individual with no X chromosome
+;; #TODO An individual with no X chromosome
 (defclass Lethal
   :subclass NamedKaryotype)
 
@@ -186,22 +205,25 @@
 
 ;; Named Karyotypes that are caused by structural abnormalities
 
-;; TODO An individual with loss of part of the short arm of chromosome 1
+;; An individual with loss of part of the short arm of chromosome 1
 (defclass DeletionSyndrome1p36
-  :subclass NamedKaryotype)
+  :subclass NamedKaryotype
+  :equivalent
+  (owland
+   (owlsome derivedFrom k46_XN)
+   (owlsome e/hasEvent
+            (owland e/Deletion
+                    (owlsome e/hasBreakPoint h/HumanChromosome1Bandp)))))
 
-;; TODO An individual with the partial deletion of chromosomal material of the short arm of chromosome 4 ;;aka del(4p16.3) ;;WHS, Chromosome Deletion Dillian 4p Syndrome, Pitt-Rogers-Danks Syndrome, PRDS, Pitt Syndrome
+;; An individual with the partial deletion of chromosomal material of the short arm of chromosome 4 ;;aka del(4p16.3) ;;WHS, Chromosome Deletion Dillian 4p Syndrome, Pitt-Rogers-Danks Syndrome, PRDS, Pitt Syndrome
 (defclass WolfHirschhornSydrome
-  :subclass NamedKaryotype)
-
-;; (defclass WolfHirschhornSydrome
-;;   :subclass NamedKaryotype
-;;   :equivalent
-;;   (owland
-;;    (owlsome derivedFrom k46_XN)
-;;    (exactly 1 e/hasEvent
-;;             (owland e/Deletion
-;;                     (exactly 2 e/hasBreakPoint HumanChromosome4Band4p16.3)))))
+  :subclass NamedKaryotype
+  :equivalent
+  (owland
+   (owlsome derivedFrom k46_XN)
+   (owlsome e/hasEvent 
+            (owland e/Deletion 
+                    (owlsome e/hasBreakPoint h/HumanChromosome4Bandp)))))
   
 ;; TODO An individual with a truncated short arm on chromosome 5 ;;aka cry of the cat
 (defclass CriDuChat
@@ -261,16 +283,15 @@
   (owlor k46_XN
          (owlsome derivedFrom k46_XN)))
 
-;; TODO Ploidy description for triploid and tetraploid karyotypes when the base karyotypes have been implemented
-;; (defclass TriploidKaryotype
-;;   :equivalent
-;;   (owlor k69_NNN
-;;          (owlsome derivedFrom k69_NNN)))
+(defclass TriploidKaryotype
+  :equivalent
+  (owlor k69_XNN
+         (owlsome derivedFrom k69_XNN)))
 
-;; (defclass TetraploidKaryotype
-;;   :equivalent
-;;   (owlor k92_NNNN
-;;          (owlsome derivedFrom k92_NNNN)))
+(defclass TetraploidKaryotype
+  :equivalent
+  (owlor k92_XNNN
+         (owlsome derivedFrom k92_XNNN)))
 
 ;; Define gender - diploid only
 
@@ -344,8 +365,6 @@
 
 ;; Define structural abnormalities - in order for these to work, need to import the axioms from h/human and e/events
 
-;; TODO: consider if they are h/HumanChromosomeBand, h/HumanChromosomeCentromere, h/HumanChromosomeComponent, etc...
-
 (defclass StructuralAbnormalKaryotypeAddition
   :equivalent
   (owlsome e/hasEvent
@@ -364,6 +383,7 @@
            (owland e/Duplication
                    (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
+;; #CHECK
 (defclass StructuralAbnormalKaryotypeFission
   :equivalent
   (owlsome e/hasEvent
@@ -392,7 +412,7 @@
   :equivalent
   (owlsome e/hasEvent
            (owland e/Translocation
-                   (owlsome e/hasBreakPoint k/ChromosomeComponent))))
+                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeTriplication
   :equivalent
