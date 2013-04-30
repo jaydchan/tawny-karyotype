@@ -137,8 +137,7 @@
           (humanbands2 chromosome is_a (str bandgroup band) (str bandgroup part_of))))
       bands))))
 
-
-;; TODO disjoints for subclasses of HumanCentromere, HumanTelomere, HumanChromosomeBands
+;; TOFIX - p10 and q10 are disjoint to Cen
 ;; function to define all the human bands
 (defn humanbands [chromosome & bands]
   
@@ -154,23 +153,26 @@
     (humanbands2 bandgroup bandgroupp)
     (humanbands2 bandgroup bandgroupq)
     
-    (doall
-     (map
-      (fn [band]
-        (if (vector? band)
-          (if (pband? (first band))
-            (humanbands3 chromosome bandgroupp (first band) (rest band))
-            (humanbands3 chromosome bandgroupq (first band) (rest band)))
-          (if (pqband? (str band))
-            (if (pband? (str band))
-              (humanbands2 chromosome bandgroupp (str bandgroup band))
-              (humanbands2 chromosome bandgroupq (str bandgroup band)))
-            (if (ter? band)
-              (humanbands2 chromosome HumanTelomere (str group band))
-              (humanbands2 chromosome HumanCentromere (str group band))))))
-      bands))))
+    (as-disjoint
+     (doall
+      (map
+       (fn [band]
+         (if (vector? band)
+           (if (pband? (first band))
+             (humanbands3 chromosome bandgroupp (first band) (rest band))
+             (humanbands3 chromosome bandgroupq (first band) (rest band)))
+           (if (pqband? (str band))
+             (if (pband? (str band))
+               (humanbands2 chromosome bandgroupp (str bandgroup band))
+               (humanbands2 chromosome bandgroupq (str bandgroup band)))
+             (if (ter? band)
+               (humanbands2 chromosome HumanTelomere (str group band))
+               (flatten 
+                [(humanbands2 chromosome HumanCentromere (str group band))
+                (humanbands2 chromosome bandgroupp (str bandgroup "p10") (str group band))
+                (humanbands2 chromosome bandgroupq (str bandgroup "q10") (str group band))])))))
+       bands)))))
 
- 
 (humanbands
  HumanChromosome1 
  "pTer"
@@ -774,3 +776,109 @@
  "q12"
  "qTer"
  )
+
+(disjointclasses
+ HumanChromosome1Band
+ HumanChromosome2Band
+ HumanChromosome3Band
+ HumanChromosome4Band
+ HumanChromosome5Band
+ HumanChromosome6Band
+ HumanChromosome7Band
+ HumanChromosome8Band
+ HumanChromosome9Band
+ HumanChromosome10Band
+ HumanChromosome11Band
+ HumanChromosome12Band
+ HumanChromosome13Band
+ HumanChromosome14Band
+ HumanChromosome15Band
+ HumanChromosome16Band
+ HumanChromosome17Band
+ HumanChromosome18Band
+ HumanChromosome19Band
+ HumanChromosome20Band
+ HumanChromosome21Band
+ HumanChromosome22Band
+ HumanChromosomeXBand
+ HumanChromosomeYBand)
+
+(disjointclasses
+ HumanChromosome1Cen
+ HumanChromosome2Cen
+ HumanChromosome3Cen
+ HumanChromosome4Cen
+ HumanChromosome5Cen
+ HumanChromosome6Cen
+ HumanChromosome7Cen
+ HumanChromosome8Cen
+ HumanChromosome9Cen
+ HumanChromosome10Cen
+ HumanChromosome11Cen
+ HumanChromosome12Cen
+ HumanChromosome13Cen
+ HumanChromosome14Cen
+ HumanChromosome15Cen
+ HumanChromosome16Cen
+ HumanChromosome17Cen
+ HumanChromosome18Cen
+ HumanChromosome19Cen
+ HumanChromosome20Cen
+ HumanChromosome21Cen
+ HumanChromosome22Cen
+ HumanChromosomeXCen
+ HumanChromosomeYCen)
+
+(disjointclasses
+ HumanChromosome1pTer
+ HumanChromosome2pTer
+ HumanChromosome3pTer
+ HumanChromosome4pTer
+ HumanChromosome5pTer
+ HumanChromosome6pTer
+ HumanChromosome7pTer
+ HumanChromosome8pTer
+ HumanChromosome9pTer
+ HumanChromosome10pTer
+ HumanChromosome11pTer
+ HumanChromosome12pTer
+ HumanChromosome13pTer
+ HumanChromosome14pTer
+ HumanChromosome15pTer
+ HumanChromosome16pTer
+ HumanChromosome17pTer
+ HumanChromosome18pTer
+ HumanChromosome19pTer
+ HumanChromosome20pTer
+ HumanChromosome21pTer
+ HumanChromosome22pTer
+ HumanChromosomeXpTer
+ HumanChromosomeYpTer
+ HumanChromosome1qTer
+ HumanChromosome2qTer
+ HumanChromosome3qTer
+ HumanChromosome4qTer
+ HumanChromosome5qTer
+ HumanChromosome6qTer
+ HumanChromosome7qTer
+ HumanChromosome8qTer
+ HumanChromosome9qTer
+ HumanChromosome10qTer
+ HumanChromosome11qTer
+ HumanChromosome12qTer
+ HumanChromosome13qTer
+ HumanChromosome14qTer
+ HumanChromosome15qTer
+ HumanChromosome16qTer
+ HumanChromosome17qTer
+ HumanChromosome18qTer
+ HumanChromosome19qTer
+ HumanChromosome20qTer
+ HumanChromosome21qTer
+ HumanChromosome22qTer
+ HumanChromosomeXqTer
+ HumanChromosomeYqTer)
+
+;; TODO - Bands, Cen and Ter
+;; (disjointclasses
+;;  (isubclasses HumanChromosomeBand))
