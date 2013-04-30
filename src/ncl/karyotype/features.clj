@@ -50,9 +50,9 @@
  Feature
 
   (defclass DerivativeChromosome)
-  ;; if whole arm translocation can be defined as either rob or der
-  (defn derivative [n chromosome & events]
-    (exactly n hasFeature (owland DerivativeChromosome chromosome events)))
+  ;; TODO if whole arm translocation can be defined as either rob or der
+  (defn derivative [n & args]
+    (exactly n hasFeature (owland DerivativeChromosome args)))
 
   (defclass Isochromosome)
   (defn isochromosome [n band]
@@ -127,8 +127,6 @@
   (defclass TricentricRingChromosome)
 
   (defclass UniparentalDisomy)
-  ;; (defn upd [n chromosome parent]
-  ;;   (exactly n hasFeature (owland UniparentalDisomy chromosome parent)))
 
 )
 
