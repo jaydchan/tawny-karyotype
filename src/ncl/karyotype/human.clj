@@ -18,12 +18,29 @@
 
 (ns ncl.karyotype.human
   (:use [tawny.owl])
-  (:require [tawny [reasoner :as r]]
+  (:require [tawny
+             [reasoner :as r]
+             [read]]
             [ncl.karyotype [karyotype :as k]]))
 
 (defontology human
   :iri "http://ncl.ac.uk/karyotype/human"
   :prefix "hum:")
+
+(defn pband? [band]
+  (re-find #"p" band))
+
+(defn qband? [band]
+  (re-find #"q" band))
+
+(defn pqband? [band]
+  (not (re-find #"Cen|Ter" band)))
+
+(defn ter? [band]
+  (re-find #"Ter" band))
+
+(defn cen? [band]
+  (re-find #"Cen" band))
 
 (defclass HumanChromosome
   :subclass k/Chromosome)
@@ -40,16 +57,16 @@
 (as-disjoint
  (defclass HumanAutosome
    :subclass HumanChromosome)
- 
+
  (defclass HumanAllosome
    :subclass HumanChromosome))
 
 ;; define object properties
-(defoproperty isPartOf
+(defoproperty isSubBandOf
   :range HumanChromosomeBand
   :domain HumanChromosomeBand)
 
-(defoproperty hasPart
+(defoproperty hasSubBand
   :range HumanChromosomeBand
   :domain HumanChromosomeBand)
 
@@ -57,124 +74,124 @@
 (as-disjoint
  (doall
   (map
-   #(do
-      (let [classname (str "HumanChromosome" %)]
-        (intern
-         *ns* (symbol classname)
-         ;; human chromosome defns here.
-         (owlclass classname
-                   :subclass HumanAutosome)
-         
-         )))
-   (flatten (list (range 1 23))))))
+   #(let [classname (str "HumanChromosome" %)]
+      (tawny.read/intern-entity
+       ;; human chromosome defns here.
+       (owlclass classname
+                 :subclass HumanAutosome)
+       ))
+   (range 1 23))))
 
 ;; define all the human chromosomes - allosomes
-(as-disjoint
- (doall
-  (map
-   #(do
-      (let [classname (str "HumanChromosome" %)]
-        (intern
-         *ns* (symbol classname)
-         ;; human chromosome defns here.
-         (owlclass classname
-                   :subclass HumanAllosome)
-         
-         )))
-   (flatten (list "X" "Y")))))
+(defclass HumanChromosomeX
+  :subclass HumanAllosome)
 
-(defn pqband? [band]
-  (not (re-find #"Cen|Ter" band)))
+(defclass HumanChromosomeY
+  :subclass HumanAllosome)
 
-(defn- humanbands2
-  ([parent name]
-     (intern *ns*
-             (symbol name)
-             (owlclass name
-                       :subclass parent)))
-  ([chromosome parent name]
-     (if (pqband? name)
-       (intern *ns*
-               (symbol name)
-               (owlclass name
-                         :subclass parent
-                         (owlsome k/isBandOf chromosome)))
-       (intern *ns*
-               (symbol name)
-               (owlclass name
-                         :subclass parent
-                         (owlsome k/isComponentOf chromosome)))))
-  ([chromosome parent name band]
-     (intern *ns*
-             (symbol name)
-             (owlclass name
-                       :subclass parent
-                       (owlsome k/isBandOf chromosome)
-                       (owlsome isPartOf band))))
-  )
+(defn create-class-with-superclasses
+  [name & parents]
+  (tawny.read/intern-entity
+   (owlclass name :subclass parents)))
 
-(defn pband? [band]
-  (re-find #"p" band))
+(defn group-for-band
+  "Given a band return the appropriate bandgroup"
+  [bandgroupp bandgroupq band]
+  (cond
+   (ter? band)
+   HumanTelomere
+   (cen? band)
+   HumanCentromere
+   (pband? band)
+   bandgroupp
+   (qband? band)
+   bandgroupq
+   :default
+   (throw (IllegalArgumentException.
+           (str "Band syntax not recognised: " band)))))
 
-(defn pqband? [band]
-  (not (re-find #"Cen|Ter" band)))
+(defn human-sub-band
+  "Adds NAME as a sub-band of BAND and a kind of
+PARENT, which is either p or q band."
+  [parent name band]
+  (create-class-with-superclasses
+   name parent
+   (owlsome isSubBandOf band)))
 
-(defn ter? [band]
-  (re-find #"Ter" band))
+(defn human-centromere
+  [bandgroupp bandgroupq chromosome bandgroup name]
+  ;; which is a centromere, so describe it as such
+  (create-class-with-superclasses
+   name HumanCentromere
+   (owlsome k/isComponentOf chromosome))
+  ;; and add two classes p10 and q10 which are part of it.
+  (as-disjoint
+   (create-class-with-superclasses (str bandgroup "p10") bandgroupp)
+   (create-class-with-superclasses (str bandgroup "q10") bandgroupq)))
 
-(defn- humanbands3 [chromosome is_a part_of bands]
+(use 'clojure.tools.trace)
+(deftrace humanbands3 [chromosome parent container bands]
   (let [bandgroup (str
                    (.getFragment
                     (.getIRI
                      chromosome)) "Band")]
-    
-    (humanbands2 chromosome is_a (str bandgroup part_of))
-    (doall
-     (map
-      (fn [band]
-        (if (vector? band)
-          (humanbands3 chromosome is_a (first band) (rest band))
-          (humanbands2 chromosome is_a (str bandgroup band) (str bandgroup part_of))))
-      bands))))
+    (create-class-with-superclasses (str bandgroup container) parent)
+    (doseq [band bands]
+      (if (vector? band)
+        (humanbands3 chromosome parent (first band) (rest band))
+        (human-sub-band parent (str bandgroup band)
+                     (str bandgroup container))))))
 
-;; TOFIX - p10 and q10 are disjoint to Cen
-;; function to define all the human bands
+
 (defn humanbands [chromosome & bands]
-  
   (let [group (str
                (.getFragment
                 (.getIRI
                  chromosome)))
         bandgroup (str group "Band")
         bandgroupp (str bandgroup "p")
-        bandgroupq (str bandgroup "q")]
-    
-    (humanbands2 HumanChromosomeBand bandgroup)
-    (humanbands2 bandgroup bandgroupp)
-    (humanbands2 bandgroup bandgroupq)
-    
+        bandgroupq (str bandgroup "q")
+        fgroup (partial group-for-band
+                        bandgroupp bandgroupq)
+        ]
+    ;; generate the band groups that all the entities we create will be part
+    ;; of.
+    (create-class-with-superclasses
+     bandgroup
+     (owlsome k/isBandOf chromosome)
+     HumanChromosomeBand)
+    ;; first use
+    (create-class-with-superclasses bandgroupp bandgroup)
+    (create-class-with-superclasses bandgroupq bandgroup)
+
     (as-disjoint
-     (doall
-      (map
-       (fn [band]
-         (if (vector? band)
-           (if (pband? (first band))
-             (humanbands3 chromosome bandgroupp (first band) (rest band))
-             (humanbands3 chromosome bandgroupq (first band) (rest band)))
-           (if (pqband? (str band))
-             (if (pband? (str band))
-               (humanbands2 chromosome bandgroupp (str bandgroup band))
-               (humanbands2 chromosome bandgroupq (str bandgroup band)))
-             (if (ter? band)
-               (humanbands2 chromosome HumanTelomere (str group band))
-               (flatten 
-                [(humanbands2 chromosome HumanCentromere (str group band))
-                (humanbands2 chromosome bandgroupp (str bandgroup "p10") (str group band))
-                (humanbands2 chromosome bandgroupq (str bandgroup "q10") (str group band))])))))
-       bands)))))
+     (doseq [band bands]
+       (cond
+        (vector? band)
+        ;; we have a set of bands, so we work over all of these
+        (humanbands3 chromosome
+                     (fgroup (first band))
+                     (first band) (rest band))
+        ;; therefore we have a single band
+        (cen? band)
+        (human-centromere bandgroupp bandgroupq chromosome
+                          bandgroup (str group band))
+        (ter? band)
+        (create-class-with-superclasses
+         (str group band)
+         (fgroup band)
+         (owlsome k/isComponentOf chromosome))
+        (or (pband? band)
+            (qband? band))
+        (create-class-with-superclasses
+         (str bandgroup band)
+         (fgroup band))
+        :default
+        (throw (IllegalArgumentException.
+                (str "Band must be string or sequence:" band))))))))
 
 (humanbands
- HumanChromosome1 
+ HumanChromosome1
  "pTer"
  ["p36.3" "p36.33" "p36.32" "p36.31"]
  ["p36.2" "p36.23" "p36.22" "p36.21"]
@@ -829,56 +846,7 @@
  HumanChromosomeXCen
  HumanChromosomeYCen)
 
-(disjointclasses
- HumanChromosome1pTer
- HumanChromosome2pTer
- HumanChromosome3pTer
- HumanChromosome4pTer
- HumanChromosome5pTer
- HumanChromosome6pTer
- HumanChromosome7pTer
- HumanChromosome8pTer
- HumanChromosome9pTer
- HumanChromosome10pTer
- HumanChromosome11pTer
- HumanChromosome12pTer
- HumanChromosome13pTer
- HumanChromosome14pTer
- HumanChromosome15pTer
- HumanChromosome16pTer
- HumanChromosome17pTer
- HumanChromosome18pTer
- HumanChromosome19pTer
- HumanChromosome20pTer
- HumanChromosome21pTer
- HumanChromosome22pTer
- HumanChromosomeXpTer
- HumanChromosomeYpTer
- HumanChromosome1qTer
- HumanChromosome2qTer
- HumanChromosome3qTer
- HumanChromosome4qTer
- HumanChromosome5qTer
- HumanChromosome6qTer
- HumanChromosome7qTer
- HumanChromosome8qTer
- HumanChromosome9qTer
- HumanChromosome10qTer
- HumanChromosome11qTer
- HumanChromosome12qTer
- HumanChromosome13qTer
- HumanChromosome14qTer
- HumanChromosome15qTer
- HumanChromosome16qTer
- HumanChromosome17qTer
- HumanChromosome18qTer
- HumanChromosome19qTer
- HumanChromosome20qTer
- HumanChromosome21qTer
- HumanChromosome22qTer
- HumanChromosomeXqTer
- HumanChromosomeYqTer)
-
+ 
 ;; TODO - Bands, Cen and Ter
 ;; (disjointclasses
 ;;  (isubclasses HumanChromosomeBand))
