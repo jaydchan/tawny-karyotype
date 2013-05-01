@@ -129,8 +129,7 @@ PARENT, which is either p or q band."
    (create-class-with-superclasses (str bandgroup "p10") bandgroupp)
    (create-class-with-superclasses (str bandgroup "q10") bandgroupq)))
 
-(use 'clojure.tools.trace)
-(deftrace humanbands3 [chromosome parent container bands]
+(defn- humanbands3 [chromosome parent container bands]
   (let [bandgroup (str
                    (.getFragment
                     (.getIRI
