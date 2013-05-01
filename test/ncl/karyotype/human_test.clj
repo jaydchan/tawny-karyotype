@@ -34,8 +34,3 @@
 (deftest Basic
   (is (r/consistent?))
   (is (r/coherent?)))
-
-
-
-
-
