@@ -35,6 +35,7 @@
 (owlimport k/karyotype)
 (owlimport h/human)
 (owlimport e/events)
+(owlimport f/features)
 (owlimport n/named)
 
 (defclass ISCNExampleKaryotype
@@ -89,35 +90,50 @@
   :comment "ISCN2009 pg 56 -> 'A karyotype with one X
   chromosome (Turner syndrome).'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (e/deletion 1 h/HumanAllosome))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XN)
+            (e/deletion 1 h/HumanAllosome))))
 
 (defclass k47_XXY
   :label "The 47,XXY karyotype"
   :comment "ISCN2009 pg 56 -> 'A karyotype with two X
   chromosomes and one Y chromosome (Klinefelter syndrome).'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosomeX))))
 
 (defclass k47_XXX
   :label "The 47,XXX karyotype"
   :comment "ISCN2009 pg 56 -> 'A karyotype with three X
   chromosomes.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XX) (e/addition 1 h/HumanChromosomeX))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XX)
+            (e/addition 1 h/HumanChromosomeX))))
 
 (defclass k47_XYY
   :label "The 47,XYY karyotype"
   :comment "ISCN2009 pg 56 -> 'A karyotype with one X
   chromosome and two Y chromosomes.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosomeY))))
 
 (defclass k48_XXXY
   :label "The 48,XXXY karyotype"
   :comment "ISCN2009 pg 56 -> 'A karyotype with three X
   chromosomes and one Y chromosome.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosomeX))))
 
 ;; mos 47,XXY[10]/46,XY[20]
 ;; mos 45,X[25]/47,XXX[12]/46,XX[13]
@@ -160,41 +176,57 @@
   (e/addition 1 h/HumanChromosomeX)
   (e/addition 1 h/HumanChromosomeY))
 
-;; example acquired chromosome abnormalities with a constitutional sex chromosome abnormalities
+;; example acquired chromosome abnormalities with a constitutional sex
+;; chromosome abnormalities
 (defclass k48_XXYc_+X
   :label "The 48,XXYc,+X karyotype"
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired additional
   X chromosome in a patient with Klinefelter syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX))) ;;aka 47,XXY
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosomeX))) ;;aka 47,XXY
   (e/addition 1 h/HumanChromosomeX))
 (defclass k46_Xc_+X
   :label "The 46,Xc,+X karyotype"
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired additional
   X chromosome in a patient with Turner syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (e/deletion 1 h/HumanAutosome))) ;;aka 45,X
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XN)
+            (e/deletion 1 h/HumanAutosome))) ;;aka 45,X
   (e/addition 1 h/HumanChromosomeX))
 (defclass k46_XXYc_-X
   :label "The 46,XXYc,-X karyotype"
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired loss of
   one X chromosome in a patient with Klinefelter syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX))) ;;aka 47,XXY    
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosomeX))) ;;aka 47,XXY
   (e/deletion 1 h/HumanChromosomeX))
 (defclass k44_Xc_-X
   :label "The 44,Xc,-X karyotype"
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired loss of
   the X chromosome in a patient with Turner syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (e/deletion 1 h/HumanAllosome))) ;;aka 45,X 
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XN)
+            (e/deletion 1 h/HumanAllosome))) ;;aka 45,X
   (e/deletion 1 h/HumanChromosomeX))
 (defclass k46_Xc_+21
   :label "The 46,Xc,+21 karyotype"
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired eaxtra
   chromosome 21 in a patient with Turner syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (e/deletion 1 h/HumanAllosome))) ;;aka 45,X
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XN)
+            (e/deletion 1 h/HumanAllosome))) ;;aka 45,X
   (e/addition 1 h/HumanChromosome21))
 
 ;; TODO How do I model this?
@@ -211,7 +243,11 @@
   :comment "ISCN2009 pg 57 -> 'For constitutional markers, there is a
   space between mar and c.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanAllosome) (f/marker 1)))) ;;aka 48,XXY,mar
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanAllosome)
+            (f/marker 1)))) ;;aka 48,XXY,mar
 
 ;; example acquired autosomal abnormalities
 (defclass k47_XX_+21
@@ -249,14 +285,20 @@
   :comment "ISCN2009 pg 58 -> 'An acquired extra chromosome 21 in a
   patient with Down syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosome21))) ;;aka 47,XY,+21
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosome21))) ;;aka 47,XY,+21
   (e/addition 1 h/HumanChromosome21))
 (defclass k46_XY_+21c_-21
   :label "The 46,XY,+21c,-21 karyotype"
   :comment "ISCN2009 pg 58 -> 'Acquired loss of one chromosome 21 in a
   patient with Down syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosome21))) ;;aka 47,XY,+21 
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosome21))) ;;aka 47,XY,+21
   (e/deletion 1 h/HumanChromosome21))
 
 
@@ -284,7 +326,8 @@
   (owlsome n/derivedFrom n/k69_XXY)
   (e/deletion 1 h/HumanChromosome7Bandq22)
   (e/inversion 1 h/HumanChromosome7Bandp13 h/HumanChromosome7Bandq22)
-  (e/translocation 1 2 h/HumanChromosome7Bandp15 h/HumanChromosome14Bandq11.1))
+  (e/translocation 1 2 h/HumanChromosome7Bandp15
+                   h/HumanChromosome14Bandq11.1))
 
 ;; REDEFINE
 (defclass k70_XXX_+del!7!!p11.2!
@@ -338,7 +381,8 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
   (f/derivative 1 h/HumanChromosome1
-                (e/translocation 1 2 h/HumanChromosome1Bandp22 h/HumanChromosome3Bandq13.1)))
+                (e/translocation 1 2 h/HumanChromosome1Bandp22
+                                 h/HumanChromosome3Bandq13.1)))
 
 (defclass k46_XX_ins!1_?!!p22_?!
   :label "The 46,XX,ins(1;?)(p22;?) karyotype"
@@ -347,7 +391,8 @@
   1 is normal.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/insertion 1 h/HumanChromosome1Bandp22 h/HumanChromosomeBand h/HumanChromosomeBand))
+  (e/insertion 1 h/HumanChromosome1Bandp22 h/HumanChromosomeBand
+               h/HumanChromosomeBand))
 
 (defclass k45_XY_-10_der!10!t!10_17!!q22_p12!
   :label "The 45,XY,-10,der(10)t(10;17)(q22;p12) karyotype"
@@ -358,7 +403,8 @@
   (owlsome n/derivedFrom n/k46_XY)
   (e/deletion 1 h/HumanChromosome10)
   (f/derivative 1 h/HumanChromosome10
-                (e/translocation 1 2 h/HumanChromosome10Bandq22 h/HumanChromosome17Bandp12)))
+                (e/translocation 1 2 h/HumanChromosome10Bandq22
+                                 h/HumanChromosome17Bandp12)))
 
 
 ;; ADDITIONAL MATERIAL OF UNKNOWN ORIGIN
@@ -399,7 +445,8 @@
   that unknown material had replaced the segment 5q13qter.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/insertion 1 h/HumanChromosome5Bandq13 h/HumanChromosomeBand h/HumanChromosomeBand))
+  (e/insertion 1 h/HumanChromosome5Bandq13 h/HumanChromosomeBand
+               h/HumanChromosomeBand))
 
 
 ;; DELETIONS
@@ -450,7 +497,8 @@
 ;; 46,XX,der(6)(pter->q25.2::p22.2->pter)
 ;; 46,XX,rec(6)dup(6p)inv(6)(p22.2q25.2)mat
 
-;; example derivative chromosome generated by more than one rearrangement within a chromosome
+;; example derivative chromosome generated by more than one
+;; rearrangement within a chromosome
 (defclass k46_XY_der!9!del!9!!p12!del!9!!q31!
   :label "The 46,XY,der(9)del(9)(p12)del(9)(q31) karyotype"
   :comment "ISCN2009 pg 62 -> 'A derivative chromosome 9 rsulting from
@@ -458,8 +506,8 @@
   in bands 9p12 and 9q31.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (f/derivative 1 h/HumanChromosome9 
-                (e/deletion 1 h/HumanChromosome9Bandp12) 
+  (f/derivative 1 h/HumanChromosome9
+                (e/deletion 1 h/HumanChromosome9Bandp12)
                 (e/deletion 1 h/HumanChromosome9Bandq31)))
 
 (defclass k46_XY_der!9!inv!9!!p13p23!del!9!!q22q33!
@@ -470,9 +518,11 @@
   and 9q33.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (f/derivative 1 h/HumanChromosome9 
-                (e/inversion 1 h/HumanChromosome9Bandp13 h/HumanChromosome9Bandp23) 
-                (e/deletion 1 h/HumanChromosome9Bandq22 h/HumanChromosome9Bandq33)))
+  (f/derivative 1 h/HumanChromosome9
+                (e/inversion 1 h/HumanChromosome9Bandp13
+                             h/HumanChromosome9Bandp23)
+                (e/deletion 1 h/HumanChromosome9Bandq22
+                            h/HumanChromosome9Bandq33)))
 
 (defclass k46_XX_der!7!add!7!!p22!add!7!!q22!
   :label "The 46,XX,der(7)add(7)(p22)add(7)(q22) karyotype"
@@ -482,8 +532,8 @@
   to 7q22, replacing the segment 7q22qter.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (f/derivative 1 h/HumanChromosome7 
-                (e/addition 1 h/HumanChromosome7Bandp22) 
+  (f/derivative 1 h/HumanChromosome7
+                (e/addition 1 h/HumanChromosome7Bandp22)
                 (e/addition 1 h/HumanChromosome7Bandq22)))
 
 (defclass k46_XX_der!5!add!5!!p15.1!del!5!!q13!
@@ -493,11 +543,12 @@
   terminal deletion of the long arm distal to band 5q13.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (f/derivative 1 h/HumanChromosome5 
-                (e/addition 1 h/HumanChromosome5Bandp15.1) 
+  (f/derivative 1 h/HumanChromosome5
+                (e/addition 1 h/HumanChromosome5Bandp15.1)
                 (e/addition 1 h/HumanChromosome5Bandq13)))
 
-;; example derivative chromosomes resulting from one rearrangement involving two or more chromosomes
+;; example derivative chromosomes resulting from one rearrangement
+;; involving two or more chromosomes
 (defclass k46_Y_der!X!t!X_8!!p22.3_q24.1!
   :label "The 46,Y,der(X)t(X;8)(p22.3;q24.1) karyotype"
   :comment "ISCN2009 pg 63 -> 'A male showing a derivative X
@@ -505,7 +556,8 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
   (f/derivative 1 h/HumanChromosomeX
-                (e/translocation 1 2 h/HumanChromosomeXBandp22.3 h/HumanChromosome8Bandq24.1)))
+                (e/translocation 1 2 h/HumanChromosomeXBandp22.3
+                                 h/HumanChromosome8Bandq24.1)))
 
 (defclass k46_XX_der!1!t!1_3!!p22_q13.1!
   :label "The 46,XX,der(1)t(1;3)(p22;q13.1) karyotype"
@@ -519,7 +571,8 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                (e/translocation 1 2 h/HumanChromosome1Bandp22 h/HumanChromosome3Bandq13.1)))
+                (e/translocation 1 2 h/HumanChromosome1Bandp22
+                                 h/HumanChromosome3Bandq13.1)))
 
 (defclass k45_XY_der!1!t!1_3!!p22_q13.1!_-3
   :label "The 45,XY,der(1)t(1;3)(p22;q13.1),-3 karyotype"
@@ -530,11 +583,13 @@
   explicit such assumptions.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (f/derivative 1 h/HumanChromosome1 
-                (e/translocation 1 2 h/HumanChromosome1Bandp22 h/HumanChromosome3Bandq13.1))
+  (f/derivative 1 h/HumanChromosome1
+                (e/translocation 1 2 h/HumanChromosome1Bandp22
+                                 h/HumanChromosome3Bandq13.1))
   (e/deletion 1 h/HumanChromosome3))
 
-;; example derivative chromosome generated by more than one rearrangement involving two or more chromosome
+;; example derivative chromosome generated by more than one
+;; rearrangement involving two or more chromosome
 (defclass k46_XX_der!1!t!1_3!!p32_q21!t!1_11!!q25_q13!
   :label "The 46,XX,der(1)t(1;3)(p32;q21)t(1;11)(q25;q13) karyotype"
   :comment "ISCN2009 pg 63 -> 'A derivative chromosome 1 generated by
@@ -544,8 +599,10 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                (e/translocation 1 2 h/HumanChromosome1Bandp32 h/HumanChromosome3Bandq21)
-                (e/translocation 1 2 h/HumanChromosome1Bandq25 h/HumanChromosome11Bandq13)))
+                (e/translocation 1 2 h/HumanChromosome1Bandp32
+                                 h/HumanChromosome3Bandq21)
+                (e/translocation 1 2 h/HumanChromosome1Bandq25
+                                 h/HumanChromosome11Bandq13)))
 
 (defclass k46_XY_der!1!t!1_3!!p32_q21!t!3_7!!q28_q11.2!
   :label "The 46,XY,der(1)t(1;3)(p32;q21)t(3;7)(q28;q11.2) karyotype"
@@ -555,9 +612,11 @@
   the chromosome 3 segment attached to chromosome 1.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (f/derivative 1 h/HumanChromosome1 
-                (e/translocation 1 2 h/HumanChromosome1Bandp32 h/HumanChromosome3Bandq21)
-                (e/translocation 1 2 h/HumanChromosome3Bandq28 h/HumanChromosome7Bandq11.2)))
+  (f/derivative 1 h/HumanChromosome1
+                (e/translocation 1 2 h/HumanChromosome1Bandp32
+                                 h/HumanChromosome3Bandq21)
+                (e/translocation 1 2 h/HumanChromosome3Bandq28
+                                 h/HumanChromosome7Bandq11.2)))
 
 (defclass k46_XY_der!1!t!1_3!!p32_q21!dup!1!!q25q42!
   :label "The 46,XY,der(1)t(1;3)(p32;q21)dup(1)(q25q42) karyotype"
@@ -566,9 +625,11 @@
   long arm segment 1q25q42.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (f/derivative 1 h/HumanChromosome1 
-                (e/translocation 1 2 h/HumanChromosome1Bandp32 h/HumanChromosome3Bandq21)
-                (e/direct_duplication 1 h/HumanChromosome1Bandq25 h/HumanChromosome1Bandq42)))
+  (f/derivative 1 h/HumanChromosome1
+                (e/translocation 1 2 h/HumanChromosome1Bandp32
+                                 h/HumanChromosome3Bandq21)
+                (e/direct_duplication 1 h/HumanChromosome1Bandq25
+                                      h/HumanChromosome1Bandq42)))
 
 (defclass k46_XY_der!9!del!9!!p12!t!9_13!!q34_q11!
   :label "The 46,XY,der(9)del(9)(p12)t(9;13)(q34;q11) karyotype"
@@ -579,7 +640,8 @@
   (owlsome n/derivedFrom n/k46_XY)
   (f/derivative 1 h/HumanChromosome9
                 (e/deletion 1 h/HumanChromosome9Bandp12)
-                (e/translocation 1 2 h/HumanChromosome9Bandq34 h/HumanChromosome9Bandq11)))
+                (e/translocation 1 2 h/HumanChromosome9Bandq34
+                                 h/HumanChromosome9Bandq11)))
 
 (defclass k46_XX_der!1!t!1_11!!p32_q13!t!1_3!!q25_q21!
   :label "The 46,XX,der(1)t(1;11)(p32;q13)t(1;3)(q25;q21) karyotype"
@@ -592,8 +654,10 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                (e/translocation 1 2 h/HumanChromosome1Bandp32 h/HumanChromosome11Bandq13)
-                (e/translocation 1 2 h/HumanChromosome1Bandq25 h/HumanChromosome3Bandq21)))
+                (e/translocation 1 2 h/HumanChromosome1Bandp32
+                                 h/HumanChromosome11Bandq13)
+                (e/translocation 1 2 h/HumanChromosome1Bandq25
+                                 h/HumanChromosome3Bandq21)))
 
 ;; 47,XY,+mos der(8)r(1;8;17)(p36.3p35;p12q13;q25q25)
 
@@ -609,8 +673,11 @@
 ;;   :subclass ISCNExampleKaryotype
 ;;   (owlsome n/derivedFrom n/k46_XX)
 ;;   (f/derivative 1 h/HumanChromosome1
-;;                 (e/deletion 1 h/HumanChromosome1Bandp22 h/HumanChromosome1Bandp34)
-;;                 (e/direct_insertion 1 h/HumanChromosome1Bandp22 h/HumanChromosome17Bandq11 h/HumanChromosome17Bandq25)))
+;;                 (e/deletion 1 h/HumanChromosome1Bandp22
+;;                             h/HumanChromosome1Bandp34)
+;;                 (e/direct_insertion 1 h/HumanChromosome1Bandp22
+;;                                     h/HumanChromosome17Bandq11
+;;                                     h/HumanChromosome17Bandq25)))
 
 (defclass k46_XY_der!7!t!2_7!!q21_q22!ins!7_?!!q22_?!
   :label "The 46,XY,der(7)t(2;7)(q21;q22)ins(7;?)(q22;?) karyotype"
@@ -618,11 +685,15 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome7
-                (e/translocation 1 2 h/HumanChromosome2Bandq21 h/HumanChromosome7Bandq22)
-                (e/insertion 1 h/HumanChromosome7Bandq22 h/HumanChromosomeBand h/HumanChromosomeBand)))
+                (e/translocation 1 2 h/HumanChromosome2Bandq21
+                                 h/HumanChromosome7Bandq22)
+                (e/insertion 1 h/HumanChromosome7Bandq22
+                             h/HumanChromosomeBand h/HumanChromosomeBand)))
 
 (defclass k46_XX_der!8!t!8_17!!p23_q21!inv!8!!p22q13!t!8_22!!q22_q12!
-  :label "The 46,XX,der(8)t(8;17)(p23;q21)inv(8)(p22q13)t(8;22)(q22;q12) karyotype"
+  :label "The
+  46,XX,der(8)t(8;17)(p23;q21)inv(8)(p22q13)t(8;22)(q22;q12)
+  karyotype"
   :comment "ISCN2009 pg 64 -> 'A derivative chromosome 8 resulting
   from two translocations, one affecting the short arm, one the long
   arm, with breakpoints at 8p23 and 8q22, respectively, and a
@@ -630,11 +701,15 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome8
-                (e/translocation 1 2 h/HumanChromosome8Bandp23 h/HumanChromosome17Bandq21)
-                (e/inversion 1 h/HumanChromosome8Bandp22 h/HumanChromosome8Bandq13)
-                (e/translocation 1 2 h/HumanChromosome8Bandq22 h/HumanChromosome22Bandq12)))
+                (e/translocation 1 2 h/HumanChromosome8Bandp23
+                                 h/HumanChromosome17Bandq21)
+                (e/inversion 1 h/HumanChromosome8Bandp22
+                             h/HumanChromosome8Bandq13)
+                (e/translocation 1 2 h/HumanChromosome8Bandq22
+                                 h/HumanChromosome22Bandq12)))
 
-;; example isoderivative chromosomes - isochromosome formation for one of the arms of a derivative chromosome.
+;; example isoderivative chromosomes - isochromosome formation for one
+;; of the arms of a derivative chromosome.
 (defclass k46_XX_ider!22!!q10!t!9_22!!q34_q11.2!
   :label "The 46,XX,ider(22)(q10)t(9;22)(q34;q11.2) karyotype"
   :comment "ISCN2009 pg 64 -> 'An isochromosome for the long arm of a
@@ -644,7 +719,8 @@
   (owlsome n/derivedFrom n/k46_XX)
   (f/isoderivative 1 h/HumanChromosome22
                    h/HumanChromosome22Bandq10
-                   (e/translocation 1 2 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2)))
+                   (e/translocation 1 2 h/HumanChromosome9Bandq34
+                                    h/HumanChromosome22Bandq11.2)))
 
 (defclass k46_XY_ider!9!!p10!ins!9_12!!p13_q13q22!
   :label "The 46,XY,ider(9)(p10)ins(9;12)(p13;q13q22) karyotype"
@@ -655,7 +731,9 @@
   (owlsome n/derivedFrom n/k46_XY)
   (f/isoderivative 1 h/HumanChromosome9
                    h/HumanChromosome9Bandp10
-                   (e/direct_insertion 1 h/HumanChromosome9Bandp13 h/HumanChromosome12Bandq13 h/HumanChromosome12Bandq22)))
+                   (e/direct_insertion 1 h/HumanChromosome9Bandp13
+                                       h/HumanChromosome12Bandq13
+                                       h/HumanChromosome12Bandq22)))
 
 ;; example dicentric derivative chromosomes with additional abnormalities.
 (defclass k45_XX_der!5_7!t!5_7!!q22_p13!t!3_7!!q21_q21!
@@ -668,8 +746,10 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome5 h/HumanChromosome7
-                   (e/translocation 1 2 h/HumanChromosome5Bandq22 h/HumanChromosome7Bandp13)
-                   (e/translocation 1 2 h/HumanChromosome3Bandq21 h/HumanChromosome7Bandq21)))
+                (e/translocation 1 2 h/HumanChromosome5Bandq22
+                                 h/HumanChromosome7Bandp13)
+                (e/translocation 1 2 h/HumanChromosome3Bandq21
+                                 h/HumanChromosome7Bandq21)))
 
 (defclass k45_XY_der!5_7!t!3_5!!q21_q22!t!3_7!!q29_p13!
   :label "The 45,XY,der(5;7)t(3;5)(q21;q22)t(3;7)(q29;p13) karyotype"
@@ -680,8 +760,10 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome5 h/HumanChromosome7
-                   (e/translocation 1 2 h/HumanChromosome3Bandq21 h/HumanChromosome5Bandq22)
-                   (e/translocation 1 2 h/HumanChromosome3Bandq29 h/HumanChromosome7Bandp13)))
+                (e/translocation 1 2 h/HumanChromosome3Bandq21
+                                 h/HumanChromosome5Bandq22)
+                (e/translocation 1 2 h/HumanChromosome3Bandq29
+                                 h/HumanChromosome7Bandp13)))
 
 (defclass k45_XY_der!5_7!t!3_5!!q21_q22!t!3_7!!q29_p13!del!7!!q32!
   :label "The 45,XY,der(5;7)t(3;5)(q21;q22)t(3;7)(q29;p13)del(7)(q32) karyotype"
@@ -691,11 +773,12 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome5 h/HumanChromosome7
-                   (e/translocation 1 2 h/HumanChromosome3Bandq21 h/HumanChromosome5Bandq22)
-                   (e/translocation 1 2 h/HumanChromosome3Bandq29 h/HumanChromosome7Bandp13)
-                   (e/deletion 1 h/HumanChromosome7Bandq32)))
+                (e/translocation 1 2 h/HumanChromosome3Bandq21
+                                 h/HumanChromosome5Bandq22)
+                (e/translocation 1 2 h/HumanChromosome3Bandq29
+                                 h/HumanChromosome7Bandp13)
+                (e/deletion 1 h/HumanChromosome7Bandq32)))
 
-;; TODO - need to implement (q10;q10)
 (defclass k45_XX_der!8_8!!q10_q10!del!8!!q22!t!8_9!!q24.1_q12!
   :label "The 45,XX,der(8;8)(q10;q10)del(8)(q22)t(8;9)(q24.1;q12) karyotype"
   :comment "ISCN2009 pg 65 -> 'A derivative chromosome composed of the
@@ -704,9 +787,10 @@
   in the other arm.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (f/derivative 1 h/HumanChromosome8 h/HumanChromosome8
-                   (e/deletion 1 h/HumanChromosome8Bandq22)
-                   (e/translocation 1 2 h/HumanChromosome8Bandq24.1 h/HumanChromosome9Bandq12)))
+  (f/derivative 1 h/HumanChromosome8Bandq10 h/HumanChromosome8Bandq10
+                (e/deletion 1 h/HumanChromosome8Bandq22)
+                (e/translocation 1 2 h/HumanChromosome8Bandq24.1
+                                 h/HumanChromosome9Bandq12)))
 
 ;; REDEFINE
 (defclass k47_XY_+der!?!t!?_9!!?_q22!
@@ -718,7 +802,8 @@
   (owlsome n/derivedFrom n/k46_XY)
   (e/addition 1 h/HumanChromosome)
   (f/derivative 1 h/HumanChromosome
-                   (e/translocation 1 2 h/HumanChromosomeBand h/HumanChromosome9Bandq22)))
+                (e/translocation 1 2 h/HumanChromosomeBand
+                                 h/HumanChromosome9Bandq22)))
 
 ;; REDEFINE
 (defclass k47_XX_+der!?!t!?_9!!?_p13!ins!?_7!!?_q11.2q32!
@@ -732,8 +817,11 @@
   (owlsome n/derivedFrom n/k46_XX)
   (e/addition 1 h/HumanChromosome)
   (f/derivative 1 h/HumanChromosome
-                   (e/translocation 1 2 h/HumanChromosomeBand h/HumanChromosome9Bandp13)
-                   (e/insertion 1 h/HumanChromosomeBand h/HumanChromosome7Bandq11.2 h/HumanChromosome7Bandq32)))
+                (e/translocation 1 2 h/HumanChromosomeBand
+                                 h/HumanChromosome9Bandp13)
+                (e/insertion 1 h/HumanChromosomeBand
+                             h/HumanChromosome7Bandq11.2
+                             h/HumanChromosome7Bandq32)))
 
 ;; REDEFINE
 (defclass k47_XX_+der!?!t!?_9!!?_p13!hsr!?!
@@ -746,13 +834,17 @@
   (owlsome n/derivedFrom n/k46_XX)
   (e/addition 1 h/HumanChromosome)
   (f/derivative 1 h/HumanChromosome
-                   (e/translocation 1 2 h/HumanChromosomeBand h/HumanChromosome9Bandp13)
-                   (f/hsr 1 h/HumanChromosomeBand)))
+                (e/translocation 1 2 h/HumanChromosomeBand
+                                 h/HumanChromosome9Bandp13)
+                (f/hsr 1 h/HumanChromosomeBand)))
 
 ;; 53,XX,...,+der(?)t(?;9)(?;q22),+r,+mar,dmin
 
-(defclass k46_XX_der!9!del!9!!p12!t!9_22!!q34_q11.2!_der!9!t!9_12!!p13_q22!inv!9!!q13q22!
-  :label "The 46,XX,der(9)del(9)(p12)t(9;22)(q34;q11.2),der(9)t(9;12)(p13;q22)inv(9)(q13q22) karyotype"
+(defclass
+k46_XX_der!9!del!9!!p12!t!9_22!!q34_q11.2!_der!9!t!9_12!!p13_q22!inv!9!!q13q22!
+  :label "The
+  46,XX,der(9)del(9)(p12)t(9;22)(q34;q11.2),der(9)t(9;12)(p13;q22)inv(9)(q13q22)
+  karyotype"
   :comment "ISCN2009 pg 66 -> 'One der(9) is the result of a deletion
   of the short arm and a translocation involving the long arm; the
   other der(9) is the result of a translocation affecting the short
@@ -762,11 +854,14 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome9
-                   (e/deletion 1 h/HumanChromosome9Bandp12)
-                   (e/translocation 1 2 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2))
+                (e/deletion 1 h/HumanChromosome9Bandp12)
+                (e/translocation 1 2 h/HumanChromosome9Bandq34
+                                 h/HumanChromosome22Bandq11.2))
   (f/derivative 1 h/HumanChromosome9
-                   (e/translocation 1 2 h/HumanChromosome9Bandp13 h/HumanChromosome12Bandq22)
-                   (e/inversion 1 h/HumanChromosome9Bandq13 h/HumanChromosome9Bandq22)))
+                (e/translocation 1 2 h/HumanChromosome9Bandp13
+                                 h/HumanChromosome12Bandq22)
+                (e/inversion 1 h/HumanChromosome9Bandq13
+                             h/HumanChromosome9Bandq22)))
 
 ;; 46,XX,der(1)t(1;3)(p34.3;q21),der(1*)t(1;3)(p34.3;q21)
 ;; 46,XX,der(1)t(1;3)(p34.3;q21)[20]/46,XX,der(1*)t(1*;3)(p34.3;q21)[10]
@@ -782,10 +877,14 @@
   (e/translocation 1 2 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2)
   (e/addition 1 h/HumanChromosome22)
   (f/derivative 1 h/HumanChromosome9
-                   (e/translocation 1 2 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2)))
+                (e/translocation 1 2 h/HumanChromosome9Bandq34
+                                 h/HumanChromosome22Bandq11.2)))
 
-(defclass k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t!1_11!
-  :label "The 46,XX,der(1)t(1;3)(p32;q21)inv(1)(p22q21)t(1;11)(q25;q13),der(3)t(1;3),der(11)t(1;11) karyotype"
+(defclass
+k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t!1_11!
+  :label "The
+  46,XX,der(1)t(1;3)(p32;q21)inv(1)(p22q21)t(1;11)(q25;q13),der(3)t(1;3),der(11)t(1;11)
+  karyotype"
   :comment "ISCN2009 pg 66 -> 'A balanced complex rearrangement with
   three derivative chromosomes. The breakpoints of the t(1;3) and the
   t(1;11), which both contrivute to the der(1), are not repeated in
@@ -793,13 +892,18 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                   (e/translocation 1 2 h/HumanChromosome1Bandp32 h/HumanChromosome3Bandq21)
-                   (e/inversion 1 h/HumanChromosome1Bandp22 h/HumanChromosome1Bandq21)
-                   (e/translocation 1 2 h/HumanChromosome1Bandq25 h/HumanChromosome11Bandq13))
+                (e/translocation 1 2 h/HumanChromosome1Bandp32
+                                 h/HumanChromosome3Bandq21)
+                (e/inversion 1 h/HumanChromosome1Bandp22
+                             h/HumanChromosome1Bandq21)
+                (e/translocation 1 2 h/HumanChromosome1Bandq25
+                                 h/HumanChromosome11Bandq13))
   (f/derivative 1 h/HumanChromosome3
-                   (e/translocation 1 2 h/HumanChromosome1Bandp32 h/HumanChromosome3Bandq21))
+                (e/translocation 1 2 h/HumanChromosome1Bandp32
+                                 h/HumanChromosome3Bandq21))
   (f/derivative 1 h/HumanChromosome11
-                   (e/translocation 1 2 h/HumanChromosome1Bandq25 h/HumanChromosome11Bandq13)))
+                (e/translocation 1 2 h/HumanChromosome1Bandq25
+                                 h/HumanChromosome11Bandq13)))
 
 ;; DICENTRIC CHROMOSOMES
 ;; example dicentric chromosomes
@@ -918,7 +1022,9 @@
   (f/isodicentric 1 h/HumanChromosome15Bandq12))
 
 ;; REDEFINE
-;; TOFIX - should break it however concepts are not closed - inconsistent as disjoint AND equivalent to k47_XY_+idic!15!!q12! 
+
+;; TOFIX - should break it however concepts are not closed -
+;; inconsistent as disjoint AND equivalent to k47_XY_+idic!15!!q12!
 (defclass k47_XY_+dic!15_15!!q12_q12!
   :label "The 47,XY,dic(15;15)(q12;q12) karyotype"
   :comment "ISCN2009 pg 68 -> 'An additional apparent isodicentric
@@ -955,7 +1061,8 @@
 
 
 ;; DUPLICATIONS
-;; NOTE: Only the detailed system will clarify the location of the duplicated segment
+;; NOTE: Only the detailed system will clarify the location of the
+;; duplicated segment
 (defclass k46_XX_dup!1!!q22q25!
   :label "The 46,XX,dup(1)(q22q25) karyotype"
   :comment "ISCN2009 pg 69 -> 'Direct duplication of the segment
@@ -964,7 +1071,8 @@
   (owlsome n/derivedFrom n/k46_XX)
   (e/direct_duplication 1 h/HumanChromosome1Bandq22 h/HumanChromosome1Bandq25))
 
-;; NOTE: Only the detailed system will clarify the location of the duplicated segment
+;; NOTE: Only the detailed system will clarify the location of the
+;; duplicated segment
 ;; AKA pterq25q25q22q25qter or pterq22q25q22q22qter
 (defclass k46_XY_dup!1!!q25q22!
   :label "The 46,XY,dup(1)(q25q22) karyotype"
@@ -1010,7 +1118,10 @@
   :comment "ISCN2009 pg 69 -> 'A fragile site in subband Xq27.3 on one
   X chromosome in a Turner syndrome patient'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XN) (e/deletion 1 h/HumanAllosome))) ;; aka 45,X
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XN)
+            (e/deletion 1 h/HumanAllosome))) ;; aka 45,X
   (f/fragilesite 1 h/HumanChromosomeXBandq27.3))
 
 (defclass k47_XY_fra!X!!q27.3!
@@ -1018,7 +1129,10 @@
   :comment "ISCN2009 pg 69 -> 'A fragile site in subband Xq27.3 on one
   X chromosome in a Klinefelter syndrome patient.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX))) ;; aka 47,XXY
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosomeX))) ;; aka 47,XXY
   (f/fragilesite 1 h/HumanChromosomeXBandq27.3))
 
 
@@ -1052,7 +1166,8 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                (e/deletion 1 h/HumanChromosome1Bandp21 h/HumanChromosome1Bandp33)
+                (e/deletion 1 h/HumanChromosome1Bandp21
+                            h/HumanChromosome1Bandp33)
                 (f/hsr 1 h/HumanChromosome1Bandp21)))
 
 (defclass k46_XX_der!1!ins!1_7!!q21_p11.2p21!hsr!1_7!!q21_p11.2!
@@ -1065,8 +1180,11 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                (e/direct_insertion 1 h/HumanChromosome1Bandq21 h/HumanChromosome7Bandp11.2 h/HumanChromosome7Bandp21)
-                (f/hsr 1 h/HumanChromosome1Bandq21 h/HumanChromosome7Bandp11.2)))
+                (e/direct_insertion 1 h/HumanChromosome1Bandq21
+                                    h/HumanChromosome7Bandp11.2
+                                    h/HumanChromosome7Bandp21)
+                (f/hsr 1 h/HumanChromosome1Bandq21
+                       h/HumanChromosome7Bandp11.2)))
 
 (defclass k46_XX_der!1!ins!1_7!!q21_p11.2p21!hsr!1_7!!q21_p21!
   :label "The 46,XX,der(1)ins(1;7)(q21;p11.2p21)hsr(1;7)(q21;p21) karyotype"
@@ -1078,7 +1196,9 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                (e/direct_insertion 1 h/HumanChromosome1Bandq21 h/HumanChromosome7Bandp11.2 h/HumanChromosome7Bandp21)
+                (e/direct_insertion 1 h/HumanChromosome1Bandq21
+                                    h/HumanChromosome7Bandp11.2
+                                    h/HumanChromosome7Bandp21)
                 (f/hsr 1 h/HumanChromosome1Bandq21 h/HumanChromosome7Bandp21)))
 
 
@@ -1094,7 +1214,8 @@
   than band 2q31.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/direct_insertion 1 h/HumanChromosome2Bandp13 h/HumanChromosome2Bandq21 h/HumanChromosome2Bandq31))
+  (e/direct_insertion 1 h/HumanChromosome2Bandp13
+                      h/HumanChromosome2Bandq21 h/HumanChromosome2Bandq31))
 
 (defclass k46_XY_ins!2!!p13q31q21!
   :label "The 46,XY,ins(2)(p13q31q21) karyotype"
@@ -1106,7 +1227,8 @@
   been reversed with respect to the centromere.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/inverse_insertion 1 h/HumanChromosome2Bandp13 h/HumanChromosome2Bandq31 h/HumanChromosome2Bandq21))
+  (e/inverse_insertion 1 h/HumanChromosome2Bandp13
+                       h/HumanChromosome2Bandq31 h/HumanChromosome2Bandq21))
 
 ;; insertion between two choromosomes
 (defclass k46_XY_ins!5_2!!p14_q22q32!
@@ -1120,7 +1242,8 @@
   chromosome is specified first.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/direct_insertion 1 h/HumanChromosome5Bandp14 h/HumanChromosome2Bandq22 h/HumanChromosome2Bandq32))
+  (e/direct_insertion 1 h/HumanChromosome5Bandp14
+                      h/HumanChromosome2Bandq22 h/HumanChromosome2Bandq32))
 
 (defclass k46_XY_ins!5_2!!p14_q32q22!
   :label "The 46,XY,ins(5;2)(p14;q32q22) karyotype"
@@ -1132,7 +1255,8 @@
   than band 2q32.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/inverse_insertion 1 h/HumanChromosome5Bandp14 h/HumanChromosome2Bandq32 h/HumanChromosome2Bandq22))
+  (e/inverse_insertion 1 h/HumanChromosome5Bandp14
+                       h/HumanChromosome2Bandq32 h/HumanChromosome2Bandq22))
 
 (defclass k46_XX_ins!5_2!!q31_p13p23!
   :label "The 46,XX,ins(5;2)(q31;p13p23) karyotype"
@@ -1140,7 +1264,8 @@
   from chromosome 2 into band 5q31.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/direct_insertion 1 h/HumanChromosome5Bandq31 h/HumanChromosome2Bandp13 h/HumanChromosome2Bandp23))
+  (e/direct_insertion 1 h/HumanChromosome5Bandq31
+                      h/HumanChromosome2Bandp13 h/HumanChromosome2Bandp23))
 
 (defclass k46_XX_ins!5_2!!q31_p23p13!
   :label "The 46,XX,ins(5;2)(q31;p23p13) karyotype"
@@ -1148,7 +1273,8 @@
   chromosome 2 into band 5q31 in an inverted orientation.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/inverse_insertion 1 h/HumanChromosome5Bandq31 h/HumanChromosome2Bandp23 h/HumanChromosome2Bandp13))
+  (e/inverse_insertion 1 h/HumanChromosome5Bandq31
+                       h/HumanChromosome2Bandp23 h/HumanChromosome2Bandp13))
 
 
 ;; INVERSION
@@ -1194,7 +1320,10 @@
   :comment "ISCN2009 pg 72 -> 'A male showing an isochromosome of the
   long arm of the X chromosome in addition to a normal X and Y.'"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX))) ;; aka 47,XXY
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosomeX))) ;; aka 47,XXY
   (f/isochromosome 1 h/HumanChromosomeXBandq10))
 
 (defclass k46_XX_idic!17!!p11.2!
@@ -1258,7 +1387,8 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome
-                (e/translocation 1 2 h/HumanChromosomeBand h/HumanChromosome15Bandq22)))
+                (e/translocation 1 2 h/HumanChromosomeBand
+                                 h/HumanChromosome15Bandq22)))
 
 ;; 49,XX,...,+3mar,1dmin
 ;; 49,XY,...,+3mar,~14dmin
@@ -1272,7 +1402,8 @@
 
 
 ;; QUADRUPLICATIONS
-;; NOTE: It is not possible to indicate the orientations of the segments with the short system!
+;; NOTE: It is not possible to indicate the orientations of the
+;; segments with the short system!
 (defclass k46_XX_qdp!1!!q23q32!
   :label "The 46,XX,qdp(1)(q23q32) karyotype"
   :comment "ISCN2009 pg 75 -> 'Quadruplication of the segment between
@@ -1304,7 +1435,9 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                (f/ring 1 h/HumanChromosome1Bandp36.1 h/HumanChromosome1Bandq23 h/HumanChromosome3Bandq21 h/HumanChromosome3Bandq27)))
+                (f/ring 1 h/HumanChromosome1Bandp36.1
+                        h/HumanChromosome1Bandq23 h/HumanChromosome3Bandq21
+                        h/HumanChromosome3Bandq27)))
 
 ;; TOFIX - ORDER IS IMPORTANT!
 (defclass k46_XX_der!1!r!1_3!!p36.1q23_q27q21!
@@ -1315,7 +1448,9 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                (f/ring 1 h/HumanChromosome1Bandp36.1 h/HumanChromosome1Bandq23 h/HumanChromosome3Bandq27 h/HumanChromosome3Bandq21)))
+                (f/ring 1 h/HumanChromosome1Bandp36.1
+                        h/HumanChromosome1Bandq23 h/HumanChromosome3Bandq27
+                        h/HumanChromosome3Bandq21)))
 
 (defclass k46_XX_der!1!r!1_?!!p36.1q23_?!
   :label "The 46,XX,der(1)r(1;?)(p36.1q23;?) karyotype"
@@ -1324,7 +1459,9 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (f/derivative 1 h/HumanChromosome1
-                (f/ring 1 h/HumanChromosome1Bandp36.1 h/HumanChromosome1Bandq23 h/HumanChromosomeBand h/HumanChromosomeBand)))
+                (f/ring 1 h/HumanChromosome1Bandp36.1
+                        h/HumanChromosome1Bandq23 h/HumanChromosomeBand
+                        h/HumanChromosomeBand)))
 
 ;; REDEFINE
 (defclass k47_XX_+der!?!r!?_3_5!!?_q21q26.2_q13q33!
@@ -1336,7 +1473,9 @@
   (owlsome n/derivedFrom n/k46_XX)
   (e/addition 1 h/HumanChromosome)
   (f/derivative 1 h/HumanChromosome
-                (f/ring 1 h/HumanChromosomeBand h/HumanChromosome3Bandq21 h/HumanChromosome3Bandq26.2 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq33)))
+                (f/ring 1 h/HumanChromosomeBand
+                        h/HumanChromosome3Bandq21 h/HumanChromosome3Bandq26.2
+                        h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq33)))
 
 ;; dicentric ring chromosome
 ;; 47,XX,+dic r(1;3)(p36.1q32;p24q26.2)
@@ -1455,7 +1594,8 @@
   has been translocated onto chromosome 2 at 2p21.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/translocation 1 3 h/HumanChromosome2Bandp21 h/HumanChromosome7Bandq22 h/HumanChromosome5Bandq23))
+  (e/translocation 1 3 h/HumanChromosome2Bandp21
+                   h/HumanChromosome7Bandq22 h/HumanChromosome5Bandq23))
 
 (defclass k46_X_t!X_22_1!!q24_q11.2_p33!
   :label "The 46,X,t(X;22;1)(q24;q11.2;p33) karyotype"
@@ -1466,7 +1606,8 @@
   the chromosome X at Xq24.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/translocation 1 3 h/HumanChromosomeXBandq24 h/HumanChromosome22Bandq11.2 h/HumanChromosome1Bandp33))
+  (e/translocation 1 3 h/HumanChromosomeXBandq24
+                   h/HumanChromosome22Bandq11.2 h/HumanChromosome1Bandp33))
 
 ;; TODO How do I model that 2 distinct Chromosomes 7 are involved?
 ;; (defclass k46_XX_t!3_7_7*!!q21_q22_p13!
@@ -1483,7 +1624,8 @@
 ;;   chromosome.'"
 ;;   :subclass ISCNExampleKaryotype
 ;;   (owlsome n/derivedFrom n/k46_XX)
-;;   ;; (e/translocation 1 h/HumanChromosome3Bandq21 h/HumanChromosome7Bandq22 h/HumanChromosome7*Bandp13)
+;;   ;; (e/translocation 1 h/HumanChromosome3Bandq21
+;;   ;;                  h/HumanChromosome7Bandq22 h/HumanChromosome7*Bandp13)
 ;;   )
 
 ;; reciprocal four-break and more complex rearrangemnt translocations
@@ -1498,7 +1640,9 @@
   3 at 3p13.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/translocation 1 4 h/HumanChromosome3Bandp13 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2 h/HumanChromosome21Bandq21))
+  (e/translocation 1 4 h/HumanChromosome3Bandp13
+                   h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2
+                   h/HumanChromosome21Bandq21))
 
 ;; TODO How do I model that 2 distinct Chromosomes 7 are involved?
 ;; (defclass k46_XX_t!3_9_9*_22!!p13_q22_q34_q11.2!
@@ -1513,7 +1657,9 @@
 ;;   been translocated onto chromosmoe 3 at 3p13.'"
 ;;   :subclass ISCNExampleKaryotype
 ;;   (owlsome n/derivedFrom n/k46_XX)
-;;   ;; (e/translocation 1 h/HumanChromosome3Bandp13 h/HumanChromosome9Bandq22 h/HumanChromosome9*Bandq34 h/HumanChromosome22Bandq11.2)
+;;   ;; (e/translocation 1 h/HumanChromosome3Bandp13
+;;   ;;                  h/HumanChromosome9Bandq22 h/HumanChromosome9*Bandq34
+;;   ;;                  h/HumanChromosome22Bandq11.2)
 ;;   )
 
 (defclass k46_XY_t!5_6!!q13q23_q15q23!
@@ -1524,7 +1670,9 @@
   been exchanged.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/translocation 1 2 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23 h/HumanChromosome6Bandq15 h/HumanChromosome6Bandq23))
+  (e/translocation 1 2 h/HumanChromosome5Bandq13
+                   h/HumanChromosome5Bandq23 h/HumanChromosome6Bandq15
+                   h/HumanChromosome6Bandq23))
 
 ;; TODO Order is important - the segment 14q21q24 is inverted!
 (defclass k46_XX_t!5_14_9!!q13q23_q24q21_p12p23!
@@ -1539,7 +1687,10 @@
   of the bands. Thus, the segment 14q21q24 is inverted.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/translocation 1 3 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23 h/HumanChromosome14Bandq24 h/HumanChromosome14Bandq21 h/HumanChromosome9Bandp12 h/HumanChromosome9Bandp23))
+  (e/translocation 1 3 h/HumanChromosome5Bandq13
+                   h/HumanChromosome5Bandq23 h/HumanChromosome14Bandq24
+                   h/HumanChromosome14Bandq21 h/HumanChromosome9Bandp12
+                   h/HumanChromosome9Bandp23))
 
 ;;balanced whole-arm translocations
 (defclass k46_XY_t!1_3!!p10_q10!
@@ -1550,8 +1701,7 @@
   has been fused with the short arm of chromosome 3.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/translocation 1 2 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10)
-  )
+  (e/translocation 1 2 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
 (defclass k46_XY_t!1_3!!p10_p10!
   :label "The 46,XY,t(1;3)(p10;q10) karyotype"
@@ -1561,103 +1711,97 @@
   centromeres.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/translocation 1 2 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandp10)
-  )
+  (e/translocation 1 2 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandp10))
 
 ;; unbalanced whole-arm translocations
-;; (defclass k45_XX_der!1_3!!p10_q10!
-;;   :label "The 45,XX,der(1;3)(p10;q10) karyotype"
-;;   :comment "ISCN2009 pg 80 -> 'A derivative chromosome chromosome
-;;   consisting of the short arm of chromosome 1 and the long arm of
-;;   chromosome 3. The missing chromosomes 1 and 3 are not indicated
-;;   since they are replaced by the derivative chromosome. The karyotype
-;;   thus contains one normal chromosome 1, one normal chromosome 3, and
-;;   the der(1;3). The resulting net imbalance of this abnormality is
-;;   monosomy for the long arm of chromosome 1 and monosomy for the short
-;;   arm of chromosome 3.'"
-;;   :subclass ISCNExampleKaryotype
-;;   (owlsome n/derivedFrom n/k46_XX)
-;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10)
-;;   )
+(defclass k45_XX_der!1_3!!p10_q10!
+  :label "The 45,XX,der(1;3)(p10;q10) karyotype"
+  :comment "ISCN2009 pg 80 -> 'A derivative chromosome chromosome
+  consisting of the short arm of chromosome 1 and the long arm of
+  chromosome 3. The missing chromosomes 1 and 3 are not indicated
+  since they are replaced by the derivative chromosome. The karyotype
+  thus contains one normal chromosome 1, one normal chromosome 3, and
+  the der(1;3). The resulting net imbalance of this abnormality is
+  monosomy for the long arm of chromosome 1 and monosomy for the short
+  arm of chromosome 3.'"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
-;; (defclass k46_XX_+1_der!1_3!!p10_q10!
-;;   :label "The 46,XX,+1,der(1;3)(p10;q10) karyotype"
-;;   :comment "ISCN2009 pg 80 -> 'A derivative chromosome consisting of
-;;   the short arm of chromosome 1 and the long arm of chromosome 3 (same
-;;   as above) has replaced one chromosome 1 and one chromosome 3. There
-;;   are, however, two normal chromosomes 1, i.e., an additional
-;;   chromosome 1 in relation to the expected loss due to the
-;;   der(1;3). Consequently, this gain is indicated as +1. The karyotype
-;;   thus contains two normal chromosomes 1, one normal chromosome 3, and
-;;   the der(1;3). The resulting net imbalance is trisomy for 1p and
-;;   monosomy 3p.'"
-;;   :subclass ISCNExampleKaryotype
-;;   (owlsome n/derivedFrom n/k46_XX)
-;;   (e/addition 1 h/HumanChromosome1)
-;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10)
-;;   )
+(defclass k46_XX_+1_der!1_3!!p10_q10!
+  :label "The 46,XX,+1,der(1;3)(p10;q10) karyotype"
+  :comment "ISCN2009 pg 80 -> 'A derivative chromosome consisting of
+  the short arm of chromosome 1 and the long arm of chromosome 3 (same
+  as above) has replaced one chromosome 1 and one chromosome 3. There
+  are, however, two normal chromosomes 1, i.e., an additional
+  chromosome 1 in relation to the expected loss due to the
+  der(1;3). Consequently, this gain is indicated as +1. The karyotype
+  thus contains two normal chromosomes 1, one normal chromosome 3, and
+  the der(1;3). The resulting net imbalance is trisomy for 1p and
+  monosomy 3p.'"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/addition 1 h/HumanChromosome1)
+  (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
-;; (defclass k46_XX_der!1_3!!p10_q10!_+3
-;;   :label "The 46,XX,der(1;3)(p10;q10),+3 karyotype"
-;;   :comment "ISCN2009 pg 80 -> 'A derivative chromosome consisting of
-;;   the short arm of chromosome 1 and the long arm of chromosome 3 (same
-;;   as above) has replaced one chromosome 1 and one chromosome 3. There
-;;   are however, two normal chromosomes3, i.e., an additional chromosome
-;;   3 in relation to the expected loss due to the
-;;   der(1;3). Consequently, this gain is indicated as +3. The karyotype
-;;   thus contains one normal chromosome 1, two normal chromosomes 3, and
-;;   the der(1;3). The resulting net imbalance is monosomy for 1q and
-;;   trisomy 3q.'"
-;;   :subclass ISCNExampleKaryotype
-;;   (owlsome n/derivedFrom n/k46_XX)
-;;   (e/addition 1 h/HumanChromosome3)
-;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10)
-;;   )
+(defclass k46_XX_der!1_3!!p10_q10!_+3
+  :label "The 46,XX,der(1;3)(p10;q10),+3 karyotype"
+  :comment "ISCN2009 pg 80 -> 'A derivative chromosome consisting of
+  the short arm of chromosome 1 and the long arm of chromosome 3 (same
+  as above) has replaced one chromosome 1 and one chromosome 3. There
+  are however, two normal chromosomes3, i.e., an additional chromosome
+  3 in relation to the expected loss due to the
+  der(1;3). Consequently, this gain is indicated as +3. The karyotype
+  thus contains one normal chromosome 1, two normal chromosomes 3, and
+  the der(1;3). The resulting net imbalance is monosomy for 1q and
+  trisomy 3q.'"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/addition 1 h/HumanChromosome3)
+  (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
-;; ;; REDEFINE
-;; (defclass k47_XX_+der!1_3!!p10_q10!
-;;   :label "The 47,XX,+der(1;3)(p10;q10) karyotype"
-;;   :comment "ISCN2009 pg 81 -> 'An extra derivative chromosome
-;;   consisting of the short arm of chromosome 1 and the long arm of
-;;   chromosome 3 (same as above). There are thus two normal chromosomes
-;;   1, two normal chromosomes 3, and the der(1;3). The resulting net
-;;   imbalance is trisomy for 1p, and trisomy for 3q.'"
-;;   :subclass ISCNExampleKaryotype
-;;   (owlsome n/derivedFrom n/k46_XX)
-;;   (e/addition 1 h/HumanChromosome1)
-;;   (e/addition 1 h/HumanChromosome3)
-;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10)
-;;   )
+;; REDEFINE
+(defclass k47_XX_+der!1_3!!p10_q10!
+  :label "The 47,XX,+der(1;3)(p10;q10) karyotype"
+  :comment "ISCN2009 pg 81 -> 'An extra derivative chromosome
+  consisting of the short arm of chromosome 1 and the long arm of
+  chromosome 3 (same as above). There are thus two normal chromosomes
+  1, two normal chromosomes 3, and the der(1;3). The resulting net
+  imbalance is trisomy for 1p, and trisomy for 3q.'"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/addition 1 h/HumanChromosome1)
+  (e/addition 1 h/HumanChromosome3)
+  (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
-;; (defclass k44_XX_-1_der!1_3!!p10_q10!
-;;   :label "The 44,XX,-1,der(1;3)(p10;q10) karyotype"
-;;   :comment "ISCN2009 pg 81 -> 'A derivative chromosome consisting of
-;;   the short arm of chromosome 1 and the long arm of chromosomes
-;;   3 (same as above) has replaced one chromosome 1 and one chromosome
-;;   3. There is, however, no normal chromosome 1, indicated as -1 in
-;;   relation to the expected presence of one chromosome 1 due to the
-;;   der(1;3). The karyotype thus contains no chromosome 1, one normal
-;;   chromosome 3, and the der(1;3). The resulting net imbalance is
-;;   nullisomy for 1q, monosomy for 1p, and monosomy for 3p.'"
-;;   :subclass ISCNExampleKaryotype
-;;   (owlsome n/derivedFrom n/k46_XX)
-;;   (e/deletion 1 h/HumanChromosome1)
-;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10)
-;;   )
+(defclass k44_XX_-1_der!1_3!!p10_q10!
+  :label "The 44,XX,-1,der(1;3)(p10;q10) karyotype"
+  :comment "ISCN2009 pg 81 -> 'A derivative chromosome consisting of
+  the short arm of chromosome 1 and the long arm of chromosomes
+  3 (same as above) has replaced one chromosome 1 and one chromosome
+  3. There is, however, no normal chromosome 1, indicated as -1 in
+  relation to the expected presence of one chromosome 1 due to the
+  der(1;3). The karyotype thus contains no chromosome 1, one normal
+  chromosome 3, and the der(1;3). The resulting net imbalance is
+  nullisomy for 1q, monosomy for 1p, and monosomy for 3p.'"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/deletion 1 h/HumanChromosome1)
+  (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
 ;; robertsonian translocations
-;; (defclass k45_XX_der!13_21!!q10_q10!
-;;   :label "The 45,XX,der(13;21)(q10;q10) karyotype"
-;;   :comment "ISCN2009 pg 81 -> 'Breakage and reunion have occurred at
-;;   band 13q10 and band 21q10 in the centromeres of chromosomes 13 and
-;;   21. The derivative chromosome has replaced one chromosome 13 and one
-;;   chromosome 21 and there is no need to indicate the missing
-;;   chromosomes. The karyotype thus contains one normal chromosomes 13,
-;;   one normal chromosome 21, and the der(13;21). The resulting net
-;;   imbalance is loss of the short arms of chromosomes 13 and 21.'"
-;;   :subclass ISCNExampleKaryotype
-;;   (owlsome n/derivedFrom n/k46_XX)
-;;   (f/derivative 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
+(defclass k45_XX_der!13_21!!q10_q10!
+  :label "The 45,XX,der(13;21)(q10;q10) karyotype"
+  :comment "ISCN2009 pg 81 -> 'Breakage and reunion have occurred at
+  band 13q10 and band 21q10 in the centromeres of chromosomes 13 and
+  21. The derivative chromosome has replaced one chromosome 13 and one
+  chromosome 21 and there is no need to indicate the missing
+  chromosomes. The karyotype thus contains one normal chromosomes 13,
+  one normal chromosome 21, and the der(13;21). The resulting net
+  imbalance is loss of the short arms of chromosomes 13 and 21.'"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (f/derivative 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
 (defclass k45_XX_rob!13_21!!q10_q10!
   :label "The 45,XX,rob(13;21)(q10;q10) karyotype"
@@ -1672,22 +1816,22 @@
   (owlsome n/derivedFrom n/k46_XX)
   (f/robertsonian 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
-;; (defclass k46_XX_der!13_21!!q10_q10!_+21
-;;   :label "The 46,XX,der(13;21)(q10;q10),+21 karyotype"
-;;   :comment "ISCN2009 pg 81 -> 'A derivative chromosome consisting of
-;;   the long arm of chromosome 13 and the long arm of chromosome
-;;   21 (same as above) has replaced one chromosome 13 and one
-;;   chromosome 21. There are, however two normal chromosomes 21, i.e.,
-;;   an additional chromosome 21 in relation to the expected loss due to
-;;   the der(13;21). Consequently, this gain is indicated as +21. The
-;;   karyotype thus contains one normal chromosome 13, two normal
-;;   chromosomes 21, and the der(13;21). The resulting net imbalance is
-;;   loss of the short arm of chromosome 13 and trisomy for the long arm
-;;   of chromosome 21.'"
-;;   :subclass ISCNExampleKaryotype
-;;   (owlsome n/derivedFrom n/k46_XX)
-;;   (e/addition 1 h/HumanChromosome21)
-;;   (f/derivative 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
+(defclass k46_XX_der!13_21!!q10_q10!_+21
+  :label "The 46,XX,der(13;21)(q10;q10),+21 karyotype"
+  :comment "ISCN2009 pg 81 -> 'A derivative chromosome consisting of
+  the long arm of chromosome 13 and the long arm of chromosome
+  21 (same as above) has replaced one chromosome 13 and one
+  chromosome 21. There are, however two normal chromosomes 21, i.e.,
+  an additional chromosome 21 in relation to the expected loss due to
+  the der(13;21). Consequently, this gain is indicated as +21. The
+  karyotype thus contains one normal chromosome 13, two normal
+  chromosomes 21, and the der(13;21). The resulting net imbalance is
+  loss of the short arm of chromosome 13 and trisomy for the long arm
+  of chromosome 21.'"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/addition 1 h/HumanChromosome21)
+  (f/derivative 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
 (defclass k46_XX_rob!13_21!!q10_q10!_+21
   :label "The 46,XX,rob(13;21)(q10;q10),+21 karyotype"
@@ -1706,22 +1850,22 @@
   (e/addition 1 h/HumanChromosome21)
   (f/robertsonian 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
-;; (defclass k46_XX_+13_der!13_21!!q10_q10!
-;;   :label "The 45,XX,der(13;21)(q10;q10) karyotype"
-;;   :comment "ISCN2009 pg 81 -> 'A derivative chromosome consisting of
-;;   the long arm of chromosome 13 and the long arm of chromosome
-;;   21 (same as above) has replaced one chromosome 13 and one
-;;   chromosome 21. There are, however two normal chromosomes 13, i.e.,
-;;   an additional chromosome 13 in relation to the expected loss due to
-;;   the der(13;21). Consequently, this gain is indicated as +13. The
-;;   karyotype thus contains one normal chromosome 13, two normal
-;;   chromosomes 21, and the der(13;21). The resulting net imbalance is
-;;   loss of the short arm of chromosome 21 and trisomy for the long arm
-;;   of chromosome 13.'"
-;;   :subclass ISCNExampleKaryotype
-;;   (owlsome n/derivedFrom n/k46_XX)
-;;   (e/addition 1 h/HumanChromosome13)
-;;   (f/derivative 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
+(defclass k46_XX_+13_der!13_21!!q10_q10!
+  :label "The 45,XX,der(13;21)(q10;q10) karyotype"
+  :comment "ISCN2009 pg 81 -> 'A derivative chromosome consisting of
+  the long arm of chromosome 13 and the long arm of chromosome
+  21 (same as above) has replaced one chromosome 13 and one
+  chromosome 21. There are, however two normal chromosomes 13, i.e.,
+  an additional chromosome 13 in relation to the expected loss due to
+  the der(13;21). Consequently, this gain is indicated as +13. The
+  karyotype thus contains one normal chromosome 13, two normal
+  chromosomes 21, and the der(13;21). The resulting net imbalance is
+  loss of the short arm of chromosome 21 and trisomy for the long arm
+  of chromosome 13.'"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/addition 1 h/HumanChromosome13)
+  (f/derivative 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
 (defclass k46_XX_+13_rob!13_21!!q10_q10!
   :label "The 46,XX,+13,rob(13;21)(q10;q10) karyotype"
@@ -1740,17 +1884,17 @@
   (e/addition 1 h/HumanChromosome13)
   (f/robertsonian 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
-;; (defclass k46_XX_+21_der!21_21!!q10_q10!
-;;   :label "The 46,XX,+21,der(21;21)(q10;q10) karyotype"
-;;   :comment "ISCN2009 pg 82 -> 'A derivative chromosome composed of the
-;;   long arms of chromosome 21. There are two copies of the long arm of
-;;   chromosome 21 in the derivative chromosome and one normal chromosome
-;;   21, indicated by the 46 count. The normal chromosome 21 is
-;;   designated with a (+)'"
-;;   :subclass ISCNExampleKaryotype
-;;   (owlsome n/derivedFrom n/k46_XX)
-;;   (e/addition 1 h/HumanChromosome21)
-;;   (f/derivative 1 h/HumanChromosome21Bandq10 h/HumanChromosome21Bandq10))
+(defclass k46_XX_+21_der!21_21!!q10_q10!
+  :label "The 46,XX,+21,der(21;21)(q10;q10) karyotype"
+  :comment "ISCN2009 pg 82 -> 'A derivative chromosome composed of the
+  long arms of chromosome 21. There are two copies of the long arm of
+  chromosome 21 in the derivative chromosome and one normal chromosome
+  21, indicated by the 46 count. The normal chromosome 21 is
+  designated with a (+)'"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/addition 1 h/HumanChromosome21)
+  (f/derivative 1 h/HumanChromosome21Bandq10 h/HumanChromosome21Bandq10))
 
 (defclass k46_XX_+21_rob!21_21!!q10_q10!
   :label "The 46,XX,+21,rob(21;21)(q10;q10) karyotype"
@@ -1775,11 +1919,14 @@
   4q31.1 is fused with 12q222 and 12p13 is fused with 9q34.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (f/tricentric 1 h/HumanChromosome4Bandq31.2 h/HumanChromosome12Bandq22 h/HumanChromosome12Bandp13 h/HumanChromosome9Bandq34))
+  (f/tricentric 1 h/HumanChromosome4Bandq31.2
+                h/HumanChromosome12Bandq22 h/HumanChromosome12Bandp13
+                h/HumanChromosome9Bandq34))
 
 
 ;; TRIPLICATIONS
-;; NOTE: It is not possible to indicate the orientations of the segments with the short system!
+;; NOTE: It is not possible to indicate the orientations of the
+;; segments with the short system!
 (defclass k46_XX_trp!1!!q21q32!
   :label "The 46,XX,trp(1)(q21q32) karyotype"
   :comment "ISCN2009 pg 83 -> 'Direct triplication of the segment
@@ -1787,14 +1934,23 @@
   the triplications of this segment.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/DirectTriplication (owlsome e/hasBreakPoint h/HumanChromosome1Bandq23.1 h/HumanChromosome1Bandq32.3))))
+  (exactly 1 e/hasEvent
+           (owland e/DirectTriplication
+                   (owlsome e/hasBreakPoint
+                            h/HumanChromosome1Bandq23.1
+                            h/HumanChromosome1Bandq32.3))))
 
 (defclass k46_XX_invtrp!1!!q32q21!
   :label "The 46,XX,inv trp(1)(q32q21) karyotype"
-  :comment "ISCN2009 pg 83 -> 'Inverted triplication of the segment between bands 1q21 and 1q32.'"
+  :comment "ISCN2009 pg 83 -> 'Inverted triplication of the segment
+  between bands 1q21 and 1q32.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (exactly 1 e/hasEvent (owland e/InverseTriplication (owlsome e/hasBreakPoint h/HumanChromosome1Bandq23.1 h/HumanChromosome1Bandq32.3))))
+  (exactly 1 e/hasEvent
+           (owland e/InverseTriplication
+                   (owlsome e/hasBreakPoint
+                            h/HumanChromosome1Bandq23.1
+                            h/HumanChromosome1Bandq32.3))))
 
 
 ;; MULTIPLE COPIES OF REARRANGED CHROMOSOMES
@@ -1851,8 +2007,9 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (e/addition 2 h/HumanChromosome14)
-  (f/derivative 2 h/HumanChromosome14 
-                (e/translocation 1 2 h/HumanChromosome8Bandq24.1 h/HumanChromosome14Bandq32))
+  (f/derivative 2 h/HumanChromosome14
+                (e/translocation 1 2 h/HumanChromosome8Bandq24.1
+                                 h/HumanChromosome14Bandq32))
   (e/translocation 1 2 h/HumanChromosome8Bandq24.1 h/HumanChromosome14Bandq32))
 
 (defclass k92_XXXX_t!8_14!!q24.1_q32!x2
@@ -1874,13 +2031,16 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k92_XXYY)
   (e/addition 2 h/HumanChromosome14)
-  (f/derivative 2 h/HumanChromosome14 
-                (e/translocation 1 2 h/HumanChromosome8Bandq24.1 h/HumanChromosome14Bandq32))
+  (f/derivative 2 h/HumanChromosome14
+                (e/translocation 1 2 h/HumanChromosome8Bandq24.1
+                                 h/HumanChromosome14Bandq32))
   (e/translocation 2 2 h/HumanChromosome8Bandq24.1 h/HumanChromosome14Bandq32))
 
 ;; REDEFINE
 (defclass k93_XXYY_t!8_14!!q24.1q32!x2_der!14!t!8_14!x2_+der!14!t!8_14!
-  :label "The 93,XXYY,t(8;14)(q24.1;q32)x2,der(14)t(8;14)x2,+der(14)t(8;14) karyotype"
+  :label "The
+  93,XXYY,t(8;14)(q24.1;q32)x2,der(14)t(8;14)x2,+der(14)t(8;14)
+  karyotype"
   :comment "ISCN2009 pg 83 -> 'A hypertetraploid clone with two
   balanced t(8;14) and three extra copies of the derivative chromosome
   14, i.e. there are in total five der(14), four of which replace the
@@ -1889,21 +2049,25 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k92_XXYY)
   (e/addition 1 h/HumanChromosome14)
-  (f/derivative 2 h/HumanChromosome14 
-                (e/translocation 1 2 h/HumanChromosome8Bandq24.1 h/HumanChromosome14Bandq32))
+  (f/derivative 2 h/HumanChromosome14
+                (e/translocation 1 2 h/HumanChromosome8Bandq24.1
+                                 h/HumanChromosome14Bandq32))
   (e/translocation 2 2 h/HumanChromosome8Bandq24.1 h/HumanChromosome14Bandq32))
 
 ;; REDEFINE
 (defclass k94_XXYY_t!8_14!!q24.1_q32!x2_+14_der!14!t!8_14!x2_+der!14!t!8_14!
-  :label "The 94,XXYY,t(8;14)(q24.1;q32)x2,+14,der(14)t(8;14)x2,+der(14)t(8;14) karyotype"
+  :label "The
+  94,XXYY,t(8;14)(q24.1;q32)x2,+14,der(14)t(8;14)x2,+der(14)t(8;14)
+  karyotype"
   :comment "ISCN2009 pg 84 -> 'A hypertetraploid clone with two
   balanced t(8;14), three extra copies of the derivative chromosome
   14, and one normal chromosome 14.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k92_XXYY)
   (e/addition 2 h/HumanChromosome14)
-  (f/derivative 2 h/HumanChromosome14 
-                (e/translocation 1 2 h/HumanChromosome8Bandq24.1 h/HumanChromosome14Bandq32))
+  (f/derivative 2 h/HumanChromosome14
+                (e/translocation 1 2 h/HumanChromosome8Bandq24.1
+                                 h/HumanChromosome14Bandq32))
   (e/translocation 2 2 h/HumanChromosome8Bandq24.1 h/HumanChromosome14Bandq32))
 
 (defclass k47_XX_+8_i!8!!q10!x2
@@ -1932,55 +2096,101 @@
 (defclass k45_Y
   :label "The 45,Y karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/deletion 1 h/HumanChromosomeX))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/deletion 1 h/HumanChromosomeX))))
 (defclass k46_YY
   :label "The 46,YY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/deletion 1 h/HumanChromosomeX) (e/addition 1 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/deletion 1 h/HumanChromosomeX)
+            (e/addition 1 h/HumanChromosomeY))))
 (defclass k47_YYY
   :label "The 47,YYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/deletion 1 h/HumanChromosomeX) (e/addition 2 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/deletion 1 h/HumanChromosomeX)
+            (e/addition 2 h/HumanChromosomeY))))
 (defclass k48_XXXX
   :label "The 48,XXXX karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XX) (e/addition 2 h/HumanChromosomeX))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XX)
+            (e/addition 2 h/HumanChromosomeX))))
 (defclass k48_XXYY
   :label "The 48,XXYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX) (e/addition 1 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosomeX)
+            (e/addition 1 h/HumanChromosomeY))))
 (defclass k48_XYYY
   :label "The 48,XYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 2 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 2 h/HumanChromosomeY))))
 (defclass k48_YYYY
   :label "The 48,YYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/deletion 1 h/HumanChromosomeX) (e/addition 3 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/deletion 1 h/HumanChromosomeX)
+            (e/addition 3 h/HumanChromosomeY))))
 (defclass k49_XXXXX
   :label "The 49,XXXXX karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XX) (e/addition 3 h/HumanChromosomeX))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XX)
+            (e/addition 3 h/HumanChromosomeX))))
 (defclass k49_XXXXY
   :label "The 49,XXXXY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 3 h/HumanChromosomeX))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 3 h/HumanChromosomeX))))
 (defclass k49_XXXYY
   :label "The 49,XXXYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 2 h/HumanChromosomeX) (e/addition 1 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 2 h/HumanChromosomeX)
+            (e/addition 1 h/HumanChromosomeY))))
 (defclass k49_XXYYY
   :label "The 49,XXYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 1 h/HumanChromosomeX) (e/addition 2 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 1 h/HumanChromosomeX)
+            (e/addition 2 h/HumanChromosomeY))))
 (defclass k49_XYYYY
   :label "The 49,XYYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/addition 3 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/addition 3 h/HumanChromosomeY))))
 (defclass k49_YYYYY
   :label "The 49,YYYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owlsome n/derivedFrom (owland (owlsome n/derivedFrom n/k46_XY) (e/deletion 1 h/HumanChromosomeX) (e/addition 4 h/HumanChromosomeY))))
+  (owlsome n/derivedFrom
+           (owland
+            (owlsome n/derivedFrom n/k46_XY)
+            (e/deletion 1 h/HumanChromosomeX)
+            (e/addition 4 h/HumanChromosomeY))))
 
 ;; more examples from the ISCN2009
 (defclass k46_XX_inv!2!!p21q31!
@@ -2016,7 +2226,8 @@
   :comment "ISCN2009 pg 43"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/direct_insertion 1 h/HumanChromosome5Bandp14 h/HumanChromosomeXBandq21 h/HumanChromosomeXBandq25))
+  (e/direct_insertion 1 h/HumanChromosome5Bandp14
+                      h/HumanChromosomeXBandq21 h/HumanChromosomeXBandq25))
 
 (defclass k46_XX_ins!2!!q13p13p23!
   :label "The 46,XX,ins(2)(q13p13p23) karyotype"
@@ -2025,7 +2236,8 @@
   2q13.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/direct_insertion 1 h/HumanChromosome2Bandq13 h/HumanChromosome2Bandp13 h/HumanChromosome2Bandp23))
+  (e/direct_insertion 1 h/HumanChromosome2Bandq13
+                      h/HumanChromosome2Bandp13 h/HumanChromosome2Bandp23))
 
 (defclass k46_XX_ins!2!!q13p23p13!
   :label "The 46,XX,ins(2)(q13p23p13) karyotype"
@@ -2035,7 +2247,8 @@
   and band 2p13 distal to the centromere.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/inverse_insertion 1 h/HumanChromosome2Bandq13 h/HumanChromosome2Bandp23 h/HumanChromosome2Bandp13))
+  (e/inverse_insertion 1 h/HumanChromosome2Bandq13
+                       h/HumanChromosome2Bandp23 h/HumanChromosome2Bandp13))
 
 (defclass k46_XX_t!9_22_17!!q34_q11.2_q22!
   :label "The 46,XX,t(9;22;17)(q34;q11.2;q22) karyotype"
@@ -2046,7 +2259,8 @@
   has been translocated onto chromosome 9 at 9q34.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/translocation 1 3 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2 h/HumanChromosome17Bandq22))
+  (e/translocation 1 3 h/HumanChromosome9Bandq34
+                   h/HumanChromosome22Bandq11.2 h/HumanChromosome17Bandq22))
 
 (defclass k46_XY_t!X_15_18!!p11.1_p11.1_q11.1!
   :label "The 46,XY,t(X;15;18)(p11.1;p11.1;q11.1) karyotype"
@@ -2057,7 +2271,8 @@
   distal to 18q11.2 has been translocated to Xp11.1.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/translocation 1 3 h/HumanChromosomeXBandp11.1 h/HumanChromosome15Bandp11.1 h/HumanChromosome18Bandq11.1))
+  (e/translocation 1 3 h/HumanChromosomeXBandp11.1
+                   h/HumanChromosome15Bandp11.1 h/HumanChromosome18Bandq11.1))
 
 (defclass k46_XX_t!3_9_22_21!!p13_q34_q11.2_q21!
   :label "The 46,XX,t(3;9;22;21)(p13;q34;q11.2;q21) karyotype"
@@ -2070,7 +2285,9 @@
   3p13.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
-  (e/translocation 1 4 h/HumanChromosome3Bandp13 h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2 h/HumanChromosome21Bandq21))
+  (e/translocation 1 4 h/HumanChromosome3Bandp13
+                   h/HumanChromosome9Bandq34 h/HumanChromosome22Bandq11.2
+                   h/HumanChromosome21Bandq21))
 
 (defclass k46_XY_t!5_6!!q13q23_q15q23!
   :label "The 46,XY,t(5;6)(q13q23;q15q23) karyotype"
@@ -2080,7 +2297,9 @@
   exchanged.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/translocation 1 2 h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23 h/HumanChromosome6Bandq15 h/HumanChromosome6Bandq23))
+  (e/translocation 1 2 h/HumanChromosome5Bandq13
+                   h/HumanChromosome5Bandq23 h/HumanChromosome6Bandq15
+                   h/HumanChromosome6Bandq23))
 
 (defclass k47_X_t!X_13!!q27_q12!_inv!10!!p13q22!_+21
   :label "The 47,X,t(X;13)(q27;q12),inv(10)(p13q22),+21 karyotype"
@@ -2117,7 +2336,9 @@
 
 ;; ;; ERROR in book! - there is no resolution band for Y q11.2
 ;; (defclass k48_X_t!Y_12!!q11.2_p12!_del!6!!q11!_+8_t!9_22!!q34_q11.2!_+17_-21_+22
-;;   :label "The 48,X,t(Y;12)(q11.2;p12),del(6)(q11),+8,t(9;22)(q34;q11.2),+17,-21,+22 karyotype"
+;;   :label "The
+;;   48,X,t(Y;12)(q11.2;p12),del(6)(q11),+8,t(9;22)(q34;q11.2),+17,-21,+22
+;;   karyotype"
 ;;   :comment "ISCN2009 pg 52 -> 'The translocation involving the Y
 ;;   chromosome is presented first, followed by all autosomal
 ;;   abnormalities in strict chromosome number order.'"
@@ -2133,7 +2354,9 @@
 ;; )
 
 (defclass k49_X_inv!X!!p21q26!_+3_inv!3!!q21q26.2!_+7_+10_-20_del!20!!q11.2!_+21
-  :label "The 49,X,inv(X)(p21q26),+3,inv(3)(q21q26.2),+7,+10,-20,del(20)(q11.2),+21  karyotype"
+  :label "The
+  49,X,inv(X)(p21q26),+3,inv(3)(q21q26.2),+7,+10,-20,del(20)(q11.2),+21
+  karyotype"
   :comment "ISCN2009 pg 52 -> 'The inversion of the X chromosome is
   listed first, The extra chromosome 3 is presented before the
   inversion of chromosome 3 and the monosomy 20 before the deletion of
@@ -2150,8 +2373,11 @@
   (e/addition 1 h/HumanChromosome21))
 
 ;; REDEFINE
-(defclass k50_XX_+1_del!1!!p13!_+dup!1!!q21q32!_+inv!1!!p31q41!_+8_r!10!!p12q25!_-21
-  :label "The 50,XX,+1,del(1)(p13),+dup(1)(q21q32),+inv(1)(p31q41),+8,r(10)(p12q25),-21 karyotype"
+(defclass
+k50_XX_+1_del!1!!p13!_+dup!1!!q21q32!_+inv!1!!p31q41!_+8_r!10!!p12q25!_-21
+  :label "The
+  50,XX,+1,del(1)(p13),+dup(1)(q21q32),+inv(1)(p31q41),+8,r(10)(p12q25),-21
+  karyotype"
   :comment "ISCN2009 pg 52 -> 'There are four abnormalities
   involving diffrent copies of chromosome 1. The numerical change
   is presented first, followed by the structural aberrations listed
