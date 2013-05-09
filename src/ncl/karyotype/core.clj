@@ -29,11 +29,11 @@
   (with-ontology ncl.karyotype.human/human
     (save-ontology "human.omn" :omn)
     (save-ontology "human.owl" :owl))
-  
+
   (with-ontology ncl.karyotype.karyotype/karyotype
     (save-ontology "karyotype.omn" :omn)
     (save-ontology "karyotype.owl" :owl))
-  
+
   (with-ontology ncl.karyotype.events/events
     (save-ontology "events.omn" :omn)
     (save-ontology "events.owl" :owl))
@@ -41,7 +41,7 @@
   (with-ontology ncl.karyotype.features/features
     (save-ontology "features.omn" :omn)
     (save-ontology "features.owl" :owl))
-  
+
   (with-ontology ncl.karyotype.named/named
     (save-ontology "named.omn" :omn)
     (save-ontology "named.owl" :owl))
