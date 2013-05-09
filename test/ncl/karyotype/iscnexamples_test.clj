@@ -345,8 +345,3 @@
 ;;      (with-probe-class
 ;;        [joined (owlclass :subclass i/k46_XY i/k45_Y)]
 ;;        (r/consistent? joined))))
-
-
-
-
-
