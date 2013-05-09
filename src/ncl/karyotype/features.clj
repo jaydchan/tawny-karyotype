@@ -74,7 +74,7 @@
     (exactly n hasFeature (owland FragileSite (owlsome e/hasBreakPoint band))))
 
   (defclass HomogeneouslyStainingRegion)
-  (defn hsr 
+  (defn hsr
     ([n band]
        (exactly n hasFeature (owland HomogeneouslyStainingRegion (owlsome e/hasBreakPoint band))))
     ([n band1 band2]
@@ -89,7 +89,7 @@
     (exactly n hasFeature (owland MarkerChromosome h/HumanChromosome)))
 
   (defclass Neocentromere)
-  
+
   (defclass PseudodicentricChromosome)
   (defn pseudo_dicentric [n band1 band2]
     (exactly n hasFeature (owland PseudodicentricChromosome (owlsome e/hasBreakPoint band1 band2))))
@@ -123,8 +123,6 @@
   (defclass TricentricChromosome)
   (defn tricentric [n band1 band2 band3 band4]
       (exactly n hasFeature (owland TricentricChromosome (owlsome e/hasBreakPoint band1 band2 band3 band4))))
-
-  (defclass TricentricRingChromosome)
 
   (defclass UniparentalDisomy)
 
