@@ -32,26 +32,38 @@
 
 ;; Auxiliary Functions
 (defn pband? [band]
-  "Determine if the gvien band is a p band"
+  "Determine if the given band is a p band"
   (re-find #"p" band))
 
 (defn qband? [band]
-  "Determine if the gvien band is a q band"
+  "Determine if the given band is a q band"
   (re-find #"q" band))
 
 (defn ter? [band]
-  "Determine if the gvien band is a telomere"
+  "Determine if the given band is a telomere"
   (re-find #"Ter" band))
 
 (defn cen? [band]
-  "Determine if the gvien band is a centromere"
-  (re-find #"Cen" band))
+  "Determine if the given band is a centromere"
+  (re-find #"0" band))
 
 (defn create-class-with-superclasses
   "Creates a class with given name and superclasses"
   [name & parents]
   (tawny.read/intern-entity
    (owlclass name :subclass parents)))
+
+(defn group-for-band
+  "Given a band return the appropriate bandgroup"
+  [bandgroup band]
+  (cond
+   (pband? band)
+   (str bandgroup "p")
+   (qband? band)
+   (str bandgroup "q")
+   :default
+   (throw (IllegalArgumentException.
+           (str "Band syntax not recognised: " band)))))
 
 ;; define classes
 (defclass HumanChromosome
@@ -89,21 +101,51 @@
  (defclass HumanChromosomeY
    :subclass HumanAllosome))
 
-(defn group-for-band
-  "Given a band return the appropriate bandgroup"
-  [bandgroupp bandgroupq band]
-  (cond
-   (pband? band)
-   bandgroupp
-   (qband? band)
-   bandgroupq
-   (ter? band)
-   HumanTelomere
-   (cen? band)
-   HumanCentromere
-   :default
-   (throw (IllegalArgumentException.
-           (str "Band syntax not recognised: " band)))))
+;; define associated telomere, centromere and parent p and q bands for each
+;; human chromosome
+(doseq [chromosome (concat (into () (isubclasses HumanAutosome))
+                           (into () (isubclasses HumanAllosome)))]
+  (let [group (str
+               (.getFragment
+                (.getIRI
+                 chromosome)))
+        bandgroup (str group "Band")]
+
+    ;; generate the band group that all the entities we create
+    ;; will be part of
+    (create-class-with-superclasses
+      bandgroup
+      (owlsome k/isBandOf chromosome)
+      HumanChromosomeBand)
+
+    ;; generate the parent p and q band classes
+    (as-disjoint
+     (create-class-with-superclasses (str bandgroup "p") bandgroup)
+     (create-class-with-superclasses (str bandgroup "q") bandgroup))
+
+    ;; generate the associated centromere entity
+    (create-class-with-superclasses
+      (str group "Centromere")
+      HumanCentromere
+      (owlsome k/isComponentOf chromosome))
+
+    ;; generate the associated telomere entity
+    (create-class-with-superclasses
+      (str group "Telomere")
+      HumanTelomere
+      (owlsome k/isComponentOf chromosome))))
+
+;; add disjoint axiom for the children of HumanCentromere
+(disjointclasseslist
+ (into () (isubclasses HumanCentromere)))
+
+;; add disjoint axiom for the children of HumanChromosomeBand
+(disjointclasseslist
+ (into () (isubclasses HumanChromosomeBand)))
+
+;; add disjoint axiom for the children of HumanTelomere
+(disjointclasseslist
+ (into () (isubclasses HumanTelomere)))
 
 ;; private functions
 (defn- human-sub-band
@@ -113,16 +155,6 @@ PARENT, which is either p or q band."
   (create-class-with-superclasses
    name parent
    (owlsome k/isSubBandOf band)))
-
-(defn- human-centromere
-  "The band is a centromere, so describe it as such
- and add two classes p10 and q10 which are part of it."
-  [bandgroupp bandgroupq bandgroup group]
-  (as-disjoint
-   (create-class-with-superclasses (str bandgroup "p10")
-     (str group "Centromere"))
-   (create-class-with-superclasses (str bandgroup "q10")
-     (str group "Centromere"))))
 
 (defn- humanbands0 [chromosome parent container bands firstlevel]
   "Recursive auxiliary function for humanbands - used to create
@@ -159,36 +191,11 @@ PARENT, which is either p or q band."
                 (.getIRI
                  chromosome)))
         bandgroup (str group "Band")
-        bandgroupp (str bandgroup "p")
-        bandgroupq (str bandgroup "q")
         fgroup (partial group-for-band
-                        bandgroupp bandgroupq)]
-
-    ;; generate the band group that all the entities we create
-    ;; will be part of
-    (create-class-with-superclasses
-      bandgroup
-      (owlsome k/isBandOf chromosome)
-      HumanChromosomeBand)
-
-    ;; generate the band p and band q subclasses
-    (as-disjoint
-     (create-class-with-superclasses bandgroupp bandgroup)
-     (create-class-with-superclasses bandgroupq bandgroup))
-
-    ;; generate the associated centromere entity
-    (create-class-with-superclasses
-      (str group "Centromere")
-      HumanCentromere
-      (owlsome k/isComponentOf chromosome))
-
-    ;; generate the associated telomere entity
-    (create-class-with-superclasses
-      (str group "Telomere")
-      HumanTelomere
-      (owlsome k/isComponentOf chromosome))
+                        bandgroup)]
 
     ;; generates bands
+    (as-disjoint
      (doseq [band bands]
        (cond
         (vector? band)
@@ -200,13 +207,17 @@ PARENT, which is either p or q band."
         ;; if the band is the centromere, generate associated
         ;; centromere bands
         (cen? band)
-        (human-centromere bandgroupp bandgroupq bandgroup group)
-        ;; if the band is a terminal, generate associated telomere 
+        (create-class-with-superclasses
+          (str bandgroup band)
+          (fgroup band)
+          (owlsome k/isBandOf (str group "Centromere")))
+        ;; if the band is a terminal, generate associated telomere
         ;; bands
         (ter? band)
-        (as-disjoint (create-class-with-superclasses
+        (create-class-with-superclasses
           (str bandgroup band)
-          (str group "Telomere")))
+          (fgroup band)
+          (owlsome k/isBandOf (str group "Telomere")))
         ;; if the band is a p or q band, generate the band
         (or (pband? band)
             (qband? band))
@@ -216,9 +227,10 @@ PARENT, which is either p or q band."
         ;; else the band syntax is not recognized
         :default
         (throw (IllegalArgumentException.
-                (str "Band must be string or sequence:" band)))))))
+                (str "Band must be string or sequence:" band))))))))
 
-;; Band information for Human Chromosome 1
+;; Define bands
+;; Short arm band information for Human Chromosome 1
 (humanbands
  HumanChromosome1
  "pTer"
@@ -235,7 +247,12 @@ PARENT, which is either p or q band."
  ["p13" "p13.3" "p13.2" "p13.1"]
  "p12"
  ["p11" "p11.2" "p11.1"]
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 1
+(humanbands
+ HumanChromosome1
+ "q10"
  "q11"
  "q12"
  ["q21" "q21.1" "q21.2" "q21.3"]
@@ -252,10 +269,9 @@ PARENT, which is either p or q band."
   ["q42.1" "q42.11" "q42.12" "q42.13"]
   "q42.2" "q42.3"]
  ["q43q44" "q43" "q44"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 2
+;; Short arm band information for Human Chromosome 2
 (humanbands
  HumanChromosome2
  "pTer"
@@ -271,7 +287,12 @@ PARENT, which is either p or q band."
  "p12"
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 2
+(humanbands
+ HumanChromosome2
+ "q10"
  "q11.1"
  "q11.2"
  ["q12q13q14"
@@ -289,10 +310,9 @@ PARENT, which is either p or q band."
  ["q34q35q36" "q34" "q35"
   ["q36" "q36.1" "q36.2" "q36.3"]]
  ["q37" "q37.1" "q37.2" "q37.3"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 3
+;; Short arm band information for Human Chromosome 3
 (humanbands
  HumanChromosome3
  "pTer"
@@ -309,7 +329,12 @@ PARENT, which is either p or q band."
  "p13"
  ["p12" "p12.3" "p12.2" "p12.1"]
  ["p11" "p11.2" "p11.1"]
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 3
+(humanbands
+ HumanChromosome3
+ "q10"
  "q11.1"
  "q11.2"
  ["q12" "q12.1" "q12.2" "q12.3"]
@@ -328,10 +353,9 @@ PARENT, which is either p or q band."
  ["q27" "q27.1" "q27.2" "q27.3"]
  "q28"
  "q29"
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 4
+;; Short arm band information for Human Chromosome 4
 (humanbands
  HumanChromosome4
  "pTer"
@@ -343,7 +367,12 @@ PARENT, which is either p or q band."
  "p13"
  "p12"
  "p11"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 4
+(humanbands
+ HumanChromosome4
+ "q10"
  "q11"
  "q12"
  ["q13" "q13.1" "q13.2" "q13.3"]
@@ -362,10 +391,9 @@ PARENT, which is either p or q band."
  "q33"
  ["q34" "q34.1" "q34.2" "q34.3"]
  ["q35" "q35.1" "q35.2"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 5
+;; Short arm band information for Human Chromosome 5
 (humanbands
  HumanChromosome5
  "pTer"
@@ -376,7 +404,12 @@ PARENT, which is either p or q band."
  ["p13" "p13.3" "p13.2" "p13.1"]
  "p12"
  "p11"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 5
+(humanbands
+ HumanChromosome5
+ "q10"
  "q11.1"
  "q11.2"
  ["q12" "q12.1" "q12.2" "q12.3"]
@@ -394,10 +427,9 @@ PARENT, which is either p or q band."
   ["q33" "q33.1" "q33.2" "q33.3"]
   "q34"]
  ["q35" "q35.1" "q35.2" "q35.3"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 6
+;; Short arm band information for Human Chromosome 6
 (humanbands
  HumanChromosome6
  "pTer"
@@ -412,7 +444,12 @@ PARENT, which is either p or q band."
   "p21.2" "p21.1"]
  ["p12" "p12.3" "p12.2" "p12.1"]
  ["p11" "p11.2" "p11.1"]
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 6
+(humanbands
+ HumanChromosome6
+ "q10"
  ["q11" "q11.1" "q11.2"]
  "q12"
  "q13"
@@ -428,10 +465,9 @@ PARENT, which is either p or q band."
  ["q25q26q27"
   ["q25" "q25.1" "q25.2" "q25.3"]
   "q26" "q27"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 7
+;; Short arm band information for Human Chromosome 7
 (humanbands
  HumanChromosome7
  "pTer"
@@ -442,7 +478,12 @@ PARENT, which is either p or q band."
  "p13"
  ["p12" "p12.3" "p12.2" "p12.1"]
  ["p11" "p11.2" "p11.1"]
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 7
+(humanbands
+ HumanChromosome7
+ "q10"
  "q11.1"
  ["q11.2" "q11.21" "q11.22" "q11.23"]
  ["q21"
@@ -454,10 +495,9 @@ PARENT, which is either p or q band."
  ["q32" "q32.1" "q32.2" "q32.3"]
  ["q33q34q35" "q33" "q34" "q35"]
  ["q36" "q36.1" "q36.2" "q36.3"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 8
+;; Short arm band information for Human Chromosome 8
 (humanbands
  HumanChromosome8
  "pTer"
@@ -467,7 +507,12 @@ PARENT, which is either p or q band."
  "p12"
  ["p11.2" "p11.23" "p11.22" "p11.21"]
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 8
+(humanbands
+ HumanChromosome8
+ "q10"
  "q11.1"
  ["q11.2" "q11.21" "q11.22" "q11.23"]
  ["q12" "q12.1" "q12.2" "q12.3"]
@@ -481,10 +526,9 @@ PARENT, which is either p or q band."
   ["q24.1" "q24.11" "q24.12" "q24.13"]
   ["q24.2" "q24.21" "q24.22" "q24.23"]
   "q24.3"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 9
+;; Short arm band information for Human Chromosome 9
 (humanbands
  HumanChromosome9
  "pTer"
@@ -495,7 +539,12 @@ PARENT, which is either p or q band."
  ["p13" "p13.3" "p13.2" "p13.1"]
  "p12"
  ["p11" "p11.2" "p11.1"]
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 9
+(humanbands
+ HumanChromosome9
+ "q10"
  "q11"
  "q12"
  "q13"
@@ -510,10 +559,9 @@ PARENT, which is either p or q band."
   "q32"
   ["q33" "q33.1" "q33.2" "q33.3"]]
  ["q34" "q34.1" "q34.2" "q34.3"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 10
+;; Short arm band information for Human Chromosome 10
 (humanbands
  HumanChromosome10
  "pTer"
@@ -523,7 +571,12 @@ PARENT, which is either p or q band."
  ["p12" "p12.3" "p12.2" "p12.1"]
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 10
+(humanbands
+ HumanChromosome10
+ "q10"
  "q11.1"
  "q11.2"
  ["q21" "q21.1" "q21.2" "q21.3"]
@@ -539,7 +592,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
-;; Band information for Human Chromosome 11
+;; Short arm band information for Human Chromosome 11
 (humanbands
  HumanChromosome11
  "pTer"
@@ -549,7 +602,12 @@ PARENT, which is either p or q band."
   "p13" "p12"]
  "p11.2"
  ["p11.1" "p11.12" "p11.11"]
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 11
+(humanbands
+ HumanChromosome11
+ "q10"
  "q11"
  ["q12" "q12.1" "q12.2" "q12.3"]
  ["q13" "q13.1" "q13.2" "q13.3" "q13.4" "q13.5"]
@@ -560,10 +618,9 @@ PARENT, which is either p or q band."
  ["q23" "q23.1" "q23.2" "q23.3"]
  ["q24" "q24.1" "q24.2" "q24.3"]
  "q25"
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 12
+;; Short arm band information for Human Chromosome 12
 (humanbands
  HumanChromosome12
  "pTer"
@@ -573,7 +630,12 @@ PARENT, which is either p or q band."
  ["p12" "p12.3" "p12.2" "p12.1"]
  ["p11.2" "p11.23" "p11.22" "p11.21"]
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 12
+(humanbands
+ HumanChromosome12
+ "q10"
  "q11"
  "q12"
  ["q13"
@@ -589,10 +651,9 @@ PARENT, which is either p or q band."
  ["q24.1" "q24.11" "q24.12" "q24.13"]
  ["q24.2" "q24.21" "q24.22" "q24.23"]
  ["q24.3" "q24.31" "q24.32" "q24.33"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 13
+;; Short arm band information for Human Chromosome 13
 (humanbands
  HumanChromosome13
  "pTer"
@@ -600,7 +661,12 @@ PARENT, which is either p or q band."
  "p12"
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 13
+(humanbands
+ HumanChromosome13
+ "q10"
  "q11"
  ["q12"
   ["q12.1" "q12.11" "q12.12" "q12.13"]
@@ -617,10 +683,9 @@ PARENT, which is either p or q band."
   ["q32" "q32.1" "q32.2" "q32.3"]
   ["q33" "q33.1" "q33.2" "q33.3"]]
  "q34"
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 14
+;; Short arm band information for Human Chromosome 14
 (humanbands
  HumanChromosome14
  "pTer"
@@ -628,7 +693,12 @@ PARENT, which is either p or q band."
  "p12"
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 14
+(humanbands
+ HumanChromosome14
+ "q10"
  "q11.1"
  "q11.2"
  ["q12q13q21" "q12"
@@ -642,10 +712,9 @@ PARENT, which is either p or q band."
   ["q32.1" "q32.11" "q32.12" "q32.13"]
   "q32.2"
   ["q32.3" "q32.31" "q32.32" "q32.33"]]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 15
+;; Short arm band information for Human Chromosome 15
 (humanbands
  HumanChromosome15
  "pTer"
@@ -653,7 +722,12 @@ PARENT, which is either p or q band."
  "p12"
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 15
+(humanbands
+ HumanChromosome15
+ "q10"
  "q11.1"
  "q11.2"
  ["q12q13q14" "q12"
@@ -667,10 +741,9 @@ PARENT, which is either p or q band."
  ["q24" "q24.1" "q24.2" "q24.3"]
  ["q25" "q25.1" "q25.2" "q25.3"]
  ["q26" "q26.1" "q26.2" "q26.3"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 16
+;; Short arm band information for Human Chromosome 16
 (humanbands
  HumanChromosome16
  "pTer"
@@ -680,7 +753,12 @@ PARENT, which is either p or q band."
  ["p12" "p12.3" "p12.2" "p12.1"]
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 16
+(humanbands
+ HumanChromosome16
+ "q10"
  "q11.1"
  "q11.2"
  ["q12q13" "q12.1" "q12.2" "q13"]
@@ -688,10 +766,9 @@ PARENT, which is either p or q band."
   ["q22" "q22.1" "q22.2" "q22.3"]
   ["q23" "q23.1" "q23.2" "q23.3"]]
  ["q24" "q24.1" "q24.2" "q24.3"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 17
+;; Short arm band information for Human Chromosome 17
 (humanbands
  HumanChromosome17
  "pTer"
@@ -699,7 +776,12 @@ PARENT, which is either p or q band."
  "p12"
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 17
+(humanbands
+ HumanChromosome17
+ "q10"
  "q11.1"
  "q11.2"
  "q12"
@@ -709,17 +791,21 @@ PARENT, which is either p or q band."
   ["q23" "q23.1" "q23.2" "q23.3"]
   ["q24" "q24.1" "q24.2" "q24.3"]]
  ["q25" "q25.1" "q25.2" "q25.3"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 18
+;; Short arm band information for Human Chromosome 18
 (humanbands
  HumanChromosome18
  "pTer"
  ["p11.3" "p11.32" "p11.31"]
  ["p11.2" "p11.23" "p11.22" "p11.21"]
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 18
+(humanbands
+ HumanChromosome18
+ "q10"
  "q11.1"
  "q11.2"
  ["q12" "q12.1" "q12.2" "q12.3"]
@@ -727,10 +813,9 @@ PARENT, which is either p or q band."
   ["q21.3" "q21.31" "q21.32" "q21.33"]]
  ["q22" "q22.1" "q22.2" "q22.3"]
  "q23"
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 19
+;; Short arm band information for Human Chromosome 19
 (humanbands
  HumanChromosome19
  "pTer"
@@ -738,7 +823,12 @@ PARENT, which is either p or q band."
   ["p13.1" "p13.13" "p13.12" "p13.11"]]
  "p12"
  "p11"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 19
+(humanbands
+ HumanChromosome19
+ "q10"
  "q11"
  "q12"
  ["q13.1q13.2q13.3"
@@ -746,10 +836,9 @@ PARENT, which is either p or q band."
   "q13.2"
   ["q13.3" "q13.31" "q13.32" "q13.33"]]
  ["q13.4" "q13.41" "q13.42" "q13.43"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 20
+;; Short arm band information for Human Chromosome 20
 (humanbands
  HumanChromosome20
  "pTer"
@@ -757,7 +846,12 @@ PARENT, which is either p or q band."
  ["p12" "p12.3" "p12.2" "p12.1"]
  ["p11.2" "p11.23" "p11.22" "p11.21"]
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 20
+(humanbands
+ HumanChromosome20
+ "q10"
  "q11.1"
  ["q11.2q12q13.1"
   ["q11.2" "q11.21" "q11.22" "q11.23"]
@@ -765,10 +859,9 @@ PARENT, which is either p or q band."
   ["q13.1" "q13.11" "q13.12" "q13.13"]]
  "q13.2"
  "q13.3"
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 21
+;; Short arm band information for Human Chromosome 21
 (humanbands
  HumanChromosome21
  "pTer"
@@ -776,17 +869,21 @@ PARENT, which is either p or q band."
  "p12"
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 21
+(humanbands
+ HumanChromosome21
+ "q10"
  "q11.1"
  "q11.2"
  ["q21" "q21.1" "q21.2" "q21.3"]
  ["q22"
   ["q22.1" "q22.11" "q22.12" "q22.13"]
   "q22.2" "q22.3"]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome 22
+;; Short arm band information for Human Chromosome 22
 (humanbands
  HumanChromosome22
  "pTer"
@@ -794,16 +891,20 @@ PARENT, which is either p or q band."
  "p12"
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome 22
+(humanbands
+ HumanChromosome22
+ "q10"
  "q11.1"
  ["q11.2" "q11.21" "q11.22" "q11.23"]
  ["q12" "q12.1" "q12.2" "q12.3"]
  ["q13" "q13.1" "q13.2"
   ["q13.3" "q13.31" "q13.32" "q13.33"]]
- "qTer"
-)
+ "qTer")
 
-;; Band information for Human Chromosome X
+;; Short arm band information for Human Chromosome X
 (humanbands
  HumanChromosomeX
  "pTer"
@@ -814,7 +915,12 @@ PARENT, which is either p or q band."
  ["p11.2p11.3p11.4" "p11.4" "p11.3"
   ["p11.2" "p11.23" "p11.22" "p11.21"]]
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome X
+(humanbands
+ HumanChromosomeX
+ "q10"
  ["q11" "q11.1" "q11.2"]
  "q12"
  ["q13" "q13.1" "q13.2" "q13.3"]
@@ -830,85 +936,22 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
-;; Band information for Human Chromosome Y
+;; Short arm band information for Human Chromosome Y
 (humanbands
  HumanChromosomeY
  "pTer"
  ["p11.3" "p11.32" "p11.31"]
  "p11.2"
  "p11.1"
- "Cen"
+ "p10")
+
+;; Long arm band information for Human Chromosome Y
+(humanbands
+ HumanChromosomeY
+ "q10"
  "q11.1"
  "q11.21"
  ["q11.22" "q11.221" "q11.222" "q11.223"]
  "q11.23"
  "q12"
- "qTer"
- )
-
-;; add disjoint axiom for the children of HumanCentromere
-(disjointclasseslist
- (into () (isubclasses HumanCentromere)))
-
-;; add disjoint axiom for the children of HumanChromosomeBand
-(disjointclasseslist
- (into () (isubclasses HumanChromosomeBand)))
-
-;; add disjoint axiom for the children of HumanTelomere
-(disjointclasseslist
- (into () (isubclasses HumanTelomere)))
-
-(r/reasoner-factory :hermit)
-
-(import 'org.semanticweb.owlapi.reasoner.ReasonerProgressMonitor)
-
-(defn reasoner-progress-monitor-quieter []
-  (proxy [org.semanticweb.owlapi.reasoner.ReasonerProgressMonitor] []
-    (reasonerTaskBusy[]
-      (println "Reasoner task busy");; stuff
-      )
-    (reasonerTaskProgressChanged [val max]
-      ;;(println "Reasoner task changed" val ":" max)
-      )
-    (reasonerTaskStarted [name]
-      (println "reasoner task started" name))
-    (reasonerTaskStopped []
-      (println "reasoner task stopped"))))
-
-
-(defn- create-first-level-bands-disjoint
-  "Creates the disjoint axiom for given a parent p or q band"
-  [chromosomeband]
-
-  ;; generate temporary equivalent OWL class
-  (let [temp-entity
-        (owlclass "tempentity"
-          :equivalent
-          (owlsome k/isSubBandOf chromosomeband))]
-
-    ;; obtain the first-level bands of a given parent p or q band
-    (binding [r/*reasoner-progress-monitor*
-              reasoner-progress-monitor-quieter]
-      (disjointclasseslist
-       ;; the difference of
-       (clojure.set/difference
-        ;; a set of all subclasses of CHROMOSOMEBAND
-        (into #{} (isubclasses chromosomeband))
-        ;; a set of all inferred subclasses of TempEntity (i.e. all sub-bands of
-        ;; the associated CHROMOSOMEBAND)
-        (.getFlattened (r/isubclasses TempEntity)))))
-
-    ;; remove temporary equivalent OWL class
-    (remove-entity temp-entity)
-)
-
-;; add disjoint axiom for the first children of each HumanChromosomeBand
-(let [chromosomebands (into [] (isubclasses HumanChromosomeBand))]
-  (doseq [chromosomeband chromosomebands]
-    (doseq [porqband (into [] (isubclasses chromosomeband))]
-      (create-first-level-bands-disjoint porqband))))
-
-;; add disjoint axioms for terminal p and terminal q for
-;; each chromosome telomere
-(doseq [cband (into [] (isubclasses HumanTelomere))]
-  (disjointclasseslist (into () (isubclasses cband))))
+ "qTer")
