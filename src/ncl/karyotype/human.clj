@@ -21,20 +21,20 @@
   (:require [tawny
              [reasoner :as r]
              [read]]
+            [clojure.set]
             [ncl.karyotype [karyotype :as k]]))
 
 (defontology human
   :iri "http://ncl.ac.uk/karyotype/human"
   :prefix "hum:")
 
+(owlimport k/karyotype)
+
 (defn pband? [band]
   (re-find #"p" band))
 
 (defn qband? [band]
   (re-find #"q" band))
-
-(defn pqband? [band]
-  (not (re-find #"Cen|Ter" band)))
 
 (defn ter? [band]
   (re-find #"Ter" band))
@@ -61,15 +61,6 @@
  (defclass HumanAllosome
    :subclass HumanChromosome))
 
-;; define object properties
-(defoproperty isSubBandOf
-  :range HumanChromosomeBand
-  :domain HumanChromosomeBand)
-
-(defoproperty hasSubBand
-  :range HumanChromosomeBand
-  :domain HumanChromosomeBand)
-
 ;; define all the human chromosomes - autosomes
 (as-disjoint
  (doall
@@ -83,11 +74,12 @@
    (range 1 23))))
 
 ;; define all the human chromosomes - allosomes
-(defclass HumanChromosomeX
-  :subclass HumanAllosome)
+(as-disjoint
+ (defclass HumanChromosomeX
+   :subclass HumanAllosome)
 
-(defclass HumanChromosomeY
-  :subclass HumanAllosome)
+ (defclass HumanChromosomeY
+   :subclass HumanAllosome))
 
 (defn create-class-with-superclasses
   [name & parents]
@@ -98,51 +90,56 @@
   "Given a band return the appropriate bandgroup"
   [bandgroupp bandgroupq band]
   (cond
-   (ter? band)
-   HumanTelomere
-   (cen? band)
-   HumanCentromere
    (pband? band)
    bandgroupp
    (qband? band)
    bandgroupq
+   (ter? band)
+   HumanTelomere
+   (cen? band)
+   HumanCentromere
    :default
    (throw (IllegalArgumentException.
            (str "Band syntax not recognised: " band)))))
 
-(defn human-sub-band
+(defn- human-sub-band
   "Adds NAME as a sub-band of BAND and a kind of
 PARENT, which is either p or q band."
   [parent name band]
   (create-class-with-superclasses
    name parent
-   (owlsome isSubBandOf band)))
+   (owlsome k/isSubBandOf band)))
 
-(defn human-centromere
-  [bandgroupp bandgroupq chromosome bandgroup name]
+(defn- human-centromere
+  [bandgroupp bandgroupq bandgroup group]
   ;; which is a centromere, so describe it as such
-  (create-class-with-superclasses
-   name HumanCentromere
-   (owlsome k/isComponentOf chromosome))
   ;; and add two classes p10 and q10 which are part of it.
   (as-disjoint
-   (create-class-with-superclasses (str bandgroup "p10") bandgroupp)
-   (create-class-with-superclasses (str bandgroup "q10") bandgroupq)))
+   (create-class-with-superclasses (str bandgroup "p10")
+     (str group "Centromere"))
+   (create-class-with-superclasses (str bandgroup "q10")
+     (str group "Centromere"))))
 
-(defn- humanbands3 [chromosome parent container bands]
+(defn- humanbands0 [chromosome parent container bands firstlevel]
   (let [bandgroup (str
                    (.getFragment
                     (.getIRI
                      chromosome)) "Band")]
-    (create-class-with-superclasses (str bandgroup container) parent)
-    (doseq [band bands]
-      (if (vector? band)
-        (humanbands3 chromosome parent (first band) (rest band))
-        (human-sub-band parent (str bandgroup band)
-                     (str bandgroup container))))))
 
+    (if (nil? firstlevel)
+      (create-class-with-superclasses (str bandgroup container) parent)
+      (human-sub-band parent (str bandgroup container)
+                      (str bandgroup firstlevel)))
 
-(defn humanbands [chromosome & bands]
+    (as-disjoint
+     (doseq [band bands]
+       (if (vector? band)
+         (humanbands0 chromosome parent (first band)
+                      (rest band) container)
+         (human-sub-band parent (str bandgroup band)
+                         (str bandgroup container)))))))
+
+(defn- humanbands [chromosome & bands]
   (let [group (str
                (.getFragment
                 (.getIRI
@@ -156,30 +153,41 @@ PARENT, which is either p or q band."
     ;; generate the band groups that all the entities we create will be part
     ;; of.
     (create-class-with-superclasses
-     bandgroup
-     (owlsome k/isBandOf chromosome)
-     HumanChromosomeBand)
-    ;; first use
-    (create-class-with-superclasses bandgroupp bandgroup)
-    (create-class-with-superclasses bandgroupq bandgroup)
-
+      bandgroup
+      (owlsome k/isBandOf chromosome)
+      HumanChromosomeBand)
     (as-disjoint
+     (create-class-with-superclasses bandgroupp bandgroup)
+     (create-class-with-superclasses bandgroupq bandgroup))
+
+    ;; creates centromeres
+    (create-class-with-superclasses
+      (str group "Centromere")
+      HumanCentromere
+      (owlsome k/isComponentOf chromosome)
+      )
+
+    ;; creates telomeres
+    (create-class-with-superclasses
+      (str group "Telomere")
+      HumanTelomere
+      (owlsome k/isComponentOf chromosome)
+      )
+
      (doseq [band bands]
        (cond
         (vector? band)
         ;; we have a set of bands, so we work over all of these
-        (humanbands3 chromosome
+        (humanbands0 chromosome
                      (fgroup (first band))
-                     (first band) (rest band))
+                     (first band) (rest band) nil)
         ;; therefore we have a single band
         (cen? band)
-        (human-centromere bandgroupp bandgroupq chromosome
-                          bandgroup (str group band))
+        (human-centromere bandgroupp bandgroupq bandgroup group)
         (ter? band)
-        (create-class-with-superclasses
-         (str group band)
-         (fgroup band)
-         (owlsome k/isComponentOf chromosome))
+        (as-disjoint (create-class-with-superclasses
+          (str bandgroup band)
+          (str group "Telomere")))
         (or (pband? band)
             (qband? band))
         (create-class-with-superclasses
@@ -187,7 +195,7 @@ PARENT, which is either p or q band."
          (fgroup band))
         :default
         (throw (IllegalArgumentException.
-                (str "Band must be string or sequence:" band))))))))
+                (str "Band must be string or sequence:" band)))))))
 
 (humanbands
  HumanChromosome1
@@ -226,7 +234,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome2 
+ HumanChromosome2
  "pTer"
  ["p25" "p25.3" "p25.2" "p25.1"]
  ["p24" "p24.3" "p24.2" "p24.1"]
@@ -262,7 +270,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome3 
+ HumanChromosome3
  "pTer"
  ["p26" "p26.3" "p26.2" "p26.1"]
  ["p25" "p25.3" "p25.2" "p25.1"]
@@ -300,7 +308,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome4 
+ HumanChromosome4
  "pTer"
  ["p16" "p16.3" "p16.2" "p16.1"]
  ["p15.3" "p15.33" "p15.32" "p15.31"]
@@ -333,7 +341,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome5 
+ HumanChromosome5
  "pTer"
  ["p15"
   ["p15.3" "p15.33" "p15.32" "p15.31"]
@@ -364,7 +372,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome6 
+ HumanChromosome6
  "pTer"
  ["p25" "p25.3" "p25.2" "p25.1"]
  "p24"
@@ -397,7 +405,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome7 
+ HumanChromosome7
  "pTer"
  ["p22" "p22.3" "p22.2" "p22.1"]
  ["p21" "p21.3" "p21.2" "p21.1"]
@@ -422,7 +430,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome8 
+ HumanChromosome8
  "pTer"
  ["p23" "p23.3" "p23.2" "p23.1"]
  "p22"
@@ -448,7 +456,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome9 
+ HumanChromosome9
  "pTer"
  ["p24" "p24.3" "p24.2" "p24.1"]
  "p23"
@@ -476,7 +484,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome10 
+ HumanChromosome10
  "pTer"
  "p15"
  "p14"
@@ -501,7 +509,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome11 
+ HumanChromosome11
  "pTer"
  ["p15" "p15.5" "p15.4" "p15.3" "p15.2" "p15.1"]
  ["p12p13p14"
@@ -524,7 +532,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome12 
+ HumanChromosome12
  "pTer"
  ["p13"
   ["p13.3" "p13.33" "p13.32" "p13.31"]
@@ -552,7 +560,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome13 
+ HumanChromosome13
  "pTer"
  "p13"
  "p12"
@@ -579,7 +587,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome14 
+ HumanChromosome14
  "pTer"
  "p13"
  "p12"
@@ -603,7 +611,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome15 
+ HumanChromosome15
  "pTer"
  "p13"
  "p12"
@@ -627,7 +635,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome16 
+ HumanChromosome16
  "pTer"
  "p13.3"
  "p13.2"
@@ -647,7 +655,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome17 
+ HumanChromosome17
  "pTer"
  ["p13" "p13.3" "p13.2" "p13.1"]
  "p12"
@@ -667,7 +675,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome18 
+ HumanChromosome18
  "pTer"
  ["p11.3" "p11.32" "p11.31"]
  ["p11.2" "p11.23" "p11.22" "p11.21"]
@@ -684,7 +692,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome19 
+ HumanChromosome19
  "pTer"
  ["p13" "p13.3" "p13.2"
   ["p13.1" "p13.13" "p13.12" "p13.11"]]
@@ -702,7 +710,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome20 
+ HumanChromosome20
  "pTer"
  "p13"
  ["p12" "p12.3" "p12.2" "p12.1"]
@@ -720,7 +728,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome21 
+ HumanChromosome21
  "pTer"
  "p13"
  "p12"
@@ -737,7 +745,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosome22 
+ HumanChromosome22
  "pTer"
  "p13"
  "p12"
@@ -753,7 +761,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosomeX 
+ HumanChromosomeX
  "pTer"
  ["p22.3" "p22.33" "p22.32" "p22.31"]
  "p22.2"
@@ -779,7 +787,7 @@ PARENT, which is either p or q band."
 )
 
 (humanbands
- HumanChromosomeY 
+ HumanChromosomeY
  "pTer"
  ["p11.3" "p11.32" "p11.31"]
  "p11.2"
@@ -793,59 +801,43 @@ PARENT, which is either p or q band."
  "qTer"
  )
 
-(disjointclasses
- HumanChromosome1Band
- HumanChromosome2Band
- HumanChromosome3Band
- HumanChromosome4Band
- HumanChromosome5Band
- HumanChromosome6Band
- HumanChromosome7Band
- HumanChromosome8Band
- HumanChromosome9Band
- HumanChromosome10Band
- HumanChromosome11Band
- HumanChromosome12Band
- HumanChromosome13Band
- HumanChromosome14Band
- HumanChromosome15Band
- HumanChromosome16Band
- HumanChromosome17Band
- HumanChromosome18Band
- HumanChromosome19Band
- HumanChromosome20Band
- HumanChromosome21Band
- HumanChromosome22Band
- HumanChromosomeXBand
- HumanChromosomeYBand)
+;; add disjoint axiom for the children of HumanCentromere
+(disjointclasseslist
+ (into () (isubclasses HumanCentromere)))
 
-(disjointclasses
- HumanChromosome1Cen
- HumanChromosome2Cen
- HumanChromosome3Cen
- HumanChromosome4Cen
- HumanChromosome5Cen
- HumanChromosome6Cen
- HumanChromosome7Cen
- HumanChromosome8Cen
- HumanChromosome9Cen
- HumanChromosome10Cen
- HumanChromosome11Cen
- HumanChromosome12Cen
- HumanChromosome13Cen
- HumanChromosome14Cen
- HumanChromosome15Cen
- HumanChromosome16Cen
- HumanChromosome17Cen
- HumanChromosome18Cen
- HumanChromosome19Cen
- HumanChromosome20Cen
- HumanChromosome21Cen
- HumanChromosome22Cen
- HumanChromosomeXCen
- HumanChromosomeYCen)
+;; add disjoint axiom for the children of HumanChromosomeBand
+(disjointclasseslist
+ (into () (isubclasses HumanChromosomeBand)))
 
- 
-;; TODO - Bands, Cen and Ter
-;; (disjointclasses
-;;  (isubclasses HumanChromosomeBand))
+;; add disjoint axiom for the children of HumanTelomere
+(disjointclasseslist
+ (into () (isubclasses HumanTelomere)))
+
+(r/reasoner-factory :hermit)
+
+(defn create-first-level-bands-disjoint
+  "Given a p or q band return the list of first level bands"
+  [chromosomeband]
+
+  (defclass TempEntity
+    :equivalent
+    (owlsome k/isSubBandOf chromosomeband))
+
+  (disjointclasseslist
+   (clojure.set/difference
+    (into #{} (isubclasses chromosomeband))
+    (.getFlattened (r/isubclasses TempEntity))))
+
+  (remove-entity TempEntity)
+)
+
+;; add disjoint axiom for the first children of each HumanChromosomeBand
+(let [chromosomebands (into [] (isubclasses HumanChromosomeBand))]
+  (doseq [chromosomeband chromosomebands]
+    (doseq [porqband (into [] (isubclasses chromosomeband))]
+      (create-first-level-bands-disjoint porqband))))
+
+;; add disjoint axioms for terminal p and terminal q for
+;; each chromosome telomere
+(doseq [cband (into [] (isubclasses HumanTelomere))]
+  (disjointclasseslist (into () (isubclasses cband))))
