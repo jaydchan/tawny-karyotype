@@ -44,13 +44,12 @@
 (as-inverse
  (defoproperty derivedFrom
    :characteristics transitive
-   ;; :range k/Karyotype
-   :domain NamedKaryotype)
- 
+   :domain k/Karyotype
+   :range k/Karyotype)
+
  (defoproperty derivedTo
-   ;; :range NamedKaryotype
-   :domain k/Karyotype)
- )
+   :range k/Karyotype
+   :domain k/Karyotype))
 
 ;; define all the baseKaryotypes
  ;;we have to pass these in as strings because they start with
@@ -128,12 +127,12 @@
    (owlsome derivedFrom k46_XY)
    (e/addition 1 h/HumanChromosomeX)
    (owlnot
-    (owlsome e/hasEvent  
+    (owlsome e/hasEvent
              (owland e/Addition h/HumanChromosomeY)))
    ))
 
 ;; An (male) individual with extra X chromosomes ;;aka abnormal male
-(defclass KlinefelterSyndromeAllVariations 
+(defclass KlinefelterSyndromeAllVariations
   :subclass NamedKaryotype
   :equivalent
   (owland
@@ -178,7 +177,7 @@
   (owland
    (owlsome derivedFrom k46_XN)
    (e/addition 1 h/HumanChromosome16)))
-  
+
 ;; An individual with three copies of chromosome 18 ;;aka Trisomy18
 (defclass EdwardsSyndrome
   :subclass NamedKaryotype
@@ -221,10 +220,10 @@
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (owlsome e/hasEvent 
-            (owland e/Deletion 
+   (owlsome e/hasEvent
+            (owland e/Deletion
                     (owlsome e/hasBreakPoint h/HumanChromosome4Bandp)))))
-  
+
 ;; TODO An individual with a truncated short arm on chromosome 5 ;;aka cry of the cat
 (defclass CriDuChat
   :subclass NamedKaryotype)
