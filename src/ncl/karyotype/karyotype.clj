@@ -34,30 +34,26 @@
 
 (as-disjoint-subclasses
  ChromosomeComponent
- 
+
  (defclass ChromosomeBand)
  (defclass Centromere)
  (defclass Telomere))
 
 (as-inverse
  (defoproperty isComponentOf
-   :domain ChromosomeComponent
-   :range Chromosome
-   :characteristics functional)
- 
- (defoproperty hasComponent
-   :domain Chromosome
-   :range ChromosomeComponent)
- )
+   :domain ChromosomeComponent)
+ (defoproperty hasComponent))
 
 (as-inverse
  (defoproperty isBandOf
    :subpropertyof isComponentOf
    :domain ChromosomeBand)
- 
- (defoproperty hasBand
-   :subpropertyof hasComponent
+
+ (defoproperty hasBand))
+
+(as-inverse
+ (defoproperty isSubBandOf
+   :domain ChromosomeBand
    :range ChromosomeBand)
- )
 
-
+ (defoproperty hasSubBand))
