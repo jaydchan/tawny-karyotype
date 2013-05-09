@@ -31,7 +31,6 @@
 (owlimport k/karyotype)
 
 ;; Auxiliary Functions
-
 (defn pband? [band]
   "Determine if the gvien band is a p band"
   (re-find #"p" band))
@@ -861,27 +860,46 @@ PARENT, which is either p or q band."
 
 (r/reasoner-factory :hermit)
 
+(import 'org.semanticweb.owlapi.reasoner.ReasonerProgressMonitor)
+
+(defn reasoner-progress-monitor-quieter []
+  (proxy [org.semanticweb.owlapi.reasoner.ReasonerProgressMonitor] []
+    (reasonerTaskBusy[]
+      (println "Reasoner task busy");; stuff
+      )
+    (reasonerTaskProgressChanged [val max]
+      ;;(println "Reasoner task changed" val ":" max)
+      )
+    (reasonerTaskStarted [name]
+      (println "reasoner task started" name))
+    (reasonerTaskStopped []
+      (println "reasoner task stopped"))))
+
+
 (defn- create-first-level-bands-disjoint
   "Creates the disjoint axiom for given a parent p or q band"
   [chromosomeband]
 
   ;; generate temporary equivalent OWL class
-  (defclass TempEntity
-    :equivalent
-    (owlsome k/isSubBandOf chromosomeband))
+  (let [temp-entity
+        (owlclass "tempentity"
+          :equivalent
+          (owlsome k/isSubBandOf chromosomeband))]
 
-  ;; obtain the first-level bands of a given parent p or q band
-  (disjointclasseslist
-   ;; the difference of
-   (clojure.set/difference
-    ;; a set of all subclasses of CHROMOSOMEBAND
-    (into #{} (isubclasses chromosomeband))
-    ;; a set of all inferred subclasses of TempEntity (i.e. all sub-bands of
-    ;; the associated CHROMOSOMEBAND)
-    (.getFlattened (r/isubclasses TempEntity))))
+    ;; obtain the first-level bands of a given parent p or q band
+    (binding [r/*reasoner-progress-monitor*
+              reasoner-progress-monitor-quieter]
+      (disjointclasseslist
+       ;; the difference of
+       (clojure.set/difference
+        ;; a set of all subclasses of CHROMOSOMEBAND
+        (into #{} (isubclasses chromosomeband))
+        ;; a set of all inferred subclasses of TempEntity (i.e. all sub-bands of
+        ;; the associated CHROMOSOMEBAND)
+        (.getFlattened (r/isubclasses TempEntity)))))
 
-  ;; remove temporary equivalent OWL class
-  (remove-entity TempEntity)
+    ;; remove temporary equivalent OWL class
+    (remove-entity temp-entity)
 )
 
 ;; add disjoint axiom for the first children of each HumanChromosomeBand
