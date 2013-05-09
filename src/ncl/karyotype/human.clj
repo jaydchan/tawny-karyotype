@@ -31,16 +31,21 @@
 (owlimport k/karyotype)
 
 ;; Auxiliary Functions
+
 (defn pband? [band]
+  "Determine if the gvien band is a p band"
   (re-find #"p" band))
 
 (defn qband? [band]
+  "Determine if the gvien band is a q band"
   (re-find #"q" band))
 
 (defn ter? [band]
+  "Determine if the gvien band is a telomere"
   (re-find #"Ter" band))
 
 (defn cen? [band]
+  "Determine if the gvien band is a centromere"
   (re-find #"Cen" band))
 
 (defn create-class-with-superclasses
@@ -49,6 +54,7 @@
   (tawny.read/intern-entity
    (owlclass name :subclass parents)))
 
+;; define classes
 (defclass HumanChromosome
   :subclass k/Chromosome)
 
@@ -61,6 +67,7 @@
 (defclass HumanTelomere
   :subclass k/Telomere)
 
+;; include disjoint axiom for autosome and allosome
 (as-disjoint
  (defclass HumanAutosome
    :subclass HumanChromosome)
@@ -68,14 +75,14 @@
  (defclass HumanAllosome
    :subclass HumanChromosome))
 
-;; define all the human chromosomes - autosomes
+;; define all the human autosomes, as disjoint
 (as-disjoint
  (doseq [number (range 1 23)]
    (create-class-with-superclasses
      (str "HumanChromosome" number)
      HumanAutosome)))
 
-;; define all the human chromosomes - allosomes
+;; define all the human allosomes, as disjoint
 (as-disjoint
  (defclass HumanChromosomeX
    :subclass HumanAllosome)
@@ -99,6 +106,7 @@
    (throw (IllegalArgumentException.
            (str "Band syntax not recognised: " band)))))
 
+;; private functions
 (defn- human-sub-band
   "Adds NAME as a sub-band of BAND and a kind of
 PARENT, which is either p or q band."
@@ -108,9 +116,9 @@ PARENT, which is either p or q band."
    (owlsome k/isSubBandOf band)))
 
 (defn- human-centromere
+  "The band is a centromere, so describe it as such
+ and add two classes p10 and q10 which are part of it."
   [bandgroupp bandgroupq bandgroup group]
-  ;; which is a centromere, so describe it as such
-  ;; and add two classes p10 and q10 which are part of it.
   (as-disjoint
    (create-class-with-superclasses (str bandgroup "p10")
      (str group "Centromere"))
@@ -118,25 +126,35 @@ PARENT, which is either p or q band."
      (str group "Centromere"))))
 
 (defn- humanbands0 [chromosome parent container bands firstlevel]
+  "Recursive auxiliary function for humanbands - used to create
+ subbands of the human chromosome bands"
   (let [bandgroup (str
                    (.getFragment
                     (.getIRI
                      chromosome)) "Band")]
 
+    ;; Generates a band
     (if (nil? firstlevel)
+      ;; generates a first-level band
       (create-class-with-superclasses (str bandgroup container) parent)
+      ;; generates a sub-band
       (human-sub-band parent (str bandgroup container)
                       (str bandgroup firstlevel)))
 
+    ;; Generates sub-bands of current band, or calls recursive function again to
+    ;; generate sub-sub-bands
     (as-disjoint
      (doseq [band bands]
        (if (vector? band)
+         ;; if band is a vector, then generate sub-sub-bands
          (humanbands0 chromosome parent (first band)
                       (rest band) container)
+         ;; else generate sub-band
          (human-sub-band parent (str bandgroup band)
                          (str bandgroup container)))))))
 
 (defn- humanbands [chromosome & bands]
+  "Function to generate human chromosome bands for a chromosome"
   (let [group (str
                (.getFragment
                 (.getIRI
@@ -145,56 +163,58 @@ PARENT, which is either p or q band."
         bandgroupp (str bandgroup "p")
         bandgroupq (str bandgroup "q")
         fgroup (partial group-for-band
-                        bandgroupp bandgroupq)
-        ]
-    ;; generate the band groups that all the entities we create will be part
-    ;; of.
+                        bandgroupp bandgroupq)]
+
+    ;; generate the band group that all the entities we create
+    ;; will be part of
     (create-class-with-superclasses
       bandgroup
       (owlsome k/isBandOf chromosome)
       HumanChromosomeBand)
 
-    ;; creates the band p and band q subclasses
+    ;; generate the band p and band q subclasses
     (as-disjoint
      (create-class-with-superclasses bandgroupp bandgroup)
      (create-class-with-superclasses bandgroupq bandgroup))
 
-    ;; creates centromere
+    ;; generate the associated centromere entity
     (create-class-with-superclasses
       (str group "Centromere")
       HumanCentromere
       (owlsome k/isComponentOf chromosome))
 
-    ;; creates telomeres
+    ;; generate the associated telomere entity
     (create-class-with-superclasses
       (str group "Telomere")
       HumanTelomere
       (owlsome k/isComponentOf chromosome))
 
-    ;; creates bands
+    ;; generates bands
      (doseq [band bands]
        (cond
         (vector? band)
-        ;; we have a set of bands, so we work over all of these
+        ;; if we have a set of bands, so we work over all of these
         (humanbands0 chromosome
                      (fgroup (first band))
                      (first band) (rest band) nil)
-        ;; therefore we have a single band
-        ;; the band is the centromere
+        ;; else we have a single band
+        ;; if the band is the centromere, generate associated
+        ;; centromere bands
         (cen? band)
         (human-centromere bandgroupp bandgroupq bandgroup group)
-        ;; the band is a terminal
+        ;; if the band is a terminal, generate associated telomere 
+        ;; bands
         (ter? band)
         (as-disjoint (create-class-with-superclasses
           (str bandgroup band)
           (str group "Telomere")))
-        ;; teh band is a p or q band
+        ;; if the band is a p or q band, generate the band
         (or (pband? band)
             (qband? band))
         (create-class-with-superclasses
           (str bandgroup band)
           (fgroup band))
-        ;; the band syntax is not recognized
+        ;; else the band syntax is not recognized
         :default
         (throw (IllegalArgumentException.
                 (str "Band must be string or sequence:" band)))))))
@@ -841,19 +861,26 @@ PARENT, which is either p or q band."
 
 (r/reasoner-factory :hermit)
 
-(defn create-first-level-bands-disjoint
-  "Creates the disjoint axiom for given a p or q band parent"
+(defn- create-first-level-bands-disjoint
+  "Creates the disjoint axiom for given a parent p or q band"
   [chromosomeband]
 
+  ;; generate temporary equivalent OWL class
   (defclass TempEntity
     :equivalent
     (owlsome k/isSubBandOf chromosomeband))
 
+  ;; obtain the first-level bands of a given parent p or q band
   (disjointclasseslist
+   ;; the difference of
    (clojure.set/difference
+    ;; a set of all subclasses of CHROMOSOMEBAND
     (into #{} (isubclasses chromosomeband))
+    ;; a set of all inferred subclasses of TempEntity (i.e. all sub-bands of
+    ;; the associated CHROMOSOMEBAND)
     (.getFlattened (r/isubclasses TempEntity))))
 
+  ;; remove temporary equivalent OWL class
   (remove-entity TempEntity)
 )
 
