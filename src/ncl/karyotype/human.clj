@@ -30,6 +30,7 @@
 
 (owlimport k/karyotype)
 
+;; Auxiliary Functions
 (defn pband? [band]
   (re-find #"p" band))
 
@@ -41,6 +42,12 @@
 
 (defn cen? [band]
   (re-find #"Cen" band))
+
+(defn create-class-with-superclasses
+  "Creates a class with given name and superclasses"
+  [name & parents]
+  (tawny.read/intern-entity
+   (owlclass name :subclass parents)))
 
 (defclass HumanChromosome
   :subclass k/Chromosome)
@@ -63,15 +70,10 @@
 
 ;; define all the human chromosomes - autosomes
 (as-disjoint
- (doall
-  (map
-   #(let [classname (str "HumanChromosome" %)]
-      (tawny.read/intern-entity
-       ;; human chromosome defns here.
-       (owlclass classname
-                 :subclass HumanAutosome)
-       ))
-   (range 1 23))))
+ (doseq [number (range 1 23)]
+   (create-class-with-superclasses
+     (str "HumanChromosome" number)
+     HumanAutosome)))
 
 ;; define all the human chromosomes - allosomes
 (as-disjoint
@@ -80,11 +82,6 @@
 
  (defclass HumanChromosomeY
    :subclass HumanAllosome))
-
-(defn create-class-with-superclasses
-  [name & parents]
-  (tawny.read/intern-entity
-   (owlclass name :subclass parents)))
 
 (defn group-for-band
   "Given a band return the appropriate bandgroup"
@@ -156,24 +153,25 @@ PARENT, which is either p or q band."
       bandgroup
       (owlsome k/isBandOf chromosome)
       HumanChromosomeBand)
+
+    ;; creates the band p and band q subclasses
     (as-disjoint
      (create-class-with-superclasses bandgroupp bandgroup)
      (create-class-with-superclasses bandgroupq bandgroup))
 
-    ;; creates centromeres
+    ;; creates centromere
     (create-class-with-superclasses
       (str group "Centromere")
       HumanCentromere
-      (owlsome k/isComponentOf chromosome)
-      )
+      (owlsome k/isComponentOf chromosome))
 
     ;; creates telomeres
     (create-class-with-superclasses
       (str group "Telomere")
       HumanTelomere
-      (owlsome k/isComponentOf chromosome)
-      )
+      (owlsome k/isComponentOf chromosome))
 
+    ;; creates bands
      (doseq [band bands]
        (cond
         (vector? band)
@@ -182,21 +180,26 @@ PARENT, which is either p or q band."
                      (fgroup (first band))
                      (first band) (rest band) nil)
         ;; therefore we have a single band
+        ;; the band is the centromere
         (cen? band)
         (human-centromere bandgroupp bandgroupq bandgroup group)
+        ;; the band is a terminal
         (ter? band)
         (as-disjoint (create-class-with-superclasses
           (str bandgroup band)
           (str group "Telomere")))
+        ;; teh band is a p or q band
         (or (pband? band)
             (qband? band))
         (create-class-with-superclasses
-         (str bandgroup band)
-         (fgroup band))
+          (str bandgroup band)
+          (fgroup band))
+        ;; the band syntax is not recognized
         :default
         (throw (IllegalArgumentException.
                 (str "Band must be string or sequence:" band)))))))
 
+;; Band information for Human Chromosome 1
 (humanbands
  HumanChromosome1
  "pTer"
@@ -233,6 +236,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 2
 (humanbands
  HumanChromosome2
  "pTer"
@@ -269,6 +273,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 3
 (humanbands
  HumanChromosome3
  "pTer"
@@ -307,6 +312,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 4
 (humanbands
  HumanChromosome4
  "pTer"
@@ -340,6 +346,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 5
 (humanbands
  HumanChromosome5
  "pTer"
@@ -371,6 +378,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 6
 (humanbands
  HumanChromosome6
  "pTer"
@@ -404,6 +412,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 7
 (humanbands
  HumanChromosome7
  "pTer"
@@ -429,6 +438,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 8
 (humanbands
  HumanChromosome8
  "pTer"
@@ -455,6 +465,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 9
 (humanbands
  HumanChromosome9
  "pTer"
@@ -483,6 +494,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 10
 (humanbands
  HumanChromosome10
  "pTer"
@@ -508,6 +520,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 11
 (humanbands
  HumanChromosome11
  "pTer"
@@ -531,6 +544,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 12
 (humanbands
  HumanChromosome12
  "pTer"
@@ -559,6 +573,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 13
 (humanbands
  HumanChromosome13
  "pTer"
@@ -586,6 +601,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 14
 (humanbands
  HumanChromosome14
  "pTer"
@@ -610,6 +626,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 15
 (humanbands
  HumanChromosome15
  "pTer"
@@ -634,6 +651,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 16
 (humanbands
  HumanChromosome16
  "pTer"
@@ -654,6 +672,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 17
 (humanbands
  HumanChromosome17
  "pTer"
@@ -674,6 +693,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 18
 (humanbands
  HumanChromosome18
  "pTer"
@@ -691,6 +711,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 19
 (humanbands
  HumanChromosome19
  "pTer"
@@ -709,6 +730,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 20
 (humanbands
  HumanChromosome20
  "pTer"
@@ -727,6 +749,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 21
 (humanbands
  HumanChromosome21
  "pTer"
@@ -744,6 +767,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome 22
 (humanbands
  HumanChromosome22
  "pTer"
@@ -760,6 +784,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome X
 (humanbands
  HumanChromosomeX
  "pTer"
@@ -786,6 +811,7 @@ PARENT, which is either p or q band."
  "qTer"
 )
 
+;; Band information for Human Chromosome Y
 (humanbands
  HumanChromosomeY
  "pTer"
@@ -816,7 +842,7 @@ PARENT, which is either p or q band."
 (r/reasoner-factory :hermit)
 
 (defn create-first-level-bands-disjoint
-  "Given a p or q band return the list of first level bands"
+  "Creates the disjoint axiom for given a p or q band parent"
   [chromosomeband]
 
   (defclass TempEntity
