@@ -103,8 +103,8 @@
 
 ;; define associated telomere, centromere and parent p and q bands for each
 ;; human chromosome
-(doseq [chromosome (concat (into () (isubclasses HumanAutosome))
-                           (into () (isubclasses HumanAllosome)))]
+(doseq [chromosome (concat (into () (direct-subclasses HumanAutosome))
+                           (into () (direct-subclasses HumanAllosome)))]
   (let [group (str
                (.getFragment
                 (.getIRI
@@ -137,15 +137,15 @@
 
 ;; add disjoint axiom for the children of HumanCentromere
 (disjointclasseslist
- (into () (isubclasses HumanCentromere)))
+ (into () (direct-subclasses HumanCentromere)))
 
 ;; add disjoint axiom for the children of HumanChromosomeBand
 (disjointclasseslist
- (into () (isubclasses HumanChromosomeBand)))
+ (into () (direct-subclasses HumanChromosomeBand)))
 
 ;; add disjoint axiom for the children of HumanTelomere
 (disjointclasseslist
- (into () (isubclasses HumanTelomere)))
+ (into () (direct-subclasses HumanTelomere)))
 
 ;; private functions
 (defn- human-sub-band
