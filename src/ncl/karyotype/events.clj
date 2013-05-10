@@ -66,25 +66,36 @@
 
 
 ;; AUXILLARY FUNCTIONS
-(defn- getTerminal
-  ([band]
-     (if (h/pband? (second (clojure.string/split (str band) #"human#")))
-       (str (second (clojure.string/split (str band) #"human#|Band")) "pTer")
-       (str (second (clojure.string/split (str band) #"human#|Band")) "qTer")))
-  ([chromosome type]
-     (if (h/pband? (str type))
-       (str (second (clojure.string/split (str chromosome) #"human#|>")) "pTer")
-       (str (second (clojure.string/split
-                     (str chromosome) #"human#|>")) "qTer"))))
+(defn parentband? [band]
+  "Determine if the given band is the parent band"
+  (re-find #"HumanChromosomeBand" band))
 
-(defn- getCentromere
-  ([chromosome]
-     (str (second (clojure.string/split (str chromosome) #"human#|>")) "Cen"))
+(defn- get-telomere
+  ([band]
+     (cond
+      (h/pband? (second (clojure.string/split (str band) #"human#")))
+      (str (second (clojure.string/split (str band) #"human#|Band")) "BandpTer")
+      (h/qband? (second (clojure.string/split (str band) #"human#")))
+      (str (second (clojure.string/split (str band) #"human#|Band")) "BandqTer")
+      (parentband? (second (clojure.string/split (str band) #"human#")))
+      (str (second (clojure.string/split (str band)
+                                         #"human#|Chromosome")) "Telomere")
+      :default
+      (throw (IllegalArgumentException.
+              (str "Band syntax not recognized:" band)))))
   ([chromosome type]
      (if (h/pband? (str type))
-       (str (second (clojure.string/split (str chromosome) #"human#|>")) "p10")
+       (str (second (clojure.string/split (str chromosome)
+                                          #"human#|>")) "BandpTer")
        (str (second (clojure.string/split
-                     (str chromosome) #"human#|>")) "q10"))))
+                     (str chromosome) #"human#|>")) "BandqTer"))))
+
+(defn- get-centromere [chromosome type]
+  (if (h/pband? (str type))
+    (str (second (clojure.string/split (str chromosome)
+                                       #"human#|>")) "Bandp10")
+    (str (second (clojure.string/split
+                  (str chromosome) #"human#|>")) "Bandq10")))
 
 (defn- getParent [band]
   (second (clojure.string/split (str band) #"Band|[pq]Ter|Cen|human#")))
@@ -132,7 +143,7 @@
          (exactly n hasEvent
                   (owland Deletion
                           (owlsome hasBreakPoint chrom_band
-                                   (getTerminal chrom_band))))
+                                   (get-telomere chrom_band))))
          :default
          (throw
           (IllegalArgumentException.
@@ -166,11 +177,11 @@
    ([n chromosome]
       [(deletion n chromosome)
        (fission n
-                (getTerminal chromosome "p")
-                (getCentromere chromosome "p"))
+                (get-telomere chromosome "p")
+                (get-centromere chromosome "p"))
        (fission n
-                (getCentromere chromosome "q")
-                (getTerminal chromosome "q"))]))
+                (get-centromere chromosome "q")
+                (get-telomere chromosome "q"))]))
 
  ;; Chromosomal Band Insertion
  ;; Can be preceeded by the triplets dir or inv to indicate direct or inverted direction
@@ -223,32 +234,32 @@
      [
       (cond
        (= (count bands) 1)
-       (translocation3 (first bands) (getTerminal (first bands)) provide1 provide2)
+       (translocation3 (first bands) (get-telomere (first bands)) provide1 provide2)
        (= (count bands) 2)
        (if (= (getParent (first bands)) (getParent (second bands)))
          (translocation3 (first bands) (second bands) provide1 provide2)
-         (flatten [(translocation3 (first bands) (getTerminal (first bands)) (second bands) (getTerminal (second bands)))
+         (flatten [(translocation3 (first bands) (get-telomere (first bands)) (second bands) (get-telomere (second bands)))
                    (translocation2 provide1 provide2 (rest bands))]))
        (= (count bands) 3)
        (if (or (= (getParent (first bands)) (getParent (second bands))) (= (getParent (second bands)) (getParent (second (rest bands)))))
          (if (= (getParent (first bands)) (getParent (second bands)))
-           (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (getTerminal (second (rest bands)))) 
+           (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (get-telomere (second (rest bands)))) 
                      (translocation2 provide1 provide2 (rest (rest bands)))])
-           (flatten [(translocation3 (first bands) (getTerminal (first bands)) (second bands) (second (rest bands)))
+           (flatten [(translocation3 (first bands) (get-telomere (first bands)) (second bands) (second (rest bands)))
                      (translocation3 provide1 provide2 (rest bands))]))
          (flatten [(translocation2 provide1 provide2 (rest bands))
-                   (translocation3 (first bands) (getTerminal (first bands)) (second bands) (getTerminal (second bands)))]))
+                   (translocation3 (first bands) (get-telomere (first bands)) (second bands) (get-telomere (second bands)))]))
        (> (count bands) 3)
        (if (= (getParent (first bands)) (getParent (second bands)))
          (if (= (getParent (second (rest bands))) (getParent (second (rest (rest bands)))))
            (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (second (rest (rest bands))))
                      (translocation2 provide1 provide2 (rest (rest bands)))])
-           (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (getTerminal (second (rest bands))))
+           (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (get-telomere (second (rest bands))))
                      (translocation2 provide1 provide2 (rest (rest bands)))]))
          (if (= (getParent (first (rest bands))) (getParent (second (rest bands))))
-           (flatten [(translocation3 (first bands) (getTerminal (first bands)) (second bands) (second (rest bands)))
+           (flatten [(translocation3 (first bands) (get-telomere (first bands)) (second bands) (second (rest bands)))
                      (translocation2 provide1 provide2 (rest bands))])
-           (flatten [(translocation3 (first bands) (getTerminal (first bands)) (second bands) (getTerminal (second bands)))
+           (flatten [(translocation3 (first bands) (get-telomere (first bands)) (second bands) (get-telomere (second bands)))
                      (translocation2 provide1 provide2 (rest bands))])))
        :default
        (throw
@@ -274,7 +285,7 @@
                         (take chrom_no
                               (flatten
                                (translocation2 (first bands)
-                                (getTerminal (first bands))
+                                (get-telomere (first bands))
                                 bands))))))
      (throw
       (IllegalArgumentException.
