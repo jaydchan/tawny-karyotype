@@ -55,12 +55,6 @@
     (exactly n hasFeature
              (owland DerivativeChromosome args)))
 
-  (defclass Isochromosome)
-  (defn isochromosome [n band]
-    (exactly n hasFeature
-             (owland Isochromosome
-                     (owlsome e/hasBreakPoint band))))
-
   (defclass IsodicentricChromosome)
   ;; MUST be defined before dicentric as dicentric calls isodicentric function!
   (defn isodicentric [n band]
@@ -93,6 +87,12 @@
                 (owland HomogeneouslyStainingRegion
                         (owlsome e/hasBreakPoint band1 band2)))))
 
+  (defclass Isochromosome)
+  (defn isochromosome [n band]
+    (exactly n hasFeature
+             (owland Isochromosome
+                     (owlsome e/hasBreakPoint band))))
+
   (defclass IsoderivativeChromosome)
   (defn isoderivative [n chromosome arm & events]
     (exactly n hasFeature
@@ -103,6 +103,7 @@
     (exactly n hasFeature
              (owland MarkerChromosome h/HumanChromosome)))
 
+  ;; TODO
   (defclass Neocentromere)
 
   (defclass PseudodicentricChromosome)
@@ -117,6 +118,7 @@
              (owland PseudoisodicentricChromosome
                      (owlsome e/hasBreakPoint band))))
 
+  ;; TODO
   (defclass RecombiantChromosome)
 
   ;; if whole arm translocation can be defined as either rob or der
@@ -146,6 +148,7 @@
                         (owlsome e/hasBreakPoint band1 band2 band3
                                  band4 band5)))))
 
+  ;; TODO
   (defclass TelomericAssociations)
 
   ;; TOFIX - hard-coded!
@@ -155,6 +158,7 @@
                (owland TricentricChromosome
                        (owlsome e/hasBreakPoint band1 band2 band3 band4))))
 
+  ;; TODO
   (defclass UniparentalDisomy)
 
 )
