@@ -26,7 +26,8 @@
   (r/reasoner-factory :hermit)
   (o/ontology-to-namespace f/features)
   (binding [r/*reasoner-progress-monitor*
-            r/reasoner-progress-monitor-silent]
+            (atom
+            r/reasoner-progress-monitor-silent)]
     (tests)))
 
 (use-fixtures :once ontology-reasoner-fixture)
@@ -34,8 +35,3 @@
 (deftest Basic
   (is (r/consistent?))
   (is (r/coherent?)))
-
-
-
-
-
