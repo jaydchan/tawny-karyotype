@@ -21,8 +21,7 @@
             [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
             [ncl.karyotype [events :as e]]
-            )
-  )
+            ))
 
 (defontology named
   :iri "http://ncl.ac.uk/karyotype/named"
@@ -111,15 +110,17 @@
 ;; Named Karyotypes that are caused by numerical abnormalities
 ;; Allosomal abnormalites
 
-;; An (female) individual with only one sex chromosome = X ;;aka 45,X or 45,X0 ;;aka abnormal female
+;; An (female) individual with only one sex chromosome = X ;;aka 45,X
+;; or 45,X0 ;; aka abnormal female
 (defclass TurnerSyndrome
   :subclass NamedKaryotype
   :equivalent
   (owland
    (owlsome derivedFrom k46_XN)
-   (e/deletion 1 h/HumanAllosome)))
+   (e/deletion 1 h/HumanSexChromosome)))
 
-;; An (male) individual with an extra X chromosome ;;aka 47,XXY ;;aka abnormal male
+;; An (male) individual with an extra X chromosome ;; aka 47,XXY ;;
+;; aka abnormal male
 (defclass KlinefelterSyndromeMostCommonVariation
   :subclass NamedKaryotype
   :equivalent
@@ -128,8 +129,7 @@
    (e/addition 1 h/HumanChromosomeX)
    (owlnot
     (owlsome e/hasEvent
-             (owland e/Addition h/HumanChromosomeY)))
-   ))
+             (owland e/Addition h/HumanChromosomeY)))))
 
 ;; An (male) individual with extra X chromosomes ;;aka abnormal male
 (defclass KlinefelterSyndromeAllVariations
@@ -141,8 +141,8 @@
             (owland e/Addition h/HumanChromosomeX))))
 
 ;; #TODO An individual with no X chromosome
-(defclass Lethal
-  :subclass NamedKaryotype)
+;; (defclass Lethal
+;;   :subclass NamedKaryotype)
 
 ;; Autsomal abnormalities
 
@@ -205,68 +205,71 @@
 ;; Named Karyotypes that are caused by structural abnormalities
 
 ;; An individual with loss of part of the short arm of chromosome 1
-(defclass DeletionSyndrome1p36
-  :subclass NamedKaryotype
-  :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
-   (owlsome e/hasEvent
-            (owland e/Deletion
-                    (owlsome e/hasBreakPoint h/HumanChromosome1Bandp)))))
+;; (defclass DeletionSyndrome1p36
+;;   :subclass NamedKaryotype
+;;   :equivalent
+;;   (owland
+;;    (owlsome derivedFrom k46_XN)
+;;    (owlsome e/hasEvent
+;;             (owland e/Deletion
+;;                     (owlsome e/hasBreakPoint h/HumanChromosome1Bandp)))))
 
-;; An individual with the partial deletion of chromosomal material of the short arm of chromosome 4 ;;aka del(4p16.3) ;;WHS, Chromosome Deletion Dillian 4p Syndrome, Pitt-Rogers-Danks Syndrome, PRDS, Pitt Syndrome
-(defclass WolfHirschhornSydrome
-  :subclass NamedKaryotype
-  :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
-   (owlsome e/hasEvent
-            (owland e/Deletion
-                    (owlsome e/hasBreakPoint h/HumanChromosome4Bandp)))))
+;; ;; An individual with the partial deletion of chromosomal material of
+;; ;; the short arm of chromosome 4 ;;aka del(4p16.3) ;;WHS, Chromosome
+;; ;; Deletion Dillian 4p Syndrome, Pitt-Rogers-Danks Syndrome, PRDS,
+;; ;; Pitt Syndrome
+;; (defclass WolfHirschhornSydrome
+;;   :subclass NamedKaryotype
+;;   :equivalent
+;;   (owland
+;;    (owlsome derivedFrom k46_XN)
+;;    (owlsome e/hasEvent
+;;             (owland e/Deletion
+;;                     (owlsome e/hasBreakPoint h/HumanChromosome4Bandp)))))
 
-;; TODO An individual with a truncated short arm on chromosome 5 ;;aka cry of the cat
-(defclass CriDuChat
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with a truncated short arm on chromosome 5 ;;aka cry of the cat
+;; (defclass CriDuChat
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with ... chromosome 5
-(defclass DeletionSyndrome5q
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with ... chromosome 5
+;; (defclass DeletionSyndrome5q
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with ... chromosome 7
-(defclass WilliamsSyndrome
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with ... chromosome 7
+;; (defclass WilliamsSyndrome
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with ... chromosome 11
-(defclass JacobsenSyndrome
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with ... chromosome 11
+;; (defclass JacobsenSyndrome
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with a segment of the long arm of chromosome 15 missing
-(defclass AngelmanSyndrome
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with a segment of the long arm of chromosome 15 missing
+;; (defclass AngelmanSyndrome
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with a segment of the long arm of chromosome 15 missing
-(defclass PraderWilliSyndrome
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with a segment of the long arm of chromosome 15 missing
+;; (defclass PraderWilliSyndrome
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with ... chromosome 17
-(defclass MillerDiekerSyndrome
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with ... chromosome 17
+;; (defclass MillerDiekerSyndrome
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with ... chromosome 17
-(defclass SmithMagenisSyndrome
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with ... chromosome 17
+;; (defclass SmithMagenisSyndrome
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with ... chromosome 18
-(defclass DeletionSyndrome18q
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with ... chromosome 18
+;; (defclass DeletionSyndrome18q
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with ... chromosome 22
-(defclass DiGeorgeSyndrome
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with ... chromosome 22
+;; (defclass DiGeorgeSyndrome
+;;   :subclass NamedKaryotype)
 
-;; TODO An individual with ... chromosome 22
-(defclass CatEyeSyndrome
-  :subclass NamedKaryotype)
+;; ;; TODO An individual with ... chromosome 22
+;; (defclass CatEyeSyndrome
+;;   :subclass NamedKaryotype)
 
 ;; example defined classes
 
@@ -300,13 +303,16 @@
   (owlor k46_XY
          (owlsome derivedFrom k46_XY)))
 
-;; female = those derived from 46,XX - as 46,XY is an asserted subclass of 46,XN cannot be included in the definition - what happens about 45,X?
+;; female = those derived from 46,XX - as 46,XY is an asserted
+;; subclass of 46,XN cannot be included in the definition - what
+;; happens about 45,X?
 (defclass FemaleKaryotype
   :equivalent
   (owlor k46_XX
          (owlsome derivedFrom k46_XX)))
 
-;; Define numerical abnormalities - in order for these to work, need to import the axioms from h/human and e/events
+;; Define numerical abnormalities - in order for these to work, need
+;; to import the axioms from h/human and e/events
 
 (defclass NumericalAbnormalKaryotypeAutosomalGain
   :equivalent
@@ -328,20 +334,20 @@
 (defclass NumericalAbnormalKaryotypeAllosomalGain
   :equivalent
   (owlsome e/hasEvent
-           (owland e/Addition h/HumanAllosome)))
+           (owland e/Addition h/HumanSexChromosome)))
 
 (defclass NumericalAbnormalKaryotypeAllosomalLoss
   :equivalent
   (owlsome e/hasEvent
-           (owland e/Deletion h/HumanAllosome)))
+           (owland e/Deletion h/HumanSexChromosome)))
 
 (defclass NumericalAbnormalKaryotypeAllosomalGainOrLoss
   :equivalent
   (owlor
    (owlsome e/hasEvent
-            (owland e/Addition h/HumanAllosome))
+            (owland e/Addition h/HumanSexChromosome))
    (owlsome e/hasEvent
-            (owland e/Deletion h/HumanAllosome))))
+            (owland e/Deletion h/HumanSexChromosome))))
 
 (defclass NumericalAbnormalKaryotypeChromosomalGain
   :equivalent
@@ -362,7 +368,8 @@
    (owlsome e/hasEvent
             (owland e/Deletion h/HumanChromosome))))
 
-;; Define structural abnormalities - in order for these to work, need to import the axioms from h/human and e/events
+;; Define structural abnormalities - in order for these to work, need
+;; to import the axioms from h/human and e/events
 
 (defclass StructuralAbnormalKaryotypeAddition
   :equivalent
@@ -387,7 +394,8 @@
   :equivalent
   (owlsome e/hasEvent
            (owland e/Fission
-                   (owlsome e/hasBreakPoint h/HumanCentromere))))
+                   (owlsome e/hasBreakPoint
+                            (owlsome k/isBandOf h/HumanCentromere)))))
 
 (defclass StructuralAbnormalKaryotypeInsertion
   :equivalent
