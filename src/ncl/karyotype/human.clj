@@ -83,7 +83,8 @@
  (defclass HumanAutosome
    :subclass HumanChromosome)
 
- (defclass HumanAllosome
+ (defclass HumanSexChromosome
+   :comment "AKA Human Allosome"
    :subclass HumanChromosome))
 
 ;; define all the human autosomes, as disjoint
@@ -96,15 +97,15 @@
 ;; define all the human allosomes, as disjoint
 (as-disjoint
  (defclass HumanChromosomeX
-   :subclass HumanAllosome)
+   :subclass HumanSexChromosome)
 
  (defclass HumanChromosomeY
-   :subclass HumanAllosome))
+   :subclass HumanSexChromosome))
 
 ;; define associated telomere, centromere and parent p and q bands for each
 ;; human chromosome
 (doseq [chromosome (concat (into () (direct-subclasses HumanAutosome))
-                           (into () (direct-subclasses HumanAllosome)))]
+                           (into () (direct-subclasses HumanSexChromosome)))]
   (let [group (str
                (.getFragment
                 (.getIRI
