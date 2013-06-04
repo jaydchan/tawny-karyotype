@@ -6,6 +6,4 @@
             [ncl.karyotype [events :as e]]
             [ncl.karyotype [karyotype :as k]]
             )
-   )
-
-
+  )
