@@ -26,7 +26,8 @@
   (r/reasoner-factory :hermit)
   (o/ontology-to-namespace e/events)
   (binding [r/*reasoner-progress-monitor*
-            r/reasoner-progress-monitor-silent]
+            (atom
+             r/reasoner-progress-monitor-silent)]
     (tests)))
 
 (use-fixtures :once ontology-reasoner-fixture)
