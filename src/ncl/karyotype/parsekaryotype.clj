@@ -44,68 +44,87 @@
 ;; edit bracket replace with ! when is avaiable
 (defn- make-safe [karyotype]
   "Generates the 'safe' name for the OWL class"
-  (str "p"
+  (str "k"
        (clojure.string/replace
         (clojure.string/replace
-         (clojure.string/replace
-          karyotype
-          #"[;,]" "_")
-         (re-pattern "[\\(\\)]") "j")
-        #"\+" "a")))
+         karyotype
+         #"[;,\+ ]" "_")
+        (re-pattern "[\\(\\)]") "_")))
 
 (defn- parse-int-first [s]
   "Converts the first instance of the match into an Integer from String"
   (Integer. (re-find  #"\d+" s )))
+
+(defn- get-no-of-Y [s]
+  "Determines how many Y chromosomes exist in karyotype"
+  (- (count (re-seq #"Y" s))
+     (count (re-seq #"\+[a-zA-Z0-Z(;]*Y" s))))
 
 ;; assume that you are unable to have +Y when youre a female
 (defn- get-derived-from [karyotype]
   "Obtains the derivedFrom subclass"
   (let [value (parse-int-first (first (clojure.string/split karyotype #",")))]
     (cond
+     ;; If karyotype is near-haploid
      (<= value 34)
      (if (re-find #"Y" karyotype)
        n/k23_Y
        n/k23_X)
+     ;; If karyotype is near-diploid
      (and (>= value 35) (<= value 57))
      (if (re-find #"Y" karyotype)
        n/k46_XY
        n/k46_XX)
-     ;; TOFIX
+     ;; If karyotype is near-triploid
      (and (>= value 58) (<= value 80))
-     (if (re-find #"Y" karyotype)
-       n/k69_XNN
-       n/k69_XXX)
-     ;; TOFIX
+     (let [Yno (get-no-of-Y karyotype)]
+       (cond
+        (= Yno 0)
+        n/k69_XXX
+        (= Yno 1)
+        n/k69_XXY
+        (> Yno 1)
+        n/k69_XYY))
+     ;; If karyotype is near-tetraploid
      (and (>= value 81) (<= value 103))
-     (if (re-find #"Y" karyotype)
-       n/k92_XNNN
-       n/k92_XXXX)
+     (let [Yno (get-no-of-Y karyotype)]
+       (cond
+        (= Yno 0)
+        n/k92_XXXX
+        (= Yno 1)
+        n/k92_XXXY
+        (= Yno 2)
+        n/k92_XXYY
+        (> Yno 2)
+        n/k92_XYYY))
      :default
      (throw (IllegalArgumentException.
              (str "Karyotype syntax not recognised: " karyotype))))))
 
 (defn- split-bands [bandinfo]
   "Splits bandinfo from one string to a vector of bands"
-  (into [] (re-seq #"[pq][\d.]+" bandinfo)))
+  (into [] (re-seq #"[pq][\d.]+|\?" bandinfo)))
 
-(defn- get-bands [chrominfo bandinfo]
+(defn get-bands [chrominfo bandinfo]
   "Get the band entities inferred in bandinfo"
   (with-ontology
     ncl.karyotype.human/human
     (for [band (split-bands bandinfo)]
       (ensure-class
-       (str "HumanChromosome" chrominfo "Band"
-            band)))))
+       (if (= "?" band)
+         (if (= "?" chrominfo)
+           "HumanChromosomeBand"
+           (str "HumanChromosome" chrominfo "Band"))
+         (str "HumanChromosome" chrominfo "Band" band))))))
 
 (defn- get-direction [bandinfo]
-  "Determines the dircetion of the band range as either direct or inverse"
+  "Determines the direction of the band range as either direct or inverse"
   (let [bands (split-bands bandinfo)
         band1 (get bands 0)
         band2 (get bands 1)]
     (cond
-     ;; (or (parentband? band1) (parentchromosomeband? band1)
-     ;;     (parentband? band2) (parentchromosomeband? band2))
-     ;; "Unknown"
+     (or (= "?" band1) (= "?" band2))
+     "Unknown"
      (and (h/pband? band1) (h/qband? band2))
      "Direct"
      (and (h/qband? band1) (h/pband? band2))
@@ -119,11 +138,10 @@
        "Direct"
        "Inverse"))))
 
-(defn- get-inverse-function [bandinfo]
+(defn- get-insertion-function [bandinfo]
   (cond
-   ;; Needed?
-   ;; (= (get-direction bandinfo) "Unknown")
-   ;; e/insertion
+   (= (get-direction bandinfo) "Unknown")
+   e/insertion
    (= (get-direction bandinfo) "Direct")
    e/direct-insertion
    (= (get-direction bandinfo) "Inverse")
@@ -135,54 +153,60 @@
      (let [info (clojure.string/split event (re-pattern "[\\(\\)]"))]
        (cond
         ;; If event is a band addition event
-        (re-find #"add" event)
+        (re-find (re-pattern "add\\(") event)
         (apply e/addition 1 (get-bands (get info 1) (get info 3)))
         ;; If event is a band deletion event
-        (re-find #"del" event)
+        (re-find (re-pattern "del\\(") event)
         (apply e/deletion 1 (get-bands (get info 1) (get info 3)))
         ;; If event is a duplication event
-        (re-find #"dup" event)
+        (re-find (re-pattern "dup\\(") event)
         (cond
-         ;; Needed?
-         ;; (= (get-direction (get info 3)) "Unknown")
-         ;; (apply e/duplication 1 (get-bands (get info 1) (get info 3)))
+         (= (get-direction (get info 3)) "Unknown")
+         (apply e/duplication 1 (get-bands (get info 1) (get info 3)))
          (= (get-direction (get info 3)) "Direct")
          (apply e/direct-duplication 1 (get-bands (get info 1) (get info 3)))
          (= (get-direction (get info 3)) "Inverse")
          (apply e/inverse-duplication 1 (get-bands (get info 1) (get info 3))))
         ;; If event is a fission event
-        (re-find #"fis" event)
+        (re-find (re-pattern "fis\\(") event)
         (apply e/fission 1 (get-bands (get info 1) (get info 3)))
         ;; If event is an insertion event
-        (re-find #"ins" event)
+        (re-find (re-pattern "ins\\(") event)
         (let [bands (split-bands (get info 3))
               band1 (get bands 0)
-              band2n3 (str (get bands 1) (get bands 2))]
-          (cond
-           (re-find #"^[pq][\d.]+[pq][\d.]+[pq][\d.]+$" (get info 3))
-           (apply (get-inverse-function band2n3)
-                  1 (get-bands (get info 1) (get info 3)))
-           (re-find #"^[pq][\d.]+;[pq][\d.]+[pq][\d.]+$" (get info 3))
-           (apply (get-inverse-function band2n3)
-                  1
-                  (flatten
-                   (conj (get-bands (re-find #"^\d+" (get info 1)) band1)
-                         (get-bands (re-find #"\d+$" (get info 1)) band2n3))))))
+              band23 (str (get bands 1) (get bands 2))]
+           (if (re-find #";" (get info 3))
+             (apply (get-insertion-function band23)
+                    1
+                    (flatten
+                     (conj (get-bands (re-find #"\d+$|\?$" (get info 1))
+                                      (if (= "?" band23)
+                                        (str band23 band23)
+                                        band23))
+                           (get-bands (re-find #"^\d+|^\?" (get info 1))
+                                      band1))))
+             (apply (get-insertion-function band23)
+                    1 (get-bands (get info 1) (get info 3)))))
         ;; If event is an inversion event
-        (re-find #"inv" event)
+        (re-find (re-pattern "inv\\(") event)
         (apply e/inversion 1 (get-bands (get info 1) (get info 3)))
         ;; If event is a quadruplication event
-        (re-find #"qdp" event)
+        (re-find (re-pattern "qdp\\(") event)
         (apply e/quadruplication 1 (get-bands (get info 1) (get info 3)))
         ;; If event is a translocation event TODO
-        (re-find #"t" event)
-        (e/translocation 1 2 h/HumanChromosomeBand h/HumanChromosomeBand)
+        (re-find (re-pattern "t\\(") event)
+        (let [chrominfo (clojure.string/split (get info 1) #";")
+              chromno (count chrominfo)
+              bandinfo (clojure.string/split (get info 3) #";")]
+          (apply e/translocation
+                 1 chromno
+                 (flatten (for [i (range chromno)]
+                            (get-bands (get chrominfo i) (get bandinfo i))))))
         ;; If event is a triplication event
-        (re-find #"tri" event)
+        (re-find (re-pattern "trp\\(") event)
         (cond
-         ;; Needed?
-         ;; (= (get-direction (get info 3)) "Unknown")
-         ;; (apply e/triplication 1 (get-bands (get info 1) (get info 3)))
+         (= (get-direction (get info 3)) "Unknown")
+         (apply e/triplication 1 (get-bands (get info 1) (get info 3)))
          (= (get-direction (get info 3)) "Direct")
          (apply e/direct-triplication 1 (get-bands (get info 1) (get info 3)))
          (= (get-direction (get info 3)) "Inverse")
@@ -213,7 +237,8 @@
     (owlclass name
                :label (str "The " karyotype " karyotype")
                :subclass i/ISCNExampleKaryotype
-               (owlsome n/derivedFrom (get-derived-from karyotype))))
+               (if-not (re-find #"c" karyotype)
+                 (owlsome n/derivedFrom (get-derived-from karyotype)))))
     (get-subclasses (ensure-class name) karyotype)))
 
 (parse-karyotype-string "26,X,+4,+6,+21")
@@ -223,11 +248,15 @@
 (parse-karyotype-string "45,X,-X")
 (parse-karyotype-string "45,X,-Y")
 (parse-karyotype-string "45,Y,-X")
+(parse-karyotype-string "69,XXX,del(7)(p11.2)")
+(parse-karyotype-string "46,XX,ins(1;?)(p22;?)")
 (parse-karyotype-string "46,XX,add(19)(p13.3)")
 (parse-karyotype-string "46,XY,add(12)(q13)")
+(parse-karyotype-string "46,XX,ins(5;?)(q13;?)")
 (parse-karyotype-string "46,XX,del(5)(q13)")
 (parse-karyotype-string "46,XX,del(5)(q13q33)")
 (parse-karyotype-string "46,XX,del(5)(q13q13)")
+;;(parse-karyotype-string "46,XX,del(5)(q?)")
 (parse-karyotype-string "46,Y,del(X)(p21p21)")
 (parse-karyotype-string "46,XX,dup(1)(q22q25)")
 (parse-karyotype-string "46,XY,dup(1)(q25q22)")
@@ -241,12 +270,21 @@
 (parse-karyotype-string "46,XX,inv(3)(q21q26.2)")
 (parse-karyotype-string "46,XY,inv(3)(p13q21)")
 (parse-karyotype-string "46,XX,qdp(1)(q23q32)")
+(parse-karyotype-string "46,XY,t(2;5)(q21;q31)")
+(parse-karyotype-string "46,XY,t(2;5)(p12;q31)")
+(parse-karyotype-string "46,X,t(X;13)(q27;q12)")
+(parse-karyotype-string "46,XX,t(2;7;5)(p21;q22;q23)")
+(parse-karyotype-string "46,X,t(X;22;1)(q24;q11.2;p33)")
+(parse-karyotype-string "46,XX,t(3;9;22;21)(p13;q34;q11.2;q21)")
+(parse-karyotype-string "46,XY,t(5;6)(q13q23;q15q23)")
+(parse-karyotype-string "46,XX,t(5;14;9)(q13q23;q24q21;p12p23)")
+(parse-karyotype-string "46,XY,t(1;3)(p10;q10)")
+(parse-karyotype-string "46,XY,t(1;3)(p10;p10)")
 (parse-karyotype-string "46,XX,trp(1)(q21q32)")
-;; (parse-karyotype-string "46,XX,inv trp(1)(q32q21)")
-
+(parse-karyotype-string "46,XX,inv trp(1)(q32q21)")
 
 (defn- create-karyotype-string [name]
-  ;; (ensure-class (make-safe name))
-  (println (str "TODO: " class)))
+  ;(ensure-class (make-safe name))
+  (println (str "TODO: " name)))
 
 ;; (create-karyotype-string "45,X,-X")
