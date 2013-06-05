@@ -16,16 +16,16 @@
 
 (ns ncl.karyotype.core
   (:use [tawny.owl])
-  (:require [ncl.karyotype human karyotype events features named iscnexamples])
+  (:require [ncl.karyotype human karyotype events features named iscnexamples
+             parsekaryotype])
   (:gen-class))
 
 ;; to run:
 ;; 1. M-x 'compile' ('lein run')
 ;; 2. M-x 'lein run'
 
-;; MAIN
 (defn -main [& args]
-;; Save ontologies in .omn and .owl format
+  "Save ontologies in .omn and .owl format"
   (with-ontology ncl.karyotype.human/human
     (save-ontology "human.omn" :omn)
     (save-ontology "human.owl" :owl))
@@ -49,7 +49,8 @@
   (with-ontology ncl.karyotype.iscnexamples/iscnexamples
     (save-ontology "iscnexamples.omn" :omn)
     (save-ontology "iscnexamples.owl" :owl))
-)
 
-;; to run (in swank)
-;; (main)
+  (with-ontology ncl.karyotype.parsekaryotype/parsekaryotype
+    (save-ontology "parsekaryotype.omn" :omn)
+    (save-ontology "parsekaryotype.owl" :owl))
+)
