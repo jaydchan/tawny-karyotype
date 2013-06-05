@@ -310,7 +310,7 @@
 
 ;; Chapter 9 -> Structural Chromosome Rearrangements
 (defclass k69_XXX_del!7!!p11.2!
-  :label "The  69,XXX,del(7)(p11.2) karyotype"
+  :label "The 69,XXX,del(7)(p11.2) karyotype"
   :comment "ISCN2009 pg 60 -> 'Two normal chromosomes 7 and one with a
   deletion of the short arm.'"
   :subclass ISCNExampleKaryotype
