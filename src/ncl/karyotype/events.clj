@@ -70,11 +70,6 @@
   "Determine if the given band is the parent band"
   (re-find #"HumanChromosomeBand" band))
 
-;; NEEDED?
-;; (defn parentchromsomeband? [band]
-;;   "Determine if the given band is the parent band"
-;;   (re-find #"HumanChromosome[\d]+Band" band))
-
 (defn- get-telomere
   ([band]
      (cond
@@ -102,14 +97,12 @@
     (str (second (clojure.string/split
                   (str chromosome) #"human#|>")) "Bandq10")))
 
-(defn- getParent [band]
+(defn- get-parent [band]
   (second (clojure.string/split (str band) #"Band|[pq]Ter|Cen|human#")))
 
-
-;; EVENTS
+;; OWL CLASSES - EVENTS
 (as-disjoint-subclasses
  Event
- ;; Chromosomal Addition OR Chromosomal Band Addition
  (defclass Addition)
  (defclass Deletion)
  (defclass Duplication)
@@ -118,9 +111,25 @@
  (defclass Inversion)
  (defclass Quadruplication)
  (defclass Translocation)
- (defclass Triplication)
- ) ;; end disjoint
+ (defclass Triplication))
 
+(as-disjoint-subclasses
+ Duplication
+ (defclass DirectDuplication)
+ (defclass InverseDuplication))
+
+(as-disjoint-subclasses
+ Insertion
+ (defclass DirectInsertion)
+ (defclass InverseInsertion))
+
+(as-disjoint-subclasses
+ Triplication
+ (defclass DirectTriplication)
+ (defclass InverseTriplication))
+
+;; FUNCTIONS
+;; Chromosomal Addition OR Chromosomal Band Addition
 (defn addition
   ([n chrom_band]
      (with-ontology
@@ -143,7 +152,6 @@
 ;; Terminal deletion with a break AND Interstitial deletion with
 ;; breakage and reuinion (::) of bands.
 ;; Invovles only 1 chromosome
-
 (defn deletion
   ;; AKA Chromosomal deletion or terminal band deletion with a break
   ([n chrom_band]
@@ -176,7 +184,6 @@
 ;; Chromosomal Band Duplication
 ;; Can be preceeded by the triplets dir or inv to indicate direct or
 ;; inverted direction. There shouldn't be any of this type.
-
 (defn duplication [n band1 band2]
   (exactly n hasEvent
            (owland Duplication
@@ -184,7 +191,6 @@
 
 ;; Chromosomal Band Fission AKA Centric fission - break in the centromere
 ;; Involves only 1 chromosome
-
 (defn fission [n chromosome]
   (with-ontology
     ncl.karyotype.human/human
@@ -199,7 +205,6 @@
 ;; Rules: p only/ q only (big to small) = Direct insertion
 ;; QUERY: How do we classify ins(1)(p13p11q21)? Direct or Inverse?
 ;; There shouldn't be any of this type
-
 (defn insertion [n band1 band2 band3]
   (exactly n hasEvent
            (owland Insertion
@@ -209,7 +214,6 @@
 ;; Chromosomal Band Inversion : includes both paracentric (involves
 ;; only 1 arm) and pericentric (involves both arms) inversion.
 ;; Involves only 1 chromosome
-
 (defn inversion [n band1 band2]
   (exactly n hasEvent
            (owland Inversion
@@ -218,7 +222,6 @@
 ;; Chromosomal Band Quadruplication
 ;; Note: It is not possible to indicate the orientations of the
 ;; segments with the short system!
-
 (defn quadruplication [n band1 band2]
   (exactly n hasEvent
            (owland Quadruplication
@@ -226,8 +229,6 @@
 
 ;; Chromosomal Band Translocation
 ;; Must involve more than one chromosome/band
-
-
 (defn- translocation3 [receive1 receive2 provide1 provide2]
   (owland
    (owlsome hasReceivingBreakPoint receive1)
@@ -238,19 +239,19 @@
 (defn- translocation2 [provide1 provide2 bands]
   (with-ontology
     ncl.karyotype.human/human
-    
+
     [
      (cond
       (= (count bands) 1)
       (translocation3 (first bands) (get-telomere (first bands)) provide1 provide2)
       (= (count bands) 2)
-      (if (= (getParent (first bands)) (getParent (second bands)))
+      (if (= (get-parent (first bands)) (get-parent (second bands)))
         (translocation3 (first bands) (second bands) provide1 provide2)
         (flatten [(translocation3 (first bands) (get-telomere (first bands)) (second bands) (get-telomere (second bands)))
                   (translocation2 provide1 provide2 (rest bands))]))
       (= (count bands) 3)
-      (if (or (= (getParent (first bands)) (getParent (second bands))) (= (getParent (second bands)) (getParent (second (rest bands)))))
-        (if (= (getParent (first bands)) (getParent (second bands)))
+      (if (or (= (get-parent (first bands)) (get-parent (second bands))) (= (get-parent (second bands)) (get-parent (second (rest bands)))))
+        (if (= (get-parent (first bands)) (get-parent (second bands)))
           (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (get-telomere (second (rest bands)))) 
                     (translocation2 provide1 provide2 (rest (rest bands)))])
           (flatten [(translocation3 (first bands) (get-telomere (first bands)) (second bands) (second (rest bands)))
@@ -258,13 +259,13 @@
         (flatten [(translocation2 provide1 provide2 (rest bands))
                   (translocation3 (first bands) (get-telomere (first bands)) (second bands) (get-telomere (second bands)))]))
       (> (count bands) 3)
-      (if (= (getParent (first bands)) (getParent (second bands)))
-        (if (= (getParent (second (rest bands))) (getParent (second (rest (rest bands)))))
+      (if (= (get-parent (first bands)) (get-parent (second bands)))
+        (if (= (get-parent (second (rest bands))) (get-parent (second (rest (rest bands)))))
           (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (second (rest (rest bands))))
                     (translocation2 provide1 provide2 (rest (rest bands)))])
           (flatten [(translocation3 (first bands) (second bands) (second (rest bands)) (get-telomere (second (rest bands))))
                     (translocation2 provide1 provide2 (rest (rest bands)))]))
-        (if (= (getParent (first (rest bands))) (getParent (second (rest bands))))
+        (if (= (get-parent (first (rest bands))) (get-parent (second (rest bands))))
           (flatten [(translocation3 (first bands) (get-telomere (first bands)) (second bands) (second (rest bands)))
                     (translocation2 provide1 provide2 (rest bands))])
           (flatten [(translocation3 (first bands) (get-telomere (first bands)) (second bands) (get-telomere (second bands)))
@@ -290,7 +291,7 @@ Bands is the bands involved in the translocation.
 "
   [n chrom_no & bands]
   (if (> (count bands) 1)
-    (if (= (getParent (first bands)) (getParent (second bands)))
+    (if (= (get-parent (first bands)) (get-parent (second bands)))
       (exactly 1 hasEvent
                (owland Translocation
                        (take chrom_no
@@ -318,71 +319,59 @@ n is the number of translocations involved."
   
   )
 
-
 ;; Chromosomal Band Triplication
 ;; QUERY: Book says "It is not possible to indicate the orientations
 ;; of the segments with the short system" however the example shown
 ;; seem to show the orientations fine. What other detailed systems
 ;; occur for the first example?  Similar to Duplication
-
 (defn triplication [n band1 band2]
   (exactly 1 hasEvent
            (owland Triplication
                    (owlsome hasBreakPoint band1 band2))))
 
+;; Chromosomal Band DirectDuplication
+;; Invovles only 1 chromosome
+(defn direct-duplication [n band1 band2]
+  (exactly n hasEvent
+           (owland DirectDuplication
+                   (owlsome hasBreakPoint band1 band2))))
 
+;; Chromosomal Band InverseDuplication
+;; Invovles only 1 chromosome
+(defn inverse-duplication [n band1 band2]
+  (exactly n hasEvent
+           (owland InverseDuplication
+                   (owlsome hasBreakPoint band1 band2))))
 
-(as-disjoint-subclasses
- Duplication
- ;; Chromosomal Band DirectDuplication
- ;; Invovles only 1 chromosome
- (defclass DirectDuplication)
- (defn direct-duplication [n band1 band2]
-   (exactly n hasEvent
-            (owland DirectDuplication
-                    (owlsome hasBreakPoint band1 band2))))
+;; Choromosomal Band DirectInsertion
+;; Involves at most 2 chromosomes
+(defn direct-insertion [n band1 band2 band3]
+  (exactly n hasEvent
+           (owland DirectInsertion
+                   (owlsome hasReceivingBreakPoint band1)
+                   (owlsome hasProvidingBreakPoint band2 band3))))
 
- ;; Chromosomal Band InverseDuplication
- ;; Invovles only 1 chromosome
- (defclass InverseDuplication)
- (defn inverse-duplication [n band1 band2]
-   (exactly n hasEvent
-            (owland InverseDuplication
-                    (owlsome hasBreakPoint band1 band2)))))
+;; Choromosomal Band InverseInsertion
+;; Involves at most 2 chromosomes
+(defn inverse-insertion [n band1 band2 band3]
+  (exactly n hasEvent
+           (owland InverseInsertion
+                   (owlsome hasReceivingBreakPoint band1)
+                   (owlsome hasProvidingBreakPoint band2 band3))))
 
-(as-disjoint-subclasses
- Insertion
- ;; Choromosomal Band DirectInsertion
- ;; Involves at most 2 chromosomes
- (defclass DirectInsertion)
- (defn direct-insertion [n band1 band2 band3]
-   (exactly n hasEvent
-            (owland DirectInsertion
-                    (owlsome hasReceivingBreakPoint band1)
-                    (owlsome hasProvidingBreakPoint band2 band3))))
+;; Choromosomal Band DirectTriplication
+;; Invovles only 1 chromosome
+(defn direct-triplication [n band1 band2]
+  (exactly 1 hasEvent
+           (owland DirectTriplication
+                   (owlsome hasBreakPoint band1 band2))))
 
- ;; Choromosomal Band InverseInsertion
- ;; Involves at most 2 chromosomes
- (defclass InverseInsertion)
- (defn inverse-insertion [n band1 band2 band3]
-   (exactly n hasEvent
-            (owland InverseInsertion
-                    (owlsome hasReceivingBreakPoint band1)
-                    (owlsome hasProvidingBreakPoint band2 band3)))))
-
-(as-disjoint-subclasses
- Triplication
- (defclass DirectTriplication)
- (defn direct-triplication [n band1 band2]
-   (exactly 1 hasEvent
-            (owland DirectTriplication
-                    (owlsome hasBreakPoint band1 band2))))
-
- (defclass InverseTriplication)
- (defn inverse-triplication [n band1 band2]
-   (exactly 1 hasEvent
-            (owland InverseTriplication
-                    (owlsome hasBreakPoint band1 band2)))))
+;; Choromosomal Band InverseTriplication
+;; Invovles only 1 chromosome
+(defn inverse-triplication [n band1 band2]
+  (exactly 1 hasEvent
+           (owland InverseTriplication
+                   (owlsome hasBreakPoint band1 band2))))
 
 ;; Potential new disorder.clj file
 ;; (defclass Disorder)
