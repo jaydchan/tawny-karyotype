@@ -279,7 +279,16 @@
     ))
 
 ;; TODO - make it more efficient!
-(defn translocation [n chrom_no & bands]
+(defn translocation
+  "Returns a translocation restriction.
+
+n is the number of translocations involved.
+chrom_no is the number of chromosomes involved.
+Bands is the bands involved in the translocation.
+
+
+"
+  [n chrom_no & bands]
   (if (> (count bands) 1)
     (if (= (getParent (first bands)) (getParent (second bands)))
       (exactly 1 hasEvent
@@ -299,6 +308,16 @@
      (IllegalArgumentException.
       (str "There should be at least 2 band parameters. Got:"
            bands)))))
+
+
+(defn translocation-new
+  "Returns a translocation restriction.
+n is the number of translocations involved."
+  [n & bands]
+  {:pre (> 1 (count bands))}
+  
+  )
+
 
 ;; Chromosomal Band Triplication
 ;; QUERY: Book says "It is not possible to indicate the orientations

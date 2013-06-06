@@ -19,6 +19,7 @@
   (:use [clojure.test])
   (:require
    [ncl.karyotype.events :as e]
+   [ncl.karyotype.human :as h]
    [tawny.owl :as o]
    [tawny.reasoner :as r]))
 
@@ -35,3 +36,21 @@
 (deftest Basic
   (is (r/consistent?))
   (is (r/coherent?)))
+
+
+(deftest get-telomere
+  (is (= "HumanChromosome1BandqTer"
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanChromosome1Bandq11)))
+
+  (is (= "HumanChromosome1BandqTer"
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanChromosome1BandqTer)))
+
+  (is (thrown?
+       IllegalArgumentException
+       "HumanChromosome1BandqTer"
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanChromosome1Centromere)))
+
+)
