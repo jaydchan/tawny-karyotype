@@ -99,7 +99,7 @@
 
 (defn- split-bands [bandinfo]
   "Splits bandinfo from one string to a vector of bands"
-  (into [] (re-seq #"[pq][\d.]+|[pq]\?|\?" bandinfo)))
+  (into [] (re-seq #"[pq][\d\.]+|[pq]\?|\?" bandinfo)))
 
 (defn get-bands [chrominfo bandinfo]
   "Get the band entities inferred in bandinfo"
@@ -116,7 +116,7 @@
         (str "HumanChromosome" chrominfo "Bandp")
         (= "q?" band)
         (str "HumanChromosome" chrominfo "Bandq")
-        (re-find #"[pq][\d.]+" band)
+        (re-find #"[pq][\d\.]+" band)
         (str "HumanChromosome" chrominfo "Band" band))))))
 
 (defn- get-direction [bandinfo]
@@ -133,8 +133,8 @@
      (or
       (and (h/pband? band1) (h/pband? band2))
       (and (h/qband? band1) (h/qband? band2)))
-     (let [digit1 (re-find #"[\d.]+" band1)
-           digit2 (if (nil? band2) nil (re-find #"[\d.]+" band2))]
+     (let [digit1 (re-find #"[\d\.]+" band1)
+           digit2 (if (nil? band2) nil (re-find #"[\d\.]+" band2))]
        (cond
         (nil? (or digit1 digit2))
         "Unknown"
@@ -288,77 +288,95 @@
 (parse-karyotype-string "46,XX,trp(1)(q21q32)")
 (parse-karyotype-string "46,XX,inv trp(1)(q32q21)")
 
-;; ;; CREATE KARYOTYPE STRING FUNCTIONS
-;; ;; TODO
-;; (defn- get-no-of-chromosomes [class]
-;;   45)
+;; CREATE KARYOTYPE STRING FUNCTIONS
+;; TOFIX - Not true!
+(defn- get-start [axiom]
+  (let [base (re-find #"k[\d_XY]+" axiom)]
+    (clojure.string/replace (subs base 1) #"_" ",")))
 
-;; ;;TODO
-;; (defn- get-sex-string [class]
-;;   "XX")
-
-;; ;; TODO
+;; TODO
 ;; (defn- sort-chromosomes [class])
 
-;; (defn- get-event-string [axiom]
-;;   (cond
-;;    "If axiom is an addition event"
-;;    (re-find #"Addition" axiom)
-;;    "add()() or +"
-;;    ;; (str "add(" (get-chromosome axiom) ")(" (get-band axiom) ")"
-;;    "If axiom is a deletion event"
-;;    (re-find #"Deletion" axiom)
-;;    "del()() or -"
-;;    ;; (str "del(" (get-chromosome axiom) ")(" (get-band axiom) ")"
-;;    "If axiom is a duplication event"
-;;    (re-find #"Duplication" axiom)
-;;    "dup()()"
-;;    ;; (str "dup(" (get-chromosome axiom) ")(" (get-band axiom) ")"
+(defn- get-event-string [axiom]
+  (cond
+   ;; "If axiom is an addition event"
+   (re-find #"Addition" axiom)
+   (let [chrom-band (re-find #"HumanChromosome[\dXYBandpq\.]+" axiom)]
+     (if (re-find #"Band" chrom-band)
+       (str ",add(" (re-find #"[XY]|\d+" chrom-band)
+            ")(" (subs (re-find #"Band[pq\d\.]+" chrom-band) 4) ")")
+       (str ",+" (re-find #"[XY]|\d+" chrom-band))))
+   ;; "If axiom is a deletion event"
+   ;; TOHERE - doseq does not save the string
+   (re-find #"Deletion" axiom)
+   (let [chrom-band (re-seq #"HumanChromosome[\dXYBandpq\.]+" axiom)]
+     (if (re-find #"Band" (first chrom-band))
+       (str ",del(" (re-find #"[XY]|\d+" (first chrom-band)) ")("
+            (doseq [band chrom-band]
+              (subs (re-find #"Band[pq\d\.]+" band) 4)) ")")
+       (str ",-" (re-find #"[XY]|\d+" (first chrom-band)))))
+   ;; "If axiom is a duplication event"
+   (re-find #"Duplication" axiom)
+   ",dup()()"
+   ;; (str "dup(" (get-chromosome axiom) ")(" (get-band axiom) ")"
+   ;; "If axiom is a fission event"
+   (re-find #"Fission" axiom)
+   ",fis()()"
+   ;; (str "fis(" (get-chromosome axiom) ")(" (get-band axiom) ")"
+   ;; "If axiom is an insertion event"
+   (re-find #"Insertion" axiom)
+   ",ins()()"
+   ;; (str "ins(" (get-chromosome axiom) ")(" (get-band axiom) ")"
+   ;; "If axiom is an inversion  event"
+   (re-find #"Inversion" axiom)
+   ",inv()()"
+   ;; (str "inv(" (get-chromosome axiom) ")(" (get-band axiom) ")"
+   ;; "If axiom is a quadruplication event"
+   (re-find #"Quadruplication" axiom)
+   ",qdp()()"
+   ;; (str "qdp(" (get-chromosome axiom) ")(" (get-band axiom) ")"
+   ;; "If axiom is a translocation event"
+   (re-find #"Translocation" axiom)
+   ",t()()"
+   ;; (str "t(" (get-chromosome axiom) ")(" (get-band axiom) ")"
+   ;; "If axiom is a triplication event"
+   (re-find #"Triplication" axiom)
+   ",trp()()"
+   ;; (str "trp(" (get-chromosome axiom) ")(" (get-band axiom) ")"
+))
 
-;;    "If axiom is a fission event"
-;;    (re-find #"Fission" axiom)
-;;    "fis()()"
-;;    ;; (str "fis(" (get-chromosome axiom) ")(" (get-band axiom) ")"
-;;    "If axiom is an insertion event"
-;;    (re-find #"Insertion" axiom)
-;;    "ins()()"
-;;    ;; (str "ins(" (get-chromosome axiom) ")(" (get-band axiom) ")"
-;;    "If axiom is an inversion  event"
-;;    (re-find #"Inversion" axiom)
-;;    "inv()()"
-;;    ;; (str "inv(" (get-chromosome axiom) ")(" (get-band axiom) ")"
-;;    "If axiom is a quadruplication event"
-;;    (re-find #"Quadruplication" axiom)
-;;    "qdp()()"
-;;    ;; (str "qdp(" (get-chromosome axiom) ")(" (get-band axiom) ")"
-;;    "If axiom is a translocation event"
-;;    (re-find #"Translocation" axiom)
-;;    "t()()"
-;;    ;; (str "t(" (get-chromosome axiom) ")(" (get-band axiom) ")"
-;;    "If axiom is a triplication event"
-;;    (re-find #"Triplication" axiom)
-;;    "trp()()"
-;;    ;; (str "trp(" (get-chromosome axiom) ")(" (get-band axiom) ")"
-;; ))
+(defn- get-axiom-string [axiom]
+  (cond
+   (re-find #"derivedFrom" axiom)
+   (get-start axiom)
+   (re-find #"hasEvent" axiom)
+   (get-event-string axiom)))
 
-;; (defn- get-axiom-string [axiom]
-;;   (cond
-;;    (re-find #"derivedFrom" axiom)
-;;    (get-sex-string axiom)
-;;    (re-find #"hasEvent" axiom)
-;;    (get-event-string axiom)))
+(defn- parse-karyotype-class [class]
+  (let [s (apply str (for [superclass (into [] (superclasses class))
+                           :let [axiom (get-axiom-string (str superclass))]
+                           :when (complement (nil? axiom))]
+                       axiom))]
+    s))
 
-;; (defn- parse-karyotype-class [class]
-;;   (get-no-of-chromosomes class)
-;;   (println "SUBCLASS:" )
-;;   (doseq [superclass (into [] (get-class-definition class))]
-;;   (get-axiom-string (str superclass)))
-;; )
+(defn- create-karyotype-string2 [detail name]
+  (let [class (ensure-class (make-safe name))]
+    (if (true? detail)
+      [(println (str "NAME: " name))
+      (println (str "CLASS: " class))
+      (println (str "STRING: " (parse-karyotype-class class)))])))
 
-;; (defn- create-karyotype-string [name]
-;;   (let [class (ensure-class (make-safe name))]
-;;     (println (str "NAME: " name))
-;;     (println (str "CLASS: " class))
-;;     (parse-karyotype-class class)))
+(def create-karyotype-string (partial create-karyotype-string2 false))
+(create-karyotype-string "26,X,+4,+6,+21")
+(create-karyotype-string "71,XXX,+8,+10")
+(create-karyotype-string "89,XXYY,-1,-3,-5,+8,-21")
+(create-karyotype-string "47,XX,+X")
+(create-karyotype-string "45,X,-X")
+(create-karyotype-string "45,X,-Y")
+(create-karyotype-string "45,Y,-X")
+(create-karyotype-string "46,XX,add(19)(p13.3)")
 
-;; (create-karyotype-string "45,X,-X")
+(def create-karyotype-string (partial create-karyotype-string2 true))
+(create-karyotype-string "46,XX,del(5)(q13)")
+(create-karyotype-string "46,XX,del(5)(q13q33)")
+(create-karyotype-string "46,XX,del(5)(q13q13)")
