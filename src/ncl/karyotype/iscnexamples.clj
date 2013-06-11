@@ -1540,7 +1540,7 @@
   exchanged.'"
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XY)
-  (e/translocation 1 2 h/HumanChromosome2Bandq21 h/HumanChromosome5Bandq31))
+  (e/translocation-new 1 [h/HumanChromosome2Bandq21] [h/HumanChromosome5Bandq31]))
 
 (defclass k46_XY_t!2_5!!p12_q31!
   :label "The 46,XY,t(2;5)(p12;q31) karyotype"
