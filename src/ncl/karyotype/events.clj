@@ -70,6 +70,7 @@
   "Determine if the given band is the parent band"
   (re-find #"HumanChromosomeBand" band))
 
+;; needs to return te class object and not string!
 (defn- get-telomere
   ([band]
      (cond
@@ -310,14 +311,43 @@ Bands is the bands involved in the translocation.
       (str "There should be at least 2 band parameters. Got:"
            bands)))))
 
+(defn adjust-bands [bands]
+  "Returns a vector of "
+  (with-ontology
+    ncl.karyotype.human/human
+    (into [] (for [band bands]
+               (cond
+                (= (count band) 1)
+                (conj band (ensure-class (get-telomere (first band))))
+                (= (count band) 1)
+                band
+                :default
+                (throw (IllegalArgumentException.
+                        (str "Too many bands input in band: " band))))))))
 
 (defn translocation-new
   "Returns a translocation restriction.
 n is the number of translocations involved."
   [n & bands]
   {:pre (> 1 (count bands))}
-  
-  )
+  (let [sorted-bands (adjust-bands bands)]
+    (exactly n hasEvent
+             (owland Translocation
+                     (for [x (range (count sorted-bands))]
+                       (let [curr-band (get sorted-bands x)]
+                         (apply owland
+                                (owlsome hasReceivingBreakPoint (first curr-band))
+                                (owlsome hasReceivingBreakPoint (second curr-band))
+                                (if (= x (- (count sorted-bands) 1))
+                                  [(owlsome hasProvidingBreakPoint
+                                            (first (first sorted-bands)))
+                                   (owlsome hasProvidingBreakPoint
+                                            (second (first sorted-bands)))]
+                                  (let [next-band (get sorted-bands (+ x 1))]
+                                    [(owlsome hasProvidingBreakPoint
+                                              (first next-band))
+                                     (owlsome hasProvidingBreakPoint
+                                              (second next-band))])))))))))
 
 ;; Chromosomal Band Triplication
 ;; QUERY: Book says "It is not possible to indicate the orientations
