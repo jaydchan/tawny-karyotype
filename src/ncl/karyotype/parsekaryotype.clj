@@ -375,8 +375,8 @@
 (create-karyotype-string "45,X,-Y")
 (create-karyotype-string "45,Y,-X")
 (create-karyotype-string "46,XX,add(19)(p13.3)")
-
-(def create-karyotype-string (partial create-karyotype-string2 true))
 (create-karyotype-string "46,XX,del(5)(q13)")
 (create-karyotype-string "46,XX,del(5)(q13q33)")
 (create-karyotype-string "46,XX,del(5)(q13q13)")
+
+(def create-karyotype-string (partial create-karyotype-string2 true))
