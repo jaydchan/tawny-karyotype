@@ -37,20 +37,49 @@
   (is (r/consistent?))
   (is (r/coherent?)))
 
-
 (deftest get-telomere
-  (is (= "HumanChromosome1BandqTer"
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanChromosome1Bandq11)))
 
-  (is (= "HumanChromosome1BandqTer"
+  (is (= h/HumanChromosome1BandpTer
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanChromosome1Bandp10)))
+
+  (is (= h/HumanChromosome1BandqTer
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanChromosome1Bandq10)))
+
+  (is (= h/HumanChromosome1Telomere
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanChromosome1Band)))
+
+  (is (= h/HumanTelomere
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanChromosomeBand)))
+
+  ;;CORRECT?
+  (is (= h/HumanChromosome1BandqTer
          (#'ncl.karyotype.events/get-telomere
           h/HumanChromosome1BandqTer)))
 
-  (is (thrown?
-       IllegalArgumentException
-       "HumanChromosome1BandqTer"
+  (is (= h/HumanChromosome1Telomere
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanChromosome1Telomere)))
+
+  (is (= h/HumanChromosome1Telomere
          (#'ncl.karyotype.events/get-telomere
           h/HumanChromosome1Centromere)))
+
+  (is (= h/HumanTelomere
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanTelomere)))
+
+  (is (= h/HumanTelomere
+         (#'ncl.karyotype.events/get-telomere
+          h/HumanCentromere)))
+
+;;   (is (thrown?
+;;        IllegalArgumentException
+;;        "HumanChromosome1Centromere"
+;;          (#'ncl.karyotype.events/get-telomere
+;;           h/HumanChromosome1Centromere)))
 
 )
