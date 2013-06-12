@@ -163,17 +163,18 @@ n is the number of deletion restrictions.
 chrom_band is either of type HumanChromosome or HumanChromosomeBand.
 band, band1, band2 are of type HumanChromosomeBand."
   ([n chrom_band]
+     ;; In order for superclass? to work, need to use the human ontology.
      (with-ontology
        ncl.karyotype.human/human
        (cond
-        ;; "If chrom_band is of type HumanChromosome then restriction
-        ;; represents a chromosomal loss."
+        ;; If chrom_band is of type HumanChromosome then restriction
+        ;; represents a chromosomal loss.
         (superclass? chrom_band h/HumanChromosome)
         (exactly n hasEvent
                  (owland Deletion chrom_band))
-        ;; "If chrom_band is of type HumanChromosomeBand then
+        ;; If chrom_band is of type HumanChromosomeBand then
         ;; restriction represents a terminal band deletion with a break
-        ;; (:)."
+        ;; (:).
         (superclass? chrom_band h/HumanChromosomeBand)
         (exactly n hasEvent
                  (owland Deletion
@@ -185,8 +186,8 @@ band, band1, band2 are of type HumanChromosomeBand."
           (str "Deletion expects a HumanChromosome or
                HumanChromosomeBand. Got:" chrom_band))))))
   ([n band1 band2]
-     ;; "This represents Interstitial band deletion with breakage and
-     ;; reunion (::).  band1, band2 are of type HumanChromosomeBand."
+     ;; This represents Interstitial band deletion with breakage and
+     ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
      (exactly n hasEvent
               (owland Deletion
                       (owlsome hasBreakPoint band1 band2)))))
