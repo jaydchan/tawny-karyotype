@@ -29,8 +29,7 @@
 
 (defontology parsekaryotype
   :iri "http://ncl.ac.uk/karyotype/parsekaryotype"
-  :prefix "pkr:"
-  )
+  :prefix "pkr:")
 
 ;; import all ncl.karyotype axioms
 (owlimport k/karyotype)
@@ -39,11 +38,10 @@
 ;; (owlimport f/features)
 (owlimport n/named)
 
-;; MACROS
-;; TOFIX remove + replace when + is available
-;; edit bracket replace with ! when is avaiable
-(defn- make-safe [karyotype]
-  "Generates the 'safe' name for the OWL class"
+;; FUNCTIONS
+(defn- make-safe 
+  "Returns a 'safe' string name for the OWL class."
+  [karyotype]
   (str "k"
        (clojure.string/replace
         (clojure.string/replace
@@ -101,7 +99,7 @@
   "Splits bandinfo from one string to a vector of bands"
   (into [] (re-seq #"[pq][\d\.]+|[pq]\?|\?" bandinfo)))
 
-(defn get-bands [chrominfo bandinfo]
+(defn- get-bands [chrominfo bandinfo]
   "Get the band entities inferred in bandinfo"
   (with-ontology
     ncl.karyotype.human/human
@@ -201,12 +199,11 @@
         ;; If event is a translocation event
         (re-find (re-pattern "t\\(") event)
         (let [chrominfo (clojure.string/split (get info 1) #";")
-              chromno (count chrominfo)
               bandinfo (clojure.string/split (get info 3) #";")]
           (apply e/translocation
-                 1 chromno
-                 (flatten (for [i (range chromno)]
-                            (get-bands (get chrominfo i) (get bandinfo i))))))
+                 1
+                 (for [i (range (count chrominfo))]
+                   (into [] (get-bands (get chrominfo i) (get bandinfo i))))))
         ;; If event is a triplication event
         (re-find (re-pattern "trp\\(") event)
         (cond
@@ -287,6 +284,7 @@
 (parse-karyotype-string "46,XY,t(1;3)(p10;p10)")
 (parse-karyotype-string "46,XX,trp(1)(q21q32)")
 (parse-karyotype-string "46,XX,inv trp(1)(q32q21)")
+
 
 ;; CREATE KARYOTYPE STRING FUNCTIONS
 ;; TOFIX - Not true!
