@@ -30,7 +30,7 @@
 
 (owlimport k/karyotype)
 
-;; Auxiliary Functions
+;; AUXILLARY FUNCTIONS
 (defn pband? [band]
   "Determine if the given band is a p band"
   (re-find #"p" band))
