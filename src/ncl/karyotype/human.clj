@@ -157,9 +157,10 @@ PARENT, which is either p or q band."
    name parent
    (owlsome k/isSubBandOf band)))
 
-(defn- humanbands0 [chromosome parent container bands firstlevel]
+(defn- humanbands0
   "Recursive auxiliary function for humanbands - used to create
  subbands of the human chromosome bands"
+  [chromosome parent container bands firstlevel]
   (let [bandgroup (str
                    (.getFragment
                     (.getIRI
@@ -185,8 +186,9 @@ PARENT, which is either p or q band."
          (human-sub-band parent (str bandgroup band)
                          (str bandgroup container)))))))
 
-(defn- humanbands [chromosome & bands]
+(defn- humanbands
   "Function to generate human chromosome bands for a chromosome"
+  [chromosome & bands]
   (let [group (str
                (.getFragment
                 (.getIRI
