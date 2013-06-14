@@ -66,7 +66,7 @@
 
 
 ;; AUXILLARY FUNCTIONS
-(defn parentband? [band]
+(defn- parentband? [band]
   "Determine if the given band is the parent band"
   (re-find #"HumanChromosomeBand" band))
 
@@ -133,17 +133,22 @@
 n is the number of addition restrictions.
 chrom_band is either of type HumanChromosome or HumanChromosomeBand."
   [n chrom_band]
+     ;; In order for superclass? to work, need to use the human ontology.
   (with-ontology
     ncl.karyotype.human/human
     (cond
      ;; If chrom_band is of type HumanChromosome then restriction
      ;; represents a chromosomal gain.
-     (superclass? chrom_band h/HumanChromosome )
+     (or
+      (= h/HumanChromosome chrom_band)
+      (superclass? chrom_band h/HumanChromosome))
      (exactly n hasEvent
               (owland Addition chrom_band))
      ;; If chrom_band is of type HumanChromosomeBand then
      ;; restriction represents a chromosomal band addition.
-     (superclass? chrom_band h/HumanChromosomeBand)
+     (or
+      (= h/HumanChromosomeBand chrom_band)
+      (superclass? chrom_band h/HumanChromosomeBand))
      (exactly n hasEvent
               (owland Addition
                       (owlsome hasBreakPoint chrom_band)))
@@ -169,13 +174,17 @@ band, band1, band2 are of type HumanChromosomeBand."
        (cond
         ;; If chrom_band is of type HumanChromosome then restriction
         ;; represents a chromosomal loss.
-        (superclass? chrom_band h/HumanChromosome)
+        (or
+         (= h/HumanChromosome chrom_band)
+         (superclass? chrom_band h/HumanChromosome))
         (exactly n hasEvent
                  (owland Deletion chrom_band))
         ;; If chrom_band is of type HumanChromosomeBand then
         ;; restriction represents a terminal band deletion with a break
         ;; (:).
-        (superclass? chrom_band h/HumanChromosomeBand)
+        (or
+         (= h/HumanChromosomeBand chrom_band)
+         (superclass? chrom_band h/HumanChromosomeBand))
         (exactly n hasEvent
                  (owland Deletion
                          (owlsome hasBreakPoint chrom_band
