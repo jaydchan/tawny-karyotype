@@ -51,9 +51,9 @@
    :domain k/Karyotype))
 
 ;; define all the baseKaryotypes
- ;;we have to pass these in as strings because they start with
- ;;integers which brings up an NumberFormatException therefore we
- ;;could use :name "46_XX" or :label "The 46,XX karyotype"
+;; we have to pass these in as strings because they start with
+;; integers which brings up an NumberFormatException therefore we
+;; could use :name "46_XX" or :label "The 46,XX karyotype"
 
 ;; define all haploid base karyotypes
 (defclass k23_N
@@ -77,7 +77,7 @@
  (defclass k46_XY
    :label "The 46,XY karyotype"))
 
-;; define all triploid base karyotypes
+;; define all triploid base karyotypes #CHECK
 (defclass k69_XNN
   :label "The 69,XNN karyotype"
   :subclass BaseKaryotype)
@@ -389,7 +389,6 @@
            (owland e/Duplication
                    (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
 
-;; #CHECK
 (defclass StructuralAbnormalKaryotypeFission
   :equivalent
   (owlsome e/hasEvent
