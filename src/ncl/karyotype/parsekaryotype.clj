@@ -21,7 +21,7 @@
             [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
             [ncl.karyotype [events :as e]]
-;;            [ncl.karyotype [features :as f]]
+            [ncl.karyotype [features :as f]]
             [ncl.karyotype [named :as n]]
             [ncl.karyotype [iscnexamples :as i]]
             )
@@ -35,12 +35,13 @@
 (owlimport k/karyotype)
 (owlimport h/human)
 (owlimport e/events)
-;; (owlimport f/features)
+ (owlimport f/features)
 (owlimport n/named)
 
 ;; FUNCTIONS
-(defn- make-safe 
-  "Returns a 'safe' string name for the OWL class."
+(defn- make-safe
+  "Returns a 'safe' string name for the OWL class.
+karyotype is of type String."
   [karyotype]
   (str "k"
        (clojure.string/replace
@@ -49,14 +50,17 @@
          #"[;,\+ \?]" "_")
         (re-pattern "[\\(\\)]") "_")))
 
-(defn- get-no-of-Y [s]
-  "Determines how many Y chromosomes exist in karyotype"
+(defn- get-no-of-Y
+  "Determines how many Y chromosomes exist in karyotype.
+s id of type String."
+  [s]
   (- (count (re-seq #"Y" s))
      (count (re-seq #"\+[a-zA-Z0-Z(;]*Y" s))))
 
 ;; assume that you are unable to have +Y when youre a female
-(defn- get-derived-from [karyotype]
+(defn- get-derived-from
   "Obtains the derivedFrom subclass"
+  [karyotype]
   (let [value (read-string (first (clojure.string/split karyotype #",")))]
     (cond
      ;; If karyotype is near-haploid
@@ -95,12 +99,14 @@
      (throw (IllegalArgumentException.
              (str "Karyotype syntax not recognised: " karyotype))))))
 
-(defn- split-bands [bandinfo]
+(defn- split-bands
   "Splits bandinfo from one string to a vector of bands"
+  [bandinfo]
   (into [] (re-seq #"[pq][\d\.]+|[pq]\?|\?" bandinfo)))
 
-(defn- get-bands [chrominfo bandinfo]
+(defn- get-bands
   "Get the band entities inferred in bandinfo"
+  [chrominfo bandinfo]
   (with-ontology
     ncl.karyotype.human/human
     (for [band (split-bands bandinfo)]
@@ -117,8 +123,9 @@
         (re-find #"[pq][\d\.]+" band)
         (str "HumanChromosome" chrominfo "Band" band))))))
 
-(defn- get-direction [bandinfo]
+(defn- get-direction
   "Determines the direction of the band range as either direct or inverse"
+  [bandinfo]
   (let [band1 (get (split-bands bandinfo) 0)
         band2 (get (split-bands bandinfo) 1)]
     (cond
@@ -141,7 +148,9 @@
         (> (read-string digit1) (read-string digit2))
         "Inverse")))))
 
-(defn- get-insertion-function [bandinfo]
+(defn- get-insertion-function
+  "TODO"
+  [bandinfo]
   (cond
    (= (get-direction bandinfo) "Unknown")
    e/insertion
@@ -150,7 +159,9 @@
    (= (get-direction bandinfo) "Inverse")
    e/inverse-insertion))
 
-(defn- define-event [event]
+(defn- define-event
+  "TODO"
+  [event]
   (with-ontology
     ncl.karyotype.human/human
      (let [info (clojure.string/split event (re-pattern "[\\(\\)]"))]
@@ -227,13 +238,15 @@
         (throw (IllegalArgumentException.
                 (str "Event syntax not recognised: " event)))))))
 
-(defn- get-subclasses [class karyotype]
+(defn- get-subclasses
   "Obtains the other associated subclass"
+  [class karyotype]
   (doseq [subclass (rest (rest (clojure.string/split karyotype #",")))]
     (add-subclass class (define-event subclass))))
 
-(defn- parse-karyotype-string [karyotype]
+(defn- parse-karyotype-string
   "Creates OWL entity equivalent of ISCN String"
+  [karyotype]
   (let [name (make-safe karyotype)]
    (tawny.read/intern-entity
     (owlclass name
@@ -243,6 +256,7 @@
                  (owlsome n/derivedFrom (get-derived-from karyotype)))))
     (get-subclasses (ensure-class name) karyotype)))
 
+;; define karyotypes
 (parse-karyotype-string "26,X,+4,+6,+21")
 (parse-karyotype-string "71,XXX,+8,+10")
 (parse-karyotype-string "89,XXYY,-1,-3,-5,+8,-21")
@@ -288,14 +302,25 @@
 
 ;; CREATE KARYOTYPE STRING FUNCTIONS
 ;; TOFIX - Not true!
-(defn- get-start [axiom]
+(defn- get-start
+  "Returns the prefix of the karyotype.
+axiom is of type derivedFrom."
+  [axiom]
   (let [base (re-find #"k[\d_XY]+" axiom)]
     (clojure.string/replace (subs base 1) #"_" ",")))
 
-;; TODO
-;; (defn- sort-chromosomes [class])
+(defn- sort-chromosomes
+  "Returns a sorted vector of restrictions - i.e. hasDerived
+  restriction, and other restrictions which are sorted by chromosome
+  value (X,Y,1-22).
+class is of type ISCNExampleKaryotype."
+  [class]
+  (into [] (superclasses class)))
 
-(defn- get-event-string [axiom]
+(defn- get-event-string
+  "Returns the String representation of the event restriction.
+axiom is of type hasEvent."
+  [axiom]
   (cond
    ;; "If axiom is an addition event"
    (re-find #"Addition" axiom)
@@ -343,28 +368,40 @@
    ;; (str "trp(" (get-chromosome axiom) ")(" (get-band axiom) ")"
 ))
 
-(defn- get-axiom-string [axiom]
+(defn- get-axiom-string
+  "Returns the string representation of the restriction.
+axiom is of type OWL Object Property."
+  [axiom]
   (cond
    (re-find #"derivedFrom" axiom)
    (get-start axiom)
    (re-find #"hasEvent" axiom)
    (get-event-string axiom)))
 
-(defn- parse-karyotype-class [class]
-  (let [s (apply str (for [superclass (into [] (superclasses class))
+(defn- parse-karyotype-class
+  "Returns the ISCN String of an OWL Karyotype Class.
+Class is of type ISCNExampleKaryotype."
+  [class]
+  (let [s (apply str (for [superclass (sort-chromosomes class)
                            :let [axiom (get-axiom-string (str superclass))]
                            :when (complement (nil? axiom))]
                        axiom))]
     s))
 
-(defn- create-karyotype-string2 [detail name]
+(defn- create-karyotype-string0
+  "Prints details of the string input - used for testing purposes.
+detail is of type boolean.
+name is of type String."
+  [detail name]
   (let [class (ensure-class (make-safe name))]
+    ;; If true, print the name, owl class, and resulting string.
     (if (true? detail)
       [(println (str "NAME: " name))
       (println (str "CLASS: " class))
       (println (str "STRING: " (parse-karyotype-class class)))])))
 
-(def create-karyotype-string (partial create-karyotype-string2 false))
+;; get ISCN String
+(def create-karyotype-string (partial create-karyotype-string0 false))
 (create-karyotype-string "26,X,+4,+6,+21")
 (create-karyotype-string "71,XXX,+8,+10")
 (create-karyotype-string "89,XXYY,-1,-3,-5,+8,-21")
@@ -377,4 +414,5 @@
 (create-karyotype-string "46,XX,del(5)(q13q33)")
 (create-karyotype-string "46,XX,del(5)(q13q13)")
 
-(def create-karyotype-string (partial create-karyotype-string2 true))
+(def create-karyotype-string (partial create-karyotype-string0 true))
+(create-karyotype-string "26,X,+4,+6,+21")
