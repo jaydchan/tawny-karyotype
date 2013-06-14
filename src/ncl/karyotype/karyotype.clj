@@ -24,24 +24,24 @@
   :iri "http://ncl.ac.uk/karyotype/karyotype"
   :prefix "kar:")
 
+;; OWL CLASSES
 (as-disjoint
  (defclass Karyotype)
-
  (defclass Chromosome)
-
  (defclass ChromosomeComponent)
 )
 
 (as-disjoint-subclasses
  ChromosomeComponent
-
  (defclass ChromosomeBand)
  (defclass Centromere)
  (defclass Telomere))
 
+;; define object properties
 (as-inverse
  (defoproperty isComponentOf
    :domain ChromosomeComponent)
+
  (defoproperty hasComponent))
 
 (as-inverse
