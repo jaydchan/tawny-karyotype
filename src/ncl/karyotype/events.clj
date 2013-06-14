@@ -74,25 +74,25 @@
 ;; string manipulation.
 (defn- get-telomere
   [band]
-  (with-ontology
-    ncl.karyotype.human/human
     (let [s1 (second (clojure.string/split (str band) #"human#"))
           s2 (first (clojure.string/split s1 #"Band|Telomere|Centromere"))
           s3 (first (clojure.string/split s1 #"Chromosome"))]
-      (cond
-       (h/pband? s1)
-       (ensure-class (str s2 "BandpTer"))
-       (h/qband? s1)
-       (ensure-class (str s2 "BandqTer"))
-       (re-find #"[\d]+" s1)
-       (ensure-class (str s2 "Telomere"))
-       (parentband? s1)
-       (ensure-class (str s3 "Telomere"))
-       (re-find #"HumanTelomere|HumanCentromere" s1)
-       (ensure-class (str s2 "Telomere"))
-       :default
-       (throw (IllegalArgumentException.
-               (str "Band not recognized:" band)))))))
+      (ensure-class
+       ncl.karyotype.human/human
+       (cond
+        (h/pband? s1)
+        (str s2 "BandpTer")
+        (h/qband? s1)
+        (str s2 "BandqTer")
+        (re-find #"[\d]+" s1)
+        (str s2 "Telomere")
+        (parentband? s1)
+        (str s3 "Telomere")
+        (re-find #"HumanTelomere|HumanCentromere" s1)
+        (str s2 "Telomere")
+        :default
+        (throw (IllegalArgumentException.
+                (str "Band not recognized:" band)))))))
 
 
 ;; OWL CLASSES - EVENTS
