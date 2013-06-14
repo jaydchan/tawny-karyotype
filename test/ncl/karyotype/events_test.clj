@@ -83,3 +83,62 @@
 ;;           h/HumanChromosome1Centromere)))
 
 )
+
+(deftest addition
+  (is (= (o/exactly 1 e/hasEvent
+                    (o/owland e/Addition h/HumanChromosome1))
+         (e/addition 1 h/HumanChromosome1)))
+
+  (is (= (o/exactly 1 e/hasEvent
+                    (o/owland e/Addition h/HumanChromosome))
+         (e/addition 1 h/HumanChromosome)))
+
+  (is (= (o/exactly 1 e/hasEvent
+                    (o/owland e/Addition
+                              (o/owlsome e/hasBreakPoint
+                                         h/HumanChromosome1Bandp11)))
+         (e/addition 1 h/HumanChromosome1Bandp11)))
+
+  (is (= (o/exactly 1 e/hasEvent
+                    (o/owland e/Addition
+                              (o/owlsome e/hasBreakPoint
+                                         h/HumanChromosome1Bandp)))
+         (e/addition 1 h/HumanChromosome1Bandp)))
+
+  (is (= (o/exactly 1 e/hasEvent
+                    (o/owland e/Addition
+                              (o/owlsome e/hasBreakPoint
+                                         h/HumanChromosome1Band)))
+         (e/addition 1 h/HumanChromosome1Band)))
+)
+
+;; (deftest deletion
+;;   (is (= (o/exactly 1 e/hasEvent
+;;                     (o/owland e/Deletion h/HumanChromosome1))
+;;          (e/addition 1 h/HumanChromosome1)))
+
+;;   (is (= (o/exactly 1 e/hasEvent
+;;                     (o/owland e/Deletion h/HumanChromosome))
+;;          (e/addition 1 h/HumanChromosome)))
+
+  ;; (is (= (o/exactly 1 e/hasEvent
+  ;;                   (o/owland e/Deletion
+  ;;                             (o/owlsome e/hasBreakPoint
+  ;;                                        h/HumanChromosome1Bandp11
+  ;;                                        h/HumanChromosome1BandpTer)))
+  ;;        (e/addition 1 h/HumanChromosome1Bandp11)))
+
+  ;; (is (= (o/exactly 1 e/hasEvent
+  ;;                   (o/owland e/Deletion
+  ;;                             (o/owlsome e/hasBreakPoint
+  ;;                                        h/HumanChromosome1Bandp
+  ;;                                        h/HumanChromosome1BandpTer)))
+  ;;        (e/addition 1 h/HumanChromosome1Bandp)))
+
+  ;; (is (= (o/exactly 1 e/hasEvent
+  ;;                   (o/owland e/Deletion
+  ;;                             (o/owlsome e/hasBreakPoint
+  ;;                                        h/HumanChromosome1Band
+  ;;                                        h/HumanChromosome1Telomere)))
+  ;;        (e/addition 1 h/HumanChromosome1Band)))
+;;)
