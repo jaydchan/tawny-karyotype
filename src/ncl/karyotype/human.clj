@@ -31,20 +31,24 @@
 (owlimport k/karyotype)
 
 ;; AUXILLARY FUNCTIONS
-(defn pband? [band]
+(defn pband?
   "Determine if the given band is a p band"
+  [band]
   (re-find #"p" band))
 
-(defn qband? [band]
+(defn qband?
   "Determine if the given band is a q band"
+  [band]
   (re-find #"q" band))
 
-(defn ter? [band]
+(defn ter?
   "Determine if the given band is a telomere"
+  [band]
   (re-find #"Ter" band))
 
-(defn cen? [band]
+(defn cen?
   "Determine if the given band is a centromere"
+  [band]
   (re-find #"0" band))
 
 (defn create-class-with-superclasses
@@ -154,8 +158,8 @@
 PARENT, which is either p or q band."
   [parent name band]
   (create-class-with-superclasses
-   name parent
-   (owlsome k/isSubBandOf band)))
+    name parent
+    (owlsome k/isSubBandOf band)))
 
 (defn- humanbands0
   "Recursive auxiliary function for humanbands - used to create
@@ -592,8 +596,7 @@ PARENT, which is either p or q band."
  ["q26"
   ["q26.1" "q26.11" "q26.12" "q26.13"]
   "q26.2" "q26.3"]
- "qTer"
-)
+ "qTer")
 
 ;; Short arm band information for Human Chromosome 11
 (humanbands
@@ -958,3 +961,24 @@ PARENT, which is either p or q band."
  "q11.23"
  "q12"
  "qTer")
+
+;; NEW AUXILLARY FUNCTIONS - for other classes?
+(defn ter?-new
+  "Determine if the given band is a telomere - using ontology"
+  [band]
+  (with-ontology
+    ncl.karyotype.human/human
+    (superclass? band
+                 (owland
+                  HumanChromosomeBand
+                  (owlsome k/isBandOf HumanTelomere)))))
+
+(defn cen?-new
+  "Determine if the given band is a telomere - using ontology"
+  [band]
+  (with-ontology
+    ncl.karyotype.human/human
+    (superclass? band
+                 (owland
+                  HumanChromosomeBand
+                  (owlsome k/isBandOf HumanCentromere)))))
