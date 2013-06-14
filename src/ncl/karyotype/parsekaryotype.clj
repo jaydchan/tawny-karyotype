@@ -35,7 +35,7 @@
 (owlimport k/karyotype)
 (owlimport h/human)
 (owlimport e/events)
- (owlimport f/features)
+(owlimport f/features)
 (owlimport n/named)
 
 ;; FUNCTIONS
@@ -107,21 +107,20 @@ s id of type String."
 (defn- get-bands
   "Get the band entities inferred in bandinfo"
   [chrominfo bandinfo]
-  (with-ontology
-    ncl.karyotype.human/human
-    (for [band (split-bands bandinfo)]
-      (ensure-class
-       (cond
-        (and (= "?" band) (= "?" chrominfo))
-        "HumanChromosomeBand"
-        (and (= "?" band) (re-find #"\d+" chrominfo))
-        (str "HumanChromosome" chrominfo "Band")
-        (= "p?" band)
-        (str "HumanChromosome" chrominfo "Bandp")
-        (= "q?" band)
-        (str "HumanChromosome" chrominfo "Bandq")
-        (re-find #"[pq][\d\.]+" band)
-        (str "HumanChromosome" chrominfo "Band" band))))))
+  (for [band (split-bands bandinfo)]
+    (ensure-class
+     ncl.karyotype.human/human
+     (cond
+      (and (= "?" band) (= "?" chrominfo))
+      "HumanChromosomeBand"
+      (and (= "?" band) (re-find #"\d+" chrominfo))
+      (str "HumanChromosome" chrominfo "Band")
+      (= "p?" band)
+      (str "HumanChromosome" chrominfo "Bandp")
+      (= "q?" band)
+      (str "HumanChromosome" chrominfo "Bandq")
+      (re-find #"[pq][\d\.]+" band)
+      (str "HumanChromosome" chrominfo "Band" band)))))
 
 (defn- get-direction
   "Determines the direction of the band range as either direct or inverse"
