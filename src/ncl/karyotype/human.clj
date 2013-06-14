@@ -966,19 +966,15 @@ PARENT, which is either p or q band."
 (defn ter?-new
   "Determine if the given band is a telomere - using ontology"
   [band]
-  (with-ontology
-    ncl.karyotype.human/human
-    (superclass? band
-                 (owland
-                  HumanChromosomeBand
-                  (owlsome k/isBandOf HumanTelomere)))))
+  (superclass? ncl.karyotype.human/human band
+                  (owland
+                   HumanChromosomeBand
+                   (owlsome k/isBandOf HumanTelomere))))
 
 (defn cen?-new
   "Determine if the given band is a telomere - using ontology"
   [band]
-  (with-ontology
-    ncl.karyotype.human/human
-    (superclass? band
-                 (owland
-                  HumanChromosomeBand
-                  (owlsome k/isBandOf HumanCentromere)))))
+  (superclass? ncl.karyotype.human/human band
+               (owland
+                HumanChromosomeBand
+                (owlsome k/isBandOf HumanCentromere))))
