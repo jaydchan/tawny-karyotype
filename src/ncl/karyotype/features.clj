@@ -20,8 +20,7 @@
   (:require [tawny [reasoner :as r]]
             [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
-            [ncl.karyotype [events :as e]]
-            ))
+            [ncl.karyotype [events :as e]]))
 
 (defontology features
   :iri "http://ncl.ac.uk/karyotype/features"
@@ -36,135 +35,193 @@
 (as-inverse
  (defoproperty hasFeature
    :range Feature
-   :domain k/Karyotype
-   )
+   :domain k/Karyotype)
 
  (defoproperty isFeatureOf
    :range k/Karyotype
-   :domain Feature
-   )
-)
+   :domain Feature))
 
-;; define all the structural features
+
+;; OWL CLASSES - STRUCTURAL FEATURES
 (as-disjoint-subclasses
  Feature
-
-  (defclass DerivativeChromosome)
-  ;; TODO if whole arm translocation can be defined as either rob or der
-  (defn derivative [n & args]
-    (exactly n hasFeature
-             (owland DerivativeChromosome args)))
-
-  (defclass IsodicentricChromosome)
-  ;; MUST be defined before dicentric as dicentric calls isodicentric function!
-  (defn isodicentric [n band]
-    (exactly n hasFeature
-             (owland IsodicentricChromosome
-                     (owlsome e/hasBreakPoint band))))
-
-  (defclass DicentricChromosome)
-  (defn dicentric [n band1 band2]
-    (if (= (str band1) (str band2))
-      (isodicentric n band1)
-      (exactly n hasFeature
-               (owland DicentricChromosome
-                       (owlsome e/hasBreakPoint band1 band2)))))
-
-  (defclass FragileSite)
-  (defn fragilesite [n band]
-    (exactly n hasFeature
-             (owland FragileSite
-                     (owlsome e/hasBreakPoint band))))
-
-  (defclass HomogeneouslyStainingRegion)
-  (defn hsr
-    ([n band]
-       (exactly n hasFeature
-                (owland HomogeneouslyStainingRegion
-                        (owlsome e/hasBreakPoint band))))
-    ([n band1 band2]
-       (exactly n hasFeature
-                (owland HomogeneouslyStainingRegion
-                        (owlsome e/hasBreakPoint band1 band2)))))
-
-  (defclass Isochromosome)
-  (defn isochromosome [n band]
-    (exactly n hasFeature
-             (owland Isochromosome
-                     (owlsome e/hasBreakPoint band))))
-
-  (defclass IsoderivativeChromosome)
-  (defn isoderivative [n chromosome arm & events]
-    (exactly n hasFeature
-             (owland IsoderivativeChromosome chromosome arm events)))
-
-  (defclass MarkerChromosome)
-  (defn marker [n]
-    (exactly n hasFeature
-             (owland MarkerChromosome h/HumanChromosome)))
-
-  ;; TODO
-  (defclass Neocentromere)
-
-  (defclass PseudodicentricChromosome)
-  (defn pseudo_dicentric [n band1 band2]
-    (exactly n hasFeature
-             (owland PseudodicentricChromosome
-                     (owlsome e/hasBreakPoint band1 band2))))
-
-  (defclass PseudoisodicentricChromosome)
-  (defn pseudo_isodicentric [n band]
-    (exactly n hasFeature
-             (owland PseudoisodicentricChromosome
-                     (owlsome e/hasBreakPoint band))))
-
-  ;; TODO
-  (defclass RecombiantChromosome)
-
-  ;; if whole arm translocation can be defined as either rob or der
-  (defclass RobertsonianTranslocation)
-  (defn robertsonian [n band1 band2]
-    (exactly n hasFeature
-             (owland RobertsonianTranslocation
-                     (owlsome e/hasBreakPoint band1 band2))))
-
-  (defclass RingChromosome)
-  ;; TOFIX - ORDER IS IMPORTANT
-  (defn ring
-    ([n chromosome]
-       (exactly n hasFeature
-                (owland RingChromosome chromosome)))
-    ([n band1 band2]
-       (exactly n hasFeature
-                (owland RingChromosome
-                        (owlsome e/hasBreakPoint band1 band2))))
-    ([n band1 band2 band3 band4]
-       (exactly n hasFeature
-                (owland RingChromosome
-                        (owlsome e/hasBreakPoint band1 band2 band3 band4))))
-    ([n band1 band2 band3 band4 band5]
-       (exactly n hasFeature
-                (owland RingChromosome
-                        (owlsome e/hasBreakPoint band1 band2 band3
-                                 band4 band5)))))
-
-  ;; TODO
-  (defclass TelomericAssociations)
-
-  ;; TOFIX - hard-coded!
-  (defclass TricentricChromosome)
-  (defn tricentric [n band1 band2 band3 band4]
-      (exactly n hasFeature
-               (owland TricentricChromosome
-                       (owlsome e/hasBreakPoint band1 band2 band3 band4))))
-
-  ;; TODO
-  (defclass UniparentalDisomy)
-
-)
+ (defclass DerivativeChromosome)
+ (defclass IsodicentricChromosome)
+ (defclass DicentricChromosome)
+ (defclass FragileSite)
+ (defclass HomogeneouslyStainingRegion)
+ (defclass Isochromosome)
+ (defclass IsoderivativeChromosome)
+ (defclass MarkerChromosome)
+ (defclass Neocentromere)
+ (defclass PseudodicentricChromosome)
+ (defclass PseudoisodicentricChromosome)
+ (defclass RecombiantChromosome)
+ (defclass RobertsonianTranslocation)
+ (defclass RingChromosome)
+ (defclass TelomericAssociations)
+ (defclass TricentricChromosome)
+ (defclass UniparentalDisomy))
 
 (as-disjoint-subclasses
  RingChromosome
  (defclass MonoCentricRingChromosome)
  (defclass DicentricRingChromosome)
  (defclass TricentricRingChromosome))
+
+
+;; FUNCTIONS
+;; TODO if whole arm translocation can be defined as either rob or der
+(defn derivative
+  "Returns a derivative restriction.
+n is the number of derivative restrictions.
+args is a list of events."
+  [n & args]
+  (exactly n hasFeature
+           (owland DerivativeChromosome args)))
+
+;; MUST be defined before dicentric as dicentric calls isodicentric function!
+(defn isodicentric
+  "Returns an isodicentric restriction.
+n is the number of isodicentric restrictions.
+band is of type HumanChromosomeBand."
+  [n band]
+  (exactly n hasFeature
+           (owland IsodicentricChromosome
+                   (owlsome e/hasBreakPoint band))))
+
+(defn dicentric
+  "Returns either a dicentric or isdicentric restriction.
+n is the number of isodicentric restrictions.
+band1, band2 is of type HumanChromosomeBand."
+  [n band1 band2]
+  (if (= (str band1) (str band2))
+    ;; If band1 and band2 are equivalent then create an isodicentric
+    ;; restritcion.
+    (isodicentric n band1)
+    ;; Else create a dicentric restriction.
+    (exactly n hasFeature
+             (owland DicentricChromosome
+                     (owlsome e/hasBreakPoint band1 band2)))))
+
+(defn fragilesite
+  "Returns a fragilesite restriction.
+n is the number of fragilesite restrictions.
+band is of type HumanChromosomeBand."
+  [n band]
+  (exactly n hasFeature
+           (owland FragileSite
+                   (owlsome e/hasBreakPoint band))))
+
+(defn hsr
+  "Returns a homogeneouslystainingregion restriction.
+n is the number of homogeneouslystainingregion restrictions.
+band, band1, band2 is of type HumanChromosomeBand."
+  ;; Used to describe the presence, but not the size, of a hsr region
+  ;; on a chromosome, arm or band.
+  ([n band]
+     (exactly n hasFeature
+              (owland HomogeneouslyStainingRegion
+                      (owlsome e/hasBreakPoint band))))
+  ;; Used to describe the presence of a hsr, located at the interface
+  ;; between segments of different chromosome involved in a
+  ;; rearrangement.
+  ([n band1 band2]
+     (exactly n hasFeature
+              (owland HomogeneouslyStainingRegion
+                      (owlsome e/hasBreakPoint band1 band2)))))
+
+(defn isochromosome
+  "Returns an isochromosome restriction.
+n is the number of isochromosome restrictions.
+band is of type HumanChromosomeBand."
+  [n band]
+  (exactly n hasFeature
+           (owland Isochromosome
+                   (owlsome e/hasBreakPoint band))))
+
+(defn isoderivative
+  "Returns an isoderivative restriction.
+n is the number of isoderivative restrictions.
+chromosome is ...
+arm is ...
+events is ..."
+  [n chromosome arm & events]
+  (exactly n hasFeature
+           (owland IsoderivativeChromosome chromosome arm events)))
+
+(defn marker
+  "Returns a marker restriction.
+n is the number of marker restrictions."
+  [n]
+  (exactly n hasFeature
+           (owland MarkerChromosome h/HumanChromosome)))
+
+;; TODO Neocentromere
+
+(defn pseudo_dicentric
+  "Returns a pseudodicentric restriction.
+n is the number of pseudodicentric restrictions.
+band1, band2 is of type HumanChromosomeBand."
+  [n band1 band2]
+  (exactly n hasFeature
+           (owland PseudodicentricChromosome
+                   (owlsome e/hasBreakPoint band1 band2))))
+
+(defn pseudo_isodicentric
+  "Returns a pseudoisodicentric restriction.
+n is the number of pseudoisodicentric restrictions.
+band is of type HumanChromosomeBand."
+  [n band]
+  (exactly n hasFeature
+           (owland PseudoisodicentricChromosome
+                   (owlsome e/hasBreakPoint band))))
+
+;; TODO RecombiantChromosome
+
+;; if whole arm translocation can be defined as either rob or der
+(defn robertsonian
+  "Returns a robertsonian restriction.
+n is the number of robertsonian restrictions.
+band1, band2 is of type HumanChromosomeBand."
+[n band1 band2]
+  (exactly n hasFeature
+           (owland RobertsonianTranslocation
+                   (owlsome e/hasBreakPoint band1 band2))))
+
+;; TOFIX - ORDER IS IMPORTANT
+(defn ring
+  "Returns a ring restriction.
+n is the number of ring restrictions.
+chromosome is of type HumanChromosome.
+band1, band2 is of type HumanChromosomeBand."
+  ([n chromosome]
+     (exactly n hasFeature
+              (owland RingChromosome chromosome)))
+  ([n band1 band2]
+     (exactly n hasFeature
+              (owland RingChromosome
+                      (owlsome e/hasBreakPoint band1 band2))))
+  ([n band1 band2 band3 band4]
+     (exactly n hasFeature
+              (owland RingChromosome
+                      (owlsome e/hasBreakPoint band1 band2 band3 band4))))
+  ([n band1 band2 band3 band4 band5]
+     (exactly n hasFeature
+              (owland RingChromosome
+                      (owlsome e/hasBreakPoint band1 band2 band3
+                               band4 band5)))))
+
+;; TODO TelomericAssociations
+
+;; TOFIX - hard-coded!
+(defn tricentric
+  "Returns a tricentric restriction.
+n is the number of tricentric restrictions.
+band1, band2, band3, band4 is of type HumanChromosomeBand."
+  [n band1 band2 band3 band4]
+  (exactly n hasFeature
+           (owland TricentricChromosome
+                   (owlsome e/hasBreakPoint band1 band2 band3 band4))))
+
+;; TODO UniparentalDisomy
