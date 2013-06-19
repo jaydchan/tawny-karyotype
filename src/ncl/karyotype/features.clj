@@ -97,7 +97,7 @@ band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
   (if (= (str band1) (str band2))
     ;; If band1 and band2 are equivalent then create an isodicentric
-    ;; restritcion.
+    ;; restriction.
     (isodicentric n band1)
     ;; Else create a dicentric restriction.
     (exactly n hasFeature
