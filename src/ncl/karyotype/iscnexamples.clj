@@ -472,6 +472,16 @@
   (owlsome n/derivedFrom n/k46_XX)
   (e/deletion 1 h/HumanChromosome5Bandq13))
 
+(defclass k46_XX_del!5!!q13!-new
+  :label "The 46,XX,del(5)(q13) karyotype"
+  :comment "ISCN2009 pg 61 -> 'Terminal deletion with a break (:) in
+  band 5q13. The remaining chromosome consistes of the entire short
+  arm of chromomsome 5 and the long arm lying between the centromere
+  and band 5q13.' 46,XX,del(5)(pter->q13:)"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/deletion-new 1 h/HumanChromosome5Bandq13))
+
 (defclass k46_XX_del!5!!q13q33!
   :label "The 46,XX,del(5)(q13q33) karyotype"
   :comment "ISCN2009 pg 61 -> 'Interstitial deletion with breakage and
@@ -480,6 +490,17 @@
   :subclass ISCNExampleKaryotype
   (owlsome n/derivedFrom n/k46_XX)
   (e/deletion 1
+              h/HumanChromosome5Bandq13
+              h/HumanChromosome5Bandq33))
+
+(defclass k46_XX_del!5!!q13q33!-new
+  :label "The 46,XX,del(5)(q13q33) karyotype"
+  :comment "ISCN2009 pg 61 -> 'Interstitial deletion with breakage and
+  reunion (::) of bands 5q13 and 5q33. The segment lying between these
+  bands has been deleted.' 46,XX,del(5)(pter->q13::q33->qter)"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/deletion-new 1
               h/HumanChromosome5Bandq13
               h/HumanChromosome5Bandq33))
 
@@ -1268,6 +1289,36 @@ deletion, and also the breakpoints are unknown.'"
                       h/HumanChromosome2Bandp13
                       h/HumanChromosome2Bandq21
                       h/HumanChromosome2Bandq31))
+
+(defclass k46_XX_ins!2!!p13q21q31!-new
+  :label "The 46,XX,ins(2)(p13q21q31) karyotype"
+  :comment "ISCN2009 pg 71 -> 'Direct insertion, i.e., dir
+  ins(2)(p13q21q31). The long-arm segment between bands 2q21 and 2q31
+  has been inserted into the short arm at band 2p13. The original
+  orientation of the inserted segment has been maintained in its new
+  position, i.e., band 2q21 remains more proximal to the centromere
+  than band 2q31.'
+  46,XX,ins(2)(pter->p13::q31->q21::p13->q21::q31->qter)"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/direct-insertion-new 1 [h/HumanChromosome2Bandp13
+                         h/HumanChromosome2Bandq21
+                         h/HumanChromosome2Bandq31]))
+
+(defclass k46_XX_ins!2_2*!!p13q21q31!-new
+  :label "The 46,XX,ins(2;2*)(p13;q21q31) karyotype"
+  :comment "ISCN2009 pg 71 -> 'Direct insertion, i.e., dir
+  ins(2;2*)(p13;q21q31). The long-arm segment between bands 2q21 and 2q31
+  has been inserted into the short arm at band 2p13. The original
+  orientation of the inserted segment has been maintained in its new
+  position, i.e., band 2q21 remains more proximal to the centromere
+  than band 2q31.'
+  46,XX,ins(2)(pter->p13::q31->q21::p13->q21::q31->qter)"
+  :subclass ISCNExampleKaryotype
+  (owlsome n/derivedFrom n/k46_XX)
+  (e/direct-insertion-new 1 [h/HumanChromosome2Bandp13]
+                      [h/HumanChromosome2Bandq21
+                       h/HumanChromosome2Bandq31]))
 
 (defclass k46_XY_ins!2!!p13q31q21!
   :label "The 46,XY,ins(2)(p13q31q21) karyotype"
