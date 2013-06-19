@@ -962,7 +962,7 @@ PARENT, which is either p or q band."
  "q12"
  "qTer")
 
-;; NEW AUXILLARY FUNCTIONS - for other classes?
+;; TOFIX NEW AUXILLARY FUNCTIONS - for other classes?
 (defn ter?-new
   "Determine if the given band is a telomere - using ontology"
   [band]
