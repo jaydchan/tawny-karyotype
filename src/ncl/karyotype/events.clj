@@ -205,10 +205,7 @@ band, band1, band2 are of type HumanChromosomeBand."
         (or
          (= h/HumanChromosomeBand chrom_band)
          (superclass? chrom_band h/HumanChromosomeBand))
-        (exactly n hasEvent
-                 (owland Deletion
-                         (owlsome hasBreakPoint chrom_band
-                                  (get-telomere chrom_band))))
+        (deletion n chrom_band (get-telomere chrom_band))
         :default
         (throw
          (IllegalArgumentException.
@@ -220,6 +217,51 @@ band, band1, band2 are of type HumanChromosomeBand."
      (exactly n hasEvent
               (owland Deletion
                       (owlsome hasBreakPoint band1 band2)))))
+
+(as-disjoint-subclasses
+ Deletion
+ (defclass DeletionTerminal)
+ (defclass DeletionInterstitial))
+
+(defn deletion-new
+  "Returns a deletion retriction.
+n is the number of deletion restrictions.
+chrom_band is either of type HumanChromosome or HumanChromosomeBand.
+band, band1, band2 are of type HumanChromosomeBand."
+  ([n chrom_band]
+     ;; In order for superclass? to work, need to use the human ontology.
+     (with-ontology
+       ncl.karyotype.human/human
+       (cond
+        ;; If chrom_band is of type HumanChromosome then restriction
+        ;; represents a chromosomal loss.
+        (or
+         (= h/HumanChromosome chrom_band)
+         (superclass? chrom_band h/HumanChromosome))
+        (exactly n hasEvent
+                 (owland Deletion chrom_band))
+        ;; If chrom_band is of type HumanChromosomeBand then
+        ;; restriction represents a terminal band deletion with a break
+        ;; (:).
+        (or
+         (= h/HumanChromosomeBand chrom_band)
+         (superclass? chrom_band h/HumanChromosomeBand))
+        (exactly n hasEvent
+                 (owland DeletionTerminal
+                         (owlsome hasBreakPoint chrom_band
+                                  (get-telomere chrom_band))))
+        :default
+        (throw
+         (IllegalArgumentException.
+          (str "Deletion expects a HumanChromosome or
+               HumanChromosomeBand. Got:" chrom_band))))))
+  ([n band1 band2]
+     ;; This represents Interstitial band deletion with breakage and
+     ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
+     (exactly n hasEvent
+              (owland DeletionInterstitial
+                      (owlsome hasBreakPoint band1 band2)))))
+
 
 ;; Chromosomal Band Duplication
 ;; Can be preceeded by the triplets dir or inv to indicate direct or
@@ -294,6 +336,32 @@ band1, band2, band3 is of type HumanChromosomeBand."
                    (owlsome hasReceivingBreakPoint band1)
                    (owlsome hasProvidingBreakPoint band2 band3))))
 
+(as-disjoint-subclasses
+ DirectInsertion
+ (defclass DirectInsertionOneChromosome)
+ (defclass DirectInsertionTwoChromosome))
+
+;; Make DirectInsertion equivalent to DirectInsertionOneChromosome
+;; and DirectInsertionTwoChromosome?
+(defn direct-insertion-new
+  "Returns a direct-insertion retriction.
+n is the number of direct-insertion restrictions.
+band1, band2, band3 is of type HumanChromosomeBand."
+  ([n chrom1] {:pre (= 3 (count chrom1))}
+     (exactly n hasEvent
+              (owland DirectInsertionOneChromosome
+                      (owlsome hasReceivingBreakPoint (first chrom1))
+                      (owlsome hasProvidingBreakPoint
+                               (second chrom1)
+                               (second (rest chrom1))))))
+  ([n chrom1 chrom2] {:pre [(and (= 1 (count chrom1)) (= 2 (count chrom2)))]}
+     (exactly n hasEvent
+              (owland DirectInsertionTwoChromosome
+                      (owlsome hasReceivingBreakPoint (first chrom1))
+                      (owlsome hasProvidingBreakPoint
+                               (first chrom2)
+                               (second chrom2))))))
+
 ;; Choromosomal Band InverseInsertion
 ;; Involves at most 2 chromosomes
 (defn inverse-insertion
@@ -305,6 +373,33 @@ band1, band2, band3 is of type HumanChromosomeBand."
            (owland InverseInsertion
                    (owlsome hasReceivingBreakPoint band1)
                    (owlsome hasProvidingBreakPoint band2 band3))))
+
+(as-disjoint-subclasses
+ InverseInsertion
+ (defclass InverseInsertionOneChromosome)
+ (defclass InverseInsertionTwoChromosome))
+
+;; Make InverseInsertion equivalent to InverseInsertionOneChromosome
+;; and InverseInsertionTwoChromosome?
+(defn inverse-insertion-new
+  "Returns a inverse-insertion retriction.
+n is the number of direct-insertion restrictions.
+chrom1, chrom2 are vectors that contain HumanChromosomeBand."
+  ([n chrom1] {:pre (= 3 (count chrom1))}
+     (exactly n hasEvent
+              (owland InverseInsertionOneChromosome
+                      (owlsome hasReceivingBreakPoint (first chrom1))
+                      (owlsome hasProvidingBreakPoint
+                               (second chrom1)
+                               (second (rest chrom1))))))
+  ([n chrom1 chrom2] {:pre [(and (= 1 (count chrom1)) (= 2 (count chrom2)))]}
+     (exactly n hasEvent
+              (owland InverseInsertionTwoChromosome
+                      (owlsome hasReceivingBreakPoint (first chrom1))
+                      (owlsome hasProvidingBreakPoint
+                               (first chrom2)
+                               (second chrom2))))))
+
 
 ;; Chromosomal Band Inversion : includes both paracentric (involves
 ;; only 1 arm) and pericentric (involves both arms) inversion.
