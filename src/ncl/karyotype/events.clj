@@ -28,6 +28,7 @@
 (defclass Event)
 
 ;; define object properties
+;; event object properties
 (as-inverse
  (defoproperty hasEvent
    :range Event
@@ -35,9 +36,31 @@
 
  (defoproperty isEventOf
    :range k/Karyotype
-   :domain Event)
- )
+   :domain Event))
 
+(as-inverse
+ (defoproperty hasDirectEvent
+   :subpropertyof hasEvent)
+
+ (defoproperty isDirectEventOf
+   :subpropertyof isEventOf))
+
+;; due to build dependancy, the subproperty chain axiom will be added
+;; in named-clj
+(as-inverse
+ (defoproperty hasDerivedEvent
+   :range Event
+   :domain k/Karyotype
+   ;;:subpropertyof hasEvent
+   )
+
+ (defoproperty isDerivedEventOf
+   ;;:subpropertyof isEventOf
+   :range k/Karyotype
+   :domain Event
+))
+
+;; breakpoint object properties
 (as-inverse
  (defoproperty hasBreakPoint
    :range k/ChromosomeComponent
@@ -53,17 +76,14 @@
    :subpropertyof hasBreakPoint)
 
  (defoproperty isReceivingBreakPointOf
-   :subpropertyof isBreakPointOf)
- )
+   :subpropertyof isBreakPointOf))
 
 (as-inverse
  (defoproperty hasProvidingBreakPoint
    :subpropertyof hasBreakPoint)
 
  (defoproperty isProvidingBreakPointOf
-   :subpropertyof isBreakPointOf)
- )
-
+   :subpropertyof isBreakPointOf))
 
 ;; AUXILLARY FUNCTIONS
 (defn- parentband? [band]
