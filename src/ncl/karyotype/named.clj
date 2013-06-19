@@ -50,6 +50,13 @@
    :range k/Karyotype
    :domain k/Karyotype))
 
+;; define chain properties
+;; due to build dependancy, the subproperty chain axiom for
+;; hasDerivedEvent and isDerivedEventOf is defined here i.e. after
+;; derivedFrom and derivedTo have been defined.
+(add-subpropertychain e/hasDerivedEvent (list derivedFrom e/hasEvent))
+(add-subpropertychain e/isDerivedEventOf (list e/isEventOf derivedTo))
+
 ;; define all the baseKaryotypes
 ;; we have to pass these in as strings because they start with
 ;; integers which brings up an NumberFormatException therefore we
@@ -368,6 +375,15 @@
    (owlsome e/hasEvent
             (owland e/Deletion h/HumanChromosome))))
 
+(defclass DerivedNumericalAbnormalKaryotype
+  :equivalent
+  (owlor
+   (owlsome e/hasDerivedEvent
+            (owland e/Addition h/HumanChromosome))
+   (owlsome e/hasDerivedEvent
+            (owland e/Deletion h/HumanChromosome))))
+
+
 ;; Define structural abnormalities - in order for these to work, need
 ;; to import the axioms from h/human and e/events
 
@@ -429,5 +445,11 @@
 (defclass StructuralAbnormalKaryotype
   :equivalent
   (owlsome e/hasEvent
+           (owland e/Event
+                   (owlsome e/hasBreakPoint k/ChromosomeComponent))))
+
+(defclass DerivedStructuralAbnormalKaryotype
+  :equivalent
+  (owlsome e/hasDerivedEvent
            (owland e/Event
                    (owlsome e/hasBreakPoint k/ChromosomeComponent))))
