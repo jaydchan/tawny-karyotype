@@ -40,10 +40,10 @@
 
 (as-inverse
  (defoproperty hasDirectEvent
-   :subpropertyof hasEvent)
+   :subproperty hasEvent)
 
  (defoproperty isDirectEventOf
-   :subpropertyof isEventOf))
+   :subproperty isEventOf))
 
 ;; due to build dependancy, the subproperty chain axiom will be added
 ;; in named-clj
@@ -51,13 +51,13 @@
  (defoproperty hasDerivedEvent
    :range Event
    :domain k/Karyotype
-   ;;:subpropertyof hasEvent
+   ;;:subproperty hasEvent
    )
 
  (defoproperty isDerivedEventOf
-   ;;:subpropertyof isEventOf
    :range k/Karyotype
    :domain Event
+   ;;:subproperty isEventOf
 ))
 
 ;; breakpoint object properties
@@ -73,17 +73,17 @@
 
 (as-inverse
  (defoproperty hasReceivingBreakPoint
-   :subpropertyof hasBreakPoint)
+   :subproperty hasBreakPoint)
 
  (defoproperty isReceivingBreakPointOf
-   :subpropertyof isBreakPointOf))
+   :subproperty isBreakPointOf))
 
 (as-inverse
  (defoproperty hasProvidingBreakPoint
-   :subpropertyof hasBreakPoint)
+   :subproperty hasBreakPoint)
 
  (defoproperty isProvidingBreakPointOf
-   :subpropertyof isBreakPointOf))
+   :subproperty isBreakPointOf))
 
 ;; AUXILLARY FUNCTIONS
 (defn- parentband? [band]
