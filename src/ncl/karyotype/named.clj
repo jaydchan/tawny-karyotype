@@ -42,7 +42,7 @@
 ;; define object properties
 (as-inverse
  (defoproperty derivedFrom
-   :characteristics transitive
+   :characteristic transitive
    :domain k/Karyotype
    :range k/Karyotype)
 
