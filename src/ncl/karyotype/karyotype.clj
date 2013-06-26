@@ -46,7 +46,7 @@
 
 (as-inverse
  (defoproperty isBandOf
-   :subpropertyof isComponentOf
+   :subproperty isComponentOf
    :domain ChromosomeBand)
 
  (defoproperty hasBand))
