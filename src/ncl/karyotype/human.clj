@@ -92,11 +92,11 @@
    :subclass HumanChromosome))
 
 ;; define all the human autosomes, as disjoint
-(as-disjoint
- (doseq [number (range 1 23)]
-   (create-class-with-superclasses
-     (str "HumanChromosome" number)
-     HumanAutosome)))
+(apply as-disjoint
+       (for [number (range 1 23)]
+         (create-class-with-superclasses
+           (str "HumanChromosome" number)
+           HumanAutosome)))
 
 ;; define all the human allosomes, as disjoint
 (as-disjoint
@@ -170,25 +170,25 @@ PARENT, which is either p or q band."
                     (.getIRI
                      chromosome)) "Band")]
 
+    ;; Generates sub-bands of current band, or calls recursive function again to
+    ;; generate sub-sub-bands
+    (apply as-disjoint
+           (for [band bands]
+             (if (vector? band)
+               ;; if band is a vector, then generate sub-sub-bands
+               (humanbands0 chromosome parent (first band)
+                            (rest band) container)
+               ;; else generate sub-band
+               (human-sub-band parent (str bandgroup band)
+                               (str bandgroup container)))))
+
     ;; Generates a band
     (if (nil? firstlevel)
       ;; generates a first-level band
       (create-class-with-superclasses (str bandgroup container) parent)
       ;; generates a sub-band
       (human-sub-band parent (str bandgroup container)
-                      (str bandgroup firstlevel)))
-
-    ;; Generates sub-bands of current band, or calls recursive function again to
-    ;; generate sub-sub-bands
-    (as-disjoint
-     (doseq [band bands]
-       (if (vector? band)
-         ;; if band is a vector, then generate sub-sub-bands
-         (humanbands0 chromosome parent (first band)
-                      (rest band) container)
-         ;; else generate sub-band
-         (human-sub-band parent (str bandgroup band)
-                         (str bandgroup container)))))))
+                      (str bandgroup firstlevel)))))
 
 (defn- humanbands
   "Function to generate human chromosome bands for a chromosome"
@@ -202,39 +202,39 @@ PARENT, which is either p or q band."
                         bandgroup)]
 
     ;; generates bands
-    (as-disjoint
-     (doseq [band bands]
-       (cond
-        (vector? band)
-        ;; if we have a set of bands, so we work over all of these
-        (humanbands0 chromosome
-                     (fgroup (first band))
-                     (first band) (rest band) nil)
-        ;; else we have a single band
-        ;; if the band is the centromere, generate associated
-        ;; centromere bands
-        (cen? band)
-        (create-class-with-superclasses
-          (str bandgroup band)
-          (fgroup band)
-          (owlsome k/isBandOf (str group "Centromere")))
-        ;; if the band is a terminal, generate associated telomere
-        ;; bands
-        (ter? band)
-        (create-class-with-superclasses
-          (str bandgroup band)
-          (fgroup band)
-          (owlsome k/isBandOf (str group "Telomere")))
-        ;; if the band is a p or q band, generate the band
-        (or (pband? band)
-            (qband? band))
-        (create-class-with-superclasses
-          (str bandgroup band)
-          (fgroup band))
-        ;; else the band syntax is not recognized
-        :default
-        (throw (IllegalArgumentException.
-                (str "Band must be string or sequence:" band))))))))
+    (apply as-disjoint
+           (for [band bands]
+             (cond
+              (vector? band)
+              ;; if we have a set of bands, so we work over all of these
+              (humanbands0 chromosome
+                           (fgroup (first band))
+                           (first band) (rest band) nil)
+              ;; else we have a single band
+              ;; if the band is the centromere, generate associated
+              ;; centromere bands
+              (cen? band)
+              (create-class-with-superclasses
+                (str bandgroup band)
+                (fgroup band)
+                (owlsome k/isBandOf (str group "Centromere")))
+              ;; if the band is a terminal, generate associated telomere
+              ;; bands
+              (ter? band)
+              (create-class-with-superclasses
+                (str bandgroup band)
+                (fgroup band)
+                (owlsome k/isBandOf (str group "Telomere")))
+              ;; if the band is a p or q band, generate the band
+              (or (pband? band)
+                  (qband? band))
+              (create-class-with-superclasses
+                (str bandgroup band)
+                (fgroup band))
+              ;; else the band syntax is not recognized
+              :default
+              (throw (IllegalArgumentException.
+                      (str "Band must be string or sequence:" band))))))))
 
 ;; Define bands
 ;; Short arm band information for Human Chromosome 1
