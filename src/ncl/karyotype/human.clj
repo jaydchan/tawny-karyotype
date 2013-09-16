@@ -28,7 +28,7 @@
   :iri "http://ncl.ac.uk/karyotype/human"
   :prefix "hum:")
 
-(owlimport k/karyotype)
+(owl-import k/karyotype)
 
 ;; AUXILLARY FUNCTIONS
 (defn pband?
@@ -55,7 +55,7 @@
   "Creates a class with given name and superclasses"
   [name & parents]
   (tawny.read/intern-entity
-   (owlclass name :subclass parents)))
+   (owl-class name :subclass parents)))
 
 (defn group-for-band
   "Given a band return the appropriate bandgroup"
@@ -120,7 +120,7 @@
     ;; will be part of
     (create-class-with-superclasses
       bandgroup
-      (owlsome k/isBandOf chromosome)
+      (owl-some k/isBandOf chromosome)
       HumanChromosomeBand)
 
     ;; generate the parent p and q band classes
@@ -132,24 +132,24 @@
     (create-class-with-superclasses
       (str group "Centromere")
       HumanCentromere
-      (owlsome k/isComponentOf chromosome))
+      (owl-some k/isComponentOf chromosome))
 
     ;; generate the associated telomere entity
     (create-class-with-superclasses
       (str group "Telomere")
       HumanTelomere
-      (owlsome k/isComponentOf chromosome))))
+      (owl-some k/isComponentOf chromosome))))
 
 ;; add disjoint axiom for the children of HumanCentromere
-(disjointclasseslist
+(disjoint-classes-list
  (into () (direct-subclasses HumanCentromere)))
 
 ;; add disjoint axiom for the children of HumanChromosomeBand
-(disjointclasseslist
+(disjoint-classes-list
  (into () (direct-subclasses HumanChromosomeBand)))
 
 ;; add disjoint axiom for the children of HumanTelomere
-(disjointclasseslist
+(disjoint-classes-list
  (into () (direct-subclasses HumanTelomere)))
 
 ;; private functions
@@ -159,7 +159,7 @@ PARENT, which is either p or q band."
   [parent name band]
   (create-class-with-superclasses
     name parent
-    (owlsome k/isSubBandOf band)))
+    (owl-some k/isSubBandOf band)))
 
 (defn- humanbands0
   "Recursive auxiliary function for humanbands - used to create
@@ -217,14 +217,14 @@ PARENT, which is either p or q band."
               (create-class-with-superclasses
                 (str bandgroup band)
                 (fgroup band)
-                (owlsome k/isBandOf (str group "Centromere")))
+                (owl-some k/isBandOf (str group "Centromere")))
               ;; if the band is a terminal, generate associated telomere
               ;; bands
               (ter? band)
               (create-class-with-superclasses
                 (str bandgroup band)
                 (fgroup band)
-                (owlsome k/isBandOf (str group "Telomere")))
+                (owl-some k/isBandOf (str group "Telomere")))
               ;; if the band is a p or q band, generate the band
               (or (pband? band)
                   (qband? band))
@@ -967,14 +967,14 @@ PARENT, which is either p or q band."
   "Determine if the given band is a telomere - using ontology"
   [band]
   (superclass? ncl.karyotype.human/human band
-                  (owland
+                  (owl-and
                    HumanChromosomeBand
-                   (owlsome k/isBandOf HumanTelomere))))
+                   (owl-some k/isBandOf HumanTelomere))))
 
 (defn cen?-new
   "Determine if the given band is a telomere - using ontology"
   [band]
   (superclass? ncl.karyotype.human/human band
-               (owland
+               (owl-and
                 HumanChromosomeBand
-                (owlsome k/isBandOf HumanCentromere))))
+                (owl-some k/isBandOf HumanCentromere))))
