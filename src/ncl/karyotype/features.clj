@@ -27,19 +27,20 @@
   :prefix "fea:")
 
 ;; import all ncl.karyotype axioms
-(owlimport e/events)
+(owl-import e/events)
 
 (defclass Feature)
 
 ;; define object properties
 (as-inverse
  (defoproperty hasFeature
-   :range Feature
+   ;; :range Feature
    :domain k/Karyotype)
 
  (defoproperty isFeatureOf
    :range k/Karyotype
-   :domain Feature))
+   ;;:domain Feature
+   ))
 
 
 ;; OWL CLASSES - STRUCTURAL FEATURES
@@ -78,7 +79,7 @@ n is the number of derivative restrictions.
 args is a list of events."
   [n & args]
   (exactly n hasFeature
-           (owland DerivativeChromosome args)))
+           (owl-and DerivativeChromosome args)))
 
 ;; MUST be defined before dicentric as dicentric calls isodicentric function!
 (defn isodicentric
@@ -87,8 +88,8 @@ n is the number of isodicentric restrictions.
 band is of type HumanChromosomeBand."
   [n band]
   (exactly n hasFeature
-           (owland IsodicentricChromosome
-                   (owlsome e/hasBreakPoint band))))
+           (owl-and IsodicentricChromosome
+                   (owl-some e/hasBreakPoint band))))
 
 (defn dicentric
   "Returns either a dicentric or isdicentric restriction.
@@ -101,8 +102,8 @@ band1, band2 is of type HumanChromosomeBand."
     (isodicentric n band1)
     ;; Else create a dicentric restriction.
     (exactly n hasFeature
-             (owland DicentricChromosome
-                     (owlsome e/hasBreakPoint band1 band2)))))
+             (owl-and DicentricChromosome
+                     (owl-some e/hasBreakPoint band1 band2)))))
 
 (defn fragilesite
   "Returns a fragilesite restriction.
@@ -110,8 +111,8 @@ n is the number of fragilesite restrictions.
 band is of type HumanChromosomeBand."
   [n band]
   (exactly n hasFeature
-           (owland FragileSite
-                   (owlsome e/hasBreakPoint band))))
+           (owl-and FragileSite
+                   (owl-some e/hasBreakPoint band))))
 
 (defn hsr
   "Returns a homogeneouslystainingregion restriction.
@@ -121,15 +122,15 @@ band, band1, band2 is of type HumanChromosomeBand."
   ;; on a chromosome, arm or band.
   ([n band]
      (exactly n hasFeature
-              (owland HomogeneouslyStainingRegion
-                      (owlsome e/hasBreakPoint band))))
+              (owl-and HomogeneouslyStainingRegion
+                      (owl-some e/hasBreakPoint band))))
   ;; Used to describe the presence of a hsr, located at the interface
   ;; between segments of different chromosome involved in a
   ;; rearrangement.
   ([n band1 band2]
      (exactly n hasFeature
-              (owland HomogeneouslyStainingRegion
-                      (owlsome e/hasBreakPoint band1 band2)))))
+              (owl-and HomogeneouslyStainingRegion
+                      (owl-some e/hasBreakPoint band1 band2)))))
 
 (defn isochromosome
   "Returns an isochromosome restriction.
@@ -137,8 +138,8 @@ n is the number of isochromosome restrictions.
 band is of type HumanChromosomeBand."
   [n band]
   (exactly n hasFeature
-           (owland Isochromosome
-                   (owlsome e/hasBreakPoint band))))
+           (owl-and Isochromosome
+                   (owl-some e/hasBreakPoint band))))
 
 (defn isoderivative
   "Returns an isoderivative restriction.
@@ -148,16 +149,16 @@ arm is ...
 events is ..."
   [n chromosome arm & events]
   (exactly n hasFeature
-           (owland IsoderivativeChromosome chromosome arm events)))
+           (owl-and IsoderivativeChromosome chromosome arm events)))
 
 (defn marker
   "Returns a marker restriction.
 n is the number of marker restrictions."
   [n]
   (exactly n hasFeature
-           (owland MarkerChromosome h/HumanChromosome)))
+           (owl-and MarkerChromosome h/HumanChromosome)))
 
-;; TODO Neocentromere
+;; TODO Neocentromere - LONG STRING FORMAT
 
 (defn pseudo_dicentric
   "Returns a pseudodicentric restriction.
@@ -165,8 +166,8 @@ n is the number of pseudodicentric restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
   (exactly n hasFeature
-           (owland PseudodicentricChromosome
-                   (owlsome e/hasBreakPoint band1 band2))))
+           (owl-and PseudodicentricChromosome
+                   (owl-some e/hasBreakPoint band1 band2))))
 
 (defn pseudo_isodicentric
   "Returns a pseudoisodicentric restriction.
@@ -174,8 +175,8 @@ n is the number of pseudoisodicentric restrictions.
 band is of type HumanChromosomeBand."
   [n band]
   (exactly n hasFeature
-           (owland PseudoisodicentricChromosome
-                   (owlsome e/hasBreakPoint band))))
+           (owl-and PseudoisodicentricChromosome
+                   (owl-some e/hasBreakPoint band))))
 
 ;; TODO RecombiantChromosome
 
@@ -186,8 +187,8 @@ n is the number of robertsonian restrictions.
 band1, band2 is of type HumanChromosomeBand."
 [n band1 band2]
   (exactly n hasFeature
-           (owland RobertsonianTranslocation
-                   (owlsome e/hasBreakPoint band1 band2))))
+           (owl-and RobertsonianTranslocation
+                   (owl-some e/hasBreakPoint band1 band2))))
 
 ;; TOFIX - ORDER IS IMPORTANT
 (defn ring
@@ -197,19 +198,19 @@ chromosome is of type HumanChromosome.
 band1, band2 is of type HumanChromosomeBand."
   ([n chromosome]
      (exactly n hasFeature
-              (owland RingChromosome chromosome)))
+              (owl-and RingChromosome chromosome)))
   ([n band1 band2]
      (exactly n hasFeature
-              (owland RingChromosome
-                      (owlsome e/hasBreakPoint band1 band2))))
+              (owl-and RingChromosome
+                      (owl-some e/hasBreakPoint band1 band2))))
   ([n band1 band2 band3 band4]
      (exactly n hasFeature
-              (owland RingChromosome
-                      (owlsome e/hasBreakPoint band1 band2 band3 band4))))
+              (owl-and RingChromosome
+                      (owl-some e/hasBreakPoint band1 band2 band3 band4))))
   ([n band1 band2 band3 band4 band5]
      (exactly n hasFeature
-              (owland RingChromosome
-                      (owlsome e/hasBreakPoint band1 band2 band3
+              (owl-and RingChromosome
+                      (owl-some e/hasBreakPoint band1 band2 band3
                                band4 band5)))))
 
 ;; TODO TelomericAssociations
@@ -221,7 +222,7 @@ n is the number of tricentric restrictions.
 band1, band2, band3, band4 is of type HumanChromosomeBand."
   [n band1 band2 band3 band4]
   (exactly n hasFeature
-           (owland TricentricChromosome
-                   (owlsome e/hasBreakPoint band1 band2 band3 band4))))
+           (owl-and TricentricChromosome
+                   (owl-some e/hasBreakPoint band1 band2 band3 band4))))
 
 ;; TODO UniparentalDisomy
