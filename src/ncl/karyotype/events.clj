@@ -97,7 +97,7 @@
     (let [s1 (second (clojure.string/split (str band) #"human#"))
           s2 (first (clojure.string/split s1 #"Band|Telomere|Centromere"))
           s3 (first (clojure.string/split s1 #"Chromosome"))]
-      (ensure-class
+      (owl-class
        ncl.karyotype.human/human
        (cond
         (h/pband? s1)
@@ -163,15 +163,15 @@ chrom_band is either of type HumanChromosome or HumanChromosomeBand."
       (= h/HumanChromosome chrom_band)
       (superclass? chrom_band h/HumanChromosome))
      (exactly n hasEvent
-              (owland Addition chrom_band))
+              (owl-and Addition chrom_band))
      ;; If chrom_band is of type HumanChromosomeBand then
      ;; restriction represents a chromosomal band addition.
      (or
       (= h/HumanChromosomeBand chrom_band)
       (superclass? chrom_band h/HumanChromosomeBand))
      (exactly n hasEvent
-              (owland Addition
-                      (owlsome hasBreakPoint chrom_band)))
+              (owl-and Addition
+                      (owl-some hasBreakPoint chrom_band)))
      :default
      (throw
       (IllegalArgumentException.
@@ -198,7 +198,7 @@ band, band1, band2 are of type HumanChromosomeBand."
          (= h/HumanChromosome chrom_band)
          (superclass? chrom_band h/HumanChromosome))
         (exactly n hasEvent
-                 (owland Deletion chrom_band))
+                 (owl-and Deletion chrom_band))
         ;; If chrom_band is of type HumanChromosomeBand then
         ;; restriction represents a terminal band deletion with a break
         ;; (:).
@@ -215,8 +215,8 @@ band, band1, band2 are of type HumanChromosomeBand."
      ;; This represents Interstitial band deletion with breakage and
      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
      (exactly n hasEvent
-              (owland Deletion
-                      (owlsome hasBreakPoint band1 band2)))))
+              (owl-and Deletion
+                      (owl-some hasBreakPoint band1 band2)))))
 
 (as-disjoint-subclasses
  Deletion
@@ -239,7 +239,7 @@ band, band1, band2 are of type HumanChromosomeBand."
          (= h/HumanChromosome chrom_band)
          (superclass? chrom_band h/HumanChromosome))
         (exactly n hasEvent
-                 (owland Deletion chrom_band))
+                 (owl-and Deletion chrom_band))
         ;; If chrom_band is of type HumanChromosomeBand then
         ;; restriction represents a terminal band deletion with a break
         ;; (:).
@@ -247,8 +247,8 @@ band, band1, band2 are of type HumanChromosomeBand."
          (= h/HumanChromosomeBand chrom_band)
          (superclass? chrom_band h/HumanChromosomeBand))
         (exactly n hasEvent
-                 (owland DeletionTerminal
-                         (owlsome hasBreakPoint chrom_band
+                 (owl-and DeletionTerminal
+                         (owl-some hasBreakPoint chrom_band
                                   (get-telomere chrom_band))))
         :default
         (throw
@@ -259,8 +259,8 @@ band, band1, band2 are of type HumanChromosomeBand."
      ;; This represents Interstitial band deletion with breakage and
      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
      (exactly n hasEvent
-              (owland DeletionInterstitial
-                      (owlsome hasBreakPoint band1 band2)))))
+              (owl-and DeletionInterstitial
+                      (owl-some hasBreakPoint band1 band2)))))
 
 
 ;; Chromosomal Band Duplication
@@ -273,8 +273,8 @@ n is the number of duplication restrictions.
 band1, band2 are of type HumanChromosomeBand."
   [n band1 band2]
   (exactly n hasEvent
-           (owland Duplication
-                   (owlsome hasBreakPoint band1 band2))))
+           (owl-and Duplication
+                   (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Band DirectDuplication
 ;; Invovles only 1 chromosome
@@ -284,8 +284,8 @@ n is the number of direct-duplication restrictions.
 band1, band2 are of type HumanChromosomeBand."
   [n band1 band2]
   (exactly n hasEvent
-           (owland DirectDuplication
-                   (owlsome hasBreakPoint band1 band2))))
+           (owl-and DirectDuplication
+                   (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Band InverseDuplication
 ;; Invovles only 1 chromosome
@@ -295,8 +295,8 @@ n is the number of inverse-duplication restrictions.
 band1, band2 are of type HumanChromosomeBand."
   [n band1 band2]
   (exactly n hasEvent
-           (owland InverseDuplication
-                   (owlsome hasBreakPoint band1 band2))))
+           (owl-and InverseDuplication
+                   (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Band Fission AKA Centric fission - break in the centromere
 ;; Involves only 1 chromosome
@@ -306,8 +306,8 @@ n is the number of fission restrictions.
 band is of type HumanChromosomeBand."
   [n band]
   (exactly n hasEvent
-           (owland Fission
-                   (owlsome hasBreakPoint band
+           (owl-and Fission
+                   (owl-some hasBreakPoint band
                             (get-telomere band)))))
 
 ;; Chromosomal Band Insertion
@@ -320,9 +320,9 @@ n is the number of insertion restrictions.
 band1, band2, band3 is of type HumanChromosomeBand."
   [n band1 band2 band3]
   (exactly n hasEvent
-           (owland Insertion
-                   (owlsome hasReceivingBreakPoint band1)
-                   (owlsome hasProvidingBreakPoint band2 band3))))
+           (owl-and Insertion
+                   (owl-some hasReceivingBreakPoint band1)
+                   (owl-some hasProvidingBreakPoint band2 band3))))
 
 ;; Choromosomal Band DirectInsertion
 ;; Involves at most 2 chromosomes
@@ -332,9 +332,9 @@ n is the number of direct-insertion restrictions.
 band1, band2, band3 is of type HumanChromosomeBand."
   [n band1 band2 band3]
   (exactly n hasEvent
-           (owland DirectInsertion
-                   (owlsome hasReceivingBreakPoint band1)
-                   (owlsome hasProvidingBreakPoint band2 band3))))
+           (owl-and DirectInsertion
+                   (owl-some hasReceivingBreakPoint band1)
+                   (owl-some hasProvidingBreakPoint band2 band3))))
 
 (as-disjoint-subclasses
  DirectInsertion
@@ -349,16 +349,16 @@ n is the number of direct-insertion restrictions.
 band1, band2, band3 is of type HumanChromosomeBand."
   ([n chrom1] {:pre (= 3 (count chrom1))}
      (exactly n hasEvent
-              (owland DirectInsertionOneChromosome
-                      (owlsome hasReceivingBreakPoint (first chrom1))
-                      (owlsome hasProvidingBreakPoint
+              (owl-and DirectInsertionOneChromosome
+                      (owl-some hasReceivingBreakPoint (first chrom1))
+                      (owl-some hasProvidingBreakPoint
                                (second chrom1)
                                (second (rest chrom1))))))
   ([n chrom1 chrom2] {:pre [(and (= 1 (count chrom1)) (= 2 (count chrom2)))]}
      (exactly n hasEvent
-              (owland DirectInsertionTwoChromosome
-                      (owlsome hasReceivingBreakPoint (first chrom1))
-                      (owlsome hasProvidingBreakPoint
+              (owl-and DirectInsertionTwoChromosome
+                      (owl-some hasReceivingBreakPoint (first chrom1))
+                      (owl-some hasProvidingBreakPoint
                                (first chrom2)
                                (second chrom2))))))
 
@@ -370,9 +370,9 @@ n is the number of inverse-insertion restrictions.
 band1, band2, band3 is of type HumanChromosomeBand."
   [n band1 band2 band3]
   (exactly n hasEvent
-           (owland InverseInsertion
-                   (owlsome hasReceivingBreakPoint band1)
-                   (owlsome hasProvidingBreakPoint band2 band3))))
+           (owl-and InverseInsertion
+                   (owl-some hasReceivingBreakPoint band1)
+                   (owl-some hasProvidingBreakPoint band2 band3))))
 
 (as-disjoint-subclasses
  InverseInsertion
@@ -387,16 +387,16 @@ n is the number of direct-insertion restrictions.
 chrom1, chrom2 are vectors that contain HumanChromosomeBand."
   ([n chrom1] {:pre (= 3 (count chrom1))}
      (exactly n hasEvent
-              (owland InverseInsertionOneChromosome
-                      (owlsome hasReceivingBreakPoint (first chrom1))
-                      (owlsome hasProvidingBreakPoint
+              (owl-and InverseInsertionOneChromosome
+                      (owl-some hasReceivingBreakPoint (first chrom1))
+                      (owl-some hasProvidingBreakPoint
                                (second chrom1)
                                (second (rest chrom1))))))
   ([n chrom1 chrom2] {:pre [(and (= 1 (count chrom1)) (= 2 (count chrom2)))]}
      (exactly n hasEvent
-              (owland InverseInsertionTwoChromosome
-                      (owlsome hasReceivingBreakPoint (first chrom1))
-                      (owlsome hasProvidingBreakPoint
+              (owl-and InverseInsertionTwoChromosome
+                      (owl-some hasReceivingBreakPoint (first chrom1))
+                      (owl-some hasProvidingBreakPoint
                                (first chrom2)
                                (second chrom2))))))
 
@@ -410,8 +410,8 @@ n is the number of inversion restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
   (exactly n hasEvent
-           (owland Inversion
-                   (owlsome hasBreakPoint band1 band2))))
+           (owl-and Inversion
+                   (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Band Quadruplication
 ;; Note: It is not possible to indicate the orientations of the
@@ -422,8 +422,8 @@ n is the number of quadruplication restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
   (exactly n hasEvent
-           (owland Quadruplication
-                   (owlsome hasBreakPoint band1 band2))))
+           (owl-and Quadruplication
+                   (owl-some hasBreakPoint band1 band2))))
 
 ;; Auxilary function for translocation function.
 (defn- adjust-bands
@@ -457,21 +457,21 @@ HumanChromosomeBand"
   [n & bands] {:pre (> 1 (count bands))}
   (let [sorted-bands (adjust-bands bands)]
     (exactly n hasEvent
-             (owland Translocation
+             (owl-and Translocation
                      (for [x (range (count sorted-bands))]
                        (let [curr-band (get sorted-bands x)]
-                         (apply owland
-                                (owlsome hasReceivingBreakPoint (first curr-band))
-                                (owlsome hasReceivingBreakPoint (second curr-band))
+                         (apply owl-and
+                                (owl-some hasReceivingBreakPoint (first curr-band))
+                                (owl-some hasReceivingBreakPoint (second curr-band))
                                 (if (= x (- (count sorted-bands) 1))
-                                  [(owlsome hasProvidingBreakPoint
+                                  [(owl-some hasProvidingBreakPoint
                                             (first (first sorted-bands)))
-                                   (owlsome hasProvidingBreakPoint
+                                   (owl-some hasProvidingBreakPoint
                                             (second (first sorted-bands)))]
                                   (let [next-band (get sorted-bands (+ x 1))]
-                                    [(owlsome hasProvidingBreakPoint
+                                    [(owl-some hasProvidingBreakPoint
                                               (first next-band))
-                                     (owlsome hasProvidingBreakPoint
+                                     (owl-some hasProvidingBreakPoint
                                               (second next-band))])))))))))
 
 ;; Chromosomal Band Triplication
@@ -486,8 +486,8 @@ n is the number of triplication restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
   (exactly 1 hasEvent
-           (owland Triplication
-                   (owlsome hasBreakPoint band1 band2))))
+           (owl-and Triplication
+                   (owl-some hasBreakPoint band1 band2))))
 
 ;; Choromosomal Band DirectTriplication
 ;; Invovles only 1 chromosome
@@ -497,8 +497,8 @@ n is the number of triplication restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
   (exactly 1 hasEvent
-           (owland DirectTriplication
-                   (owlsome hasBreakPoint band1 band2))))
+           (owl-and DirectTriplication
+                   (owl-some hasBreakPoint band1 band2))))
 
 ;; Choromosomal Band InverseTriplication
 ;; Invovles only 1 chromosome
@@ -508,5 +508,5 @@ n is the number of inverse-triplication restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
   (exactly 1 hasEvent
-           (owland InverseTriplication
-                   (owlsome hasBreakPoint band1 band2))))
+           (owl-and InverseTriplication
+                   (owl-some hasBreakPoint band1 band2))))
