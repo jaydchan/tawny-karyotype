@@ -23,20 +23,18 @@
             [ncl.karyotype [events :as e]]
             [ncl.karyotype [features :as f]]
             [ncl.karyotype [named :as n]]
-            [ncl.karyotype [iscnexamples :as i]]
-            )
-  )
+            [ncl.karyotype [iscnexamples :as i]]))
 
 (defontology parsekaryotype
   :iri "http://ncl.ac.uk/karyotype/parsekaryotype"
   :prefix "pkr:")
 
 ;; import all ncl.karyotype axioms
-(owlimport k/karyotype)
-(owlimport h/human)
-(owlimport e/events)
-(owlimport f/features)
-(owlimport n/named)
+(owl-import k/karyotype)
+(owl-import h/human)
+(owl-import e/events)
+(owl-import f/features)
+(owl-import n/named)
 
 ;; FUNCTIONS
 (defn- make-safe
@@ -108,7 +106,7 @@ s id of type String."
   "Get the band entities inferred in bandinfo"
   [chrominfo bandinfo]
   (for [band (split-bands bandinfo)]
-    (ensure-class
+    (owl-class
      ncl.karyotype.human/human
      (cond
       (and (= "?" band) (= "?" chrominfo))
@@ -225,12 +223,12 @@ s id of type String."
          (apply e/inverse-triplication 1 (get-bands (get info 1) (get info 3))))
         ;; If event is a chromosomal addition event
         (re-find #"\+" event)
-        (e/addition 1 (ensure-class
+        (e/addition 1 (owl-class
                        (str "HumanChromosome"
                             (subs event 1))))
         ;; If event is a chromosomal deletion event
         (re-find #"\-" event)
-        (e/deletion 1 (ensure-class
+        (e/deletion 1 (owl-class
                        (str "HumanChromosome"
                             (subs event 1))))
         :default
@@ -248,12 +246,12 @@ s id of type String."
   [karyotype]
   (let [name (make-safe karyotype)]
    (tawny.read/intern-entity
-    (owlclass name
+    (owl-class name
                :label (str "The " karyotype " karyotype")
                :subclass i/ISCNExampleKaryotype
                (if-not (re-find #"c" karyotype)
-                 (owlsome n/derivedFrom (get-derived-from karyotype)))))
-    (get-subclasses (ensure-class name) karyotype)))
+                 (owl-some n/derivedFrom (get-derived-from karyotype)))))
+    (get-subclasses (owl-class name) karyotype)))
 
 ;; define karyotypes
 (parse-karyotype-string "26,X,+4,+6,+21")
@@ -392,7 +390,7 @@ Class is of type ISCNExampleKaryotype."
 detail is of type boolean.
 name is of type String."
   [detail name]
-  (let [class (ensure-class (make-safe name))]
+  (let [class (owl-class (make-safe name))]
     ;; If true, print the name, owl class, and resulting string.
     (if (true? detail)
       [(println (str "NAME: " name))

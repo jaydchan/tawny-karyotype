@@ -532,5 +532,5 @@
 ;; TODO Probe classes
 ;; (is (not
 ;;      (with-probe-class
-;;        [joined (owlclass :subclass i/k46_XY i/k45_Y)]
+;;        [joined (owl-class :subclass i/k46_XY i/k45_Y)]
 ;;        (r/consistent? joined))))

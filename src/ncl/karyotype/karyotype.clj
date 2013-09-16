@@ -28,8 +28,7 @@
 (as-disjoint
  (defclass Karyotype)
  (defclass Chromosome)
- (defclass ChromosomeComponent)
-)
+ (defclass ChromosomeComponent))
 
 (as-disjoint-subclasses
  ChromosomeComponent

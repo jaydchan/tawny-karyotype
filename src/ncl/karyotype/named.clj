@@ -29,9 +29,9 @@
   )
 
 ;; import all ncl.karyotype axioms
-(owlimport k/karyotype)
-(owlimport h/human)
-(owlimport e/events)
+(owl-import k/karyotype)
+(owl-import h/human)
+(owl-import e/events)
 
 (defclass NamedKaryotype
   :subclass k/Karyotype)
@@ -42,7 +42,7 @@
 ;; define object properties
 (as-inverse
  (defoproperty derivedFrom
-   :characteristic transitive
+   :characteristic :transitive
    :domain k/Karyotype
    :range k/Karyotype)
 
@@ -122,8 +122,8 @@
 (defclass TurnerSyndrome
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
+  (owl-and
+   (owl-some derivedFrom k46_XN)
    (e/deletion 1 h/HumanSexChromosome)))
 
 ;; An (male) individual with an extra X chromosome ;; aka 47,XXY ;;
@@ -131,21 +131,21 @@
 (defclass KlinefelterSyndromeMostCommonVariation
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XY)
+  (owl-and
+   (owl-some derivedFrom k46_XY)
    (e/addition 1 h/HumanChromosomeX)
-   (owlnot
-    (owlsome e/hasEvent
-             (owland e/Addition h/HumanChromosomeY)))))
+   (owl-not
+    (owl-some e/hasEvent
+             (owl-and e/Addition h/HumanChromosomeY)))))
 
 ;; An (male) individual with extra X chromosomes ;;aka abnormal male
 (defclass KlinefelterSyndromeAllVariations
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XY)
-   (owlsome e/hasEvent
-            (owland e/Addition h/HumanChromosomeX))))
+  (owl-and
+   (owl-some derivedFrom k46_XY)
+   (owl-some e/hasEvent
+            (owl-and e/Addition h/HumanChromosomeX))))
 
 ;; #TODO An individual with no X chromosome
 ;; (defclass Lethal
@@ -157,56 +157,56 @@
 (defclass Warkany2Syndrome
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
+  (owl-and
+   (owl-some derivedFrom k46_XN)
    (e/addition 1 h/HumanChromosome8)))
 
 ;; An individual with three copies of chromosome 9
 (defclass Trisomy9
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
+  (owl-and
+   (owl-some derivedFrom k46_XN)
    (e/addition 1 h/HumanChromosome9)))
 
 ;; An individual with three copies of chromosome 13 ;;aka Trisomy13
 (defclass PatauSyndrome
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
+  (owl-and
+   (owl-some derivedFrom k46_XN)
    (e/addition 1 h/HumanChromosome13)))
 
 ;; An individual with three copies of chromosome 16
 (defclass Trisomy16
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
+  (owl-and
+   (owl-some derivedFrom k46_XN)
    (e/addition 1 h/HumanChromosome16)))
 
 ;; An individual with three copies of chromosome 18 ;;aka Trisomy18
 (defclass EdwardsSyndrome
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
+  (owl-and
+   (owl-some derivedFrom k46_XN)
    (e/addition 1 h/HumanChromosome18)))
 
 ;; An individual with three copies of chromosome 21 ;;aka Trisomy21
 (defclass DownSyndrome
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
+  (owl-and
+   (owl-some derivedFrom k46_XN)
    (e/addition 1 h/HumanChromosome21)))
 
 ;; An individual with three copies of chromosome 22
 (defclass Trisomy22
   :subclass NamedKaryotype
   :equivalent
-  (owland
-   (owlsome derivedFrom k46_XN)
+  (owl-and
+   (owl-some derivedFrom k46_XN)
    (e/addition 1 h/HumanChromosome22)))
 
 ;; Named Karyotypes that are caused by structural abnormalities
@@ -215,11 +215,11 @@
 ;; (defclass DeletionSyndrome1p36
 ;;   :subclass NamedKaryotype
 ;;   :equivalent
-;;   (owland
-;;    (owlsome derivedFrom k46_XN)
-;;    (owlsome e/hasEvent
-;;             (owland e/Deletion
-;;                     (owlsome e/hasBreakPoint h/HumanChromosome1Bandp)))))
+;;   (owl-and
+;;    (owl-some derivedFrom k46_XN)
+;;    (owl-some e/hasEvent
+;;             (owl-and e/Deletion
+;;                     (owl-some e/hasBreakPoint h/HumanChromosome1Bandp)))))
 
 ;; ;; An individual with the partial deletion of chromosomal material of
 ;; ;; the short arm of chromosome 4 ;;aka del(4p16.3) ;;WHS, Chromosome
@@ -228,11 +228,11 @@
 ;; (defclass WolfHirschhornSydrome
 ;;   :subclass NamedKaryotype
 ;;   :equivalent
-;;   (owland
-;;    (owlsome derivedFrom k46_XN)
-;;    (owlsome e/hasEvent
-;;             (owland e/Deletion
-;;                     (owlsome e/hasBreakPoint h/HumanChromosome4Bandp)))))
+;;   (owl-and
+;;    (owl-some derivedFrom k46_XN)
+;;    (owl-some e/hasEvent
+;;             (owl-and e/Deletion
+;;                     (owl-some e/hasBreakPoint h/HumanChromosome4Bandp)))))
 
 ;; ;; TODO An individual with a truncated short arm on chromosome 5 ;;aka cry of the cat
 ;; (defclass CriDuChat
@@ -284,104 +284,104 @@
 
 (defclass HaploidKaryotype
   :equivalent
-  (owlor k23_N
-         (owlsome derivedFrom k23_N)))
+  (owl-or k23_N
+         (owl-some derivedFrom k23_N)))
 
 (defclass DiploidKaryotype
   :equivalent
-  (owlor k46_XN
-         (owlsome derivedFrom k46_XN)))
+  (owl-or k46_XN
+         (owl-some derivedFrom k46_XN)))
 
 (defclass TriploidKaryotype
   :equivalent
-  (owlor k69_XNN
-         (owlsome derivedFrom k69_XNN)))
+  (owl-or k69_XNN
+         (owl-some derivedFrom k69_XNN)))
 
 (defclass TetraploidKaryotype
   :equivalent
-  (owlor k92_XNNN
-         (owlsome derivedFrom k92_XNNN)))
+  (owl-or k92_XNNN
+         (owl-some derivedFrom k92_XNNN)))
 
 ;; Define gender - diploid only
 
 ;; male
 (defclass MaleKaryotype
   :equivalent
-  (owlor k46_XY
-         (owlsome derivedFrom k46_XY)))
+  (owl-or k46_XY
+         (owl-some derivedFrom k46_XY)))
 
 ;; female = those derived from 46,XX - as 46,XY is an asserted
 ;; subclass of 46,XN cannot be included in the definition - what
 ;; happens about 45,X?
 (defclass FemaleKaryotype
   :equivalent
-  (owlor k46_XX
-         (owlsome derivedFrom k46_XX)))
+  (owl-or k46_XX
+         (owl-some derivedFrom k46_XX)))
 
 ;; Define numerical abnormalities - in order for these to work, need
 ;; to import the axioms from h/human and e/events
 
 (defclass NumericalAbnormalKaryotypeAutosomalGain
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Addition h/HumanAutosome)))
+  (owl-some e/hasEvent
+           (owl-and e/Addition h/HumanAutosome)))
 
 (defclass NumericalAbnormalKaryotypeAutosomalLoss
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Deletion h/HumanAutosome)))
+  (owl-some e/hasEvent
+           (owl-and e/Deletion h/HumanAutosome)))
 
 (defclass NumericalAbnormalKaryotypeAutosomalGainOrLoss
   :equivalent
-  (owlor (owlsome e/hasEvent
-                  (owland e/Addition h/HumanAutosome))
-         (owlsome e/hasEvent
-                  (owland e/Deletion h/HumanAutosome))))
+  (owl-or (owl-some e/hasEvent
+                  (owl-and e/Addition h/HumanAutosome))
+         (owl-some e/hasEvent
+                  (owl-and e/Deletion h/HumanAutosome))))
 
 (defclass NumericalAbnormalKaryotypeAllosomalGain
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Addition h/HumanSexChromosome)))
+  (owl-some e/hasEvent
+           (owl-and e/Addition h/HumanSexChromosome)))
 
 (defclass NumericalAbnormalKaryotypeAllosomalLoss
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Deletion h/HumanSexChromosome)))
+  (owl-some e/hasEvent
+           (owl-and e/Deletion h/HumanSexChromosome)))
 
 (defclass NumericalAbnormalKaryotypeAllosomalGainOrLoss
   :equivalent
-  (owlor
-   (owlsome e/hasEvent
-            (owland e/Addition h/HumanSexChromosome))
-   (owlsome e/hasEvent
-            (owland e/Deletion h/HumanSexChromosome))))
+  (owl-or
+   (owl-some e/hasEvent
+            (owl-and e/Addition h/HumanSexChromosome))
+   (owl-some e/hasEvent
+            (owl-and e/Deletion h/HumanSexChromosome))))
 
 (defclass NumericalAbnormalKaryotypeChromosomalGain
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Addition h/HumanChromosome)))
+  (owl-some e/hasEvent
+           (owl-and e/Addition h/HumanChromosome)))
 
 (defclass NumericalAbnormalKaryotypeChromosomalLoss
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Deletion h/HumanChromosome)))
+  (owl-some e/hasEvent
+           (owl-and e/Deletion h/HumanChromosome)))
 
 ;;aka aneuploidy
 (defclass NumericalAbnormalKaryotype
   :equivalent
-  (owlor
-   (owlsome e/hasEvent
-            (owland e/Addition h/HumanChromosome))
-   (owlsome e/hasEvent
-            (owland e/Deletion h/HumanChromosome))))
+  (owl-or
+   (owl-some e/hasEvent
+            (owl-and e/Addition h/HumanChromosome))
+   (owl-some e/hasEvent
+            (owl-and e/Deletion h/HumanChromosome))))
 
 (defclass DerivedNumericalAbnormalKaryotype
   :equivalent
-  (owlor
-   (owlsome e/hasDerivedEvent
-            (owland e/Addition h/HumanChromosome))
-   (owlsome e/hasDerivedEvent
-            (owland e/Deletion h/HumanChromosome))))
+  (owl-or
+   (owl-some e/hasDerivedEvent
+            (owl-and e/Addition h/HumanChromosome))
+   (owl-some e/hasDerivedEvent
+            (owl-and e/Deletion h/HumanChromosome))))
 
 
 ;; Define structural abnormalities - in order for these to work, need
@@ -389,67 +389,67 @@
 
 (defclass StructuralAbnormalKaryotypeAddition
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Addition
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+  (owl-some e/hasEvent
+           (owl-and e/Addition
+                   (owl-some e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeDeletion
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Deletion
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+  (owl-some e/hasEvent
+           (owl-and e/Deletion
+                   (owl-some e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeDuplication
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Duplication
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+  (owl-some e/hasEvent
+           (owl-and e/Duplication
+                   (owl-some e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeFission
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Fission
-                   (owlsome e/hasBreakPoint
-                            (owlsome k/isBandOf h/HumanCentromere)))))
+  (owl-some e/hasEvent
+           (owl-and e/Fission
+                   (owl-some e/hasBreakPoint
+                            (owl-some k/isBandOf h/HumanCentromere)))))
 
 (defclass StructuralAbnormalKaryotypeInsertion
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Insertion
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+  (owl-some e/hasEvent
+           (owl-and e/Insertion
+                   (owl-some e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeInversion
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Inversion
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+  (owl-some e/hasEvent
+           (owl-and e/Inversion
+                   (owl-some e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeQuadruplication
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Quadruplication
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+  (owl-some e/hasEvent
+           (owl-and e/Quadruplication
+                   (owl-some e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeTranslocation
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Translocation
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+  (owl-some e/hasEvent
+           (owl-and e/Translocation
+                   (owl-some e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotypeTriplication
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Triplication
-                   (owlsome e/hasBreakPoint h/HumanChromosomeBand))))
+  (owl-some e/hasEvent
+           (owl-and e/Triplication
+                   (owl-some e/hasBreakPoint h/HumanChromosomeBand))))
 
 (defclass StructuralAbnormalKaryotype
   :equivalent
-  (owlsome e/hasEvent
-           (owland e/Event
-                   (owlsome e/hasBreakPoint k/ChromosomeComponent))))
+  (owl-some e/hasEvent
+           (owl-and e/Event
+                   (owl-some e/hasBreakPoint k/ChromosomeComponent))))
 
 (defclass DerivedStructuralAbnormalKaryotype
   :equivalent
-  (owlsome e/hasDerivedEvent
-           (owland e/Event
-                   (owlsome e/hasBreakPoint k/ChromosomeComponent))))
+  (owl-some e/hasDerivedEvent
+           (owl-and e/Event
+                   (owl-some e/hasBreakPoint k/ChromosomeComponent))))
