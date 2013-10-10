@@ -17,12 +17,12 @@
 
 (ns ncl.karyotype.randomkaryotype
   (:use [tawny.owl])
-  (:require [tawny [reasoner :as r]]
-            [ncl.karyotype [karyotype :as k]]
+  (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
             [ncl.karyotype [events :as e]]
             [ncl.karyotype [features :as f]]
-            [ncl.karyotype [named :as n]]))
+            [ncl.karyotype [named :as n]]
+            [ncl.karyotype [parsekaryotype :as p]]))
 
 (defontology randomkaryotype
   :iri "http://ncl.ac.uk/karyotype/randomkaryotype"
@@ -38,19 +38,30 @@
 (defclass RandomKaryotype
   :subclass k/Karyotype)
 
-(defn karyotype-class [the-name & frames]
+(def sex (into [] (direct-subclasses n/named n/k46_XN)))
+(defn random-sex []
+  (let [r (rand-int (count sex))]
+    (get sex r)))
+
+;; TODO does not include constitutional karyotypes
+(defn karyotype-class [name & frames]
   (apply owl-class
-         (list* (str "r" the-name)
-                :label (str "The" the-name "Karyotype")
+         (list* (str "r" name)
                 :subclass RandomKaryotype
+                (owl-some n/derivedFrom (random-sex))
                 frames)))
 
-(defn get-bands [vector]
-)
-
+;; missing chromo 2-22,X,Y bands
 (def bands-300 [1
                 ["p36.3" "p36.3" "p36.2" "p36.1" "p35" "p34" "p33" "p32" "p31" "p22" "p21" "p13" "p12" "p11" "q11" "q12" "q21" "q22q23q24" "q25" "q31" "q32" "q41" "q42" "q43q44"]])
 
+(defn get-band [chromosome band]
+  (owl-class h/human (str "HumanChromosome" chromosome "Band" band)))
+
+(defn random-band []
+  (let [bands (second bands-300)
+        r (rand-int (count bands))]
+    (get-band (first bands-300) (get bands r))))
 
 (def chromosomes
   (let [types (direct-subclasses h/human h/HumanChromosome)]
@@ -62,40 +73,48 @@
   (let [r (rand-int (count chromosomes))]
     (get chromosomes r)))
 
-(defn random-deletion []
+(defn random-terminal-deletion []
+  (e/deletion 1 (random-band)))
+
+(defn random-interstitial-deletion []
+  (e/deletion 1 (random-band) (random-band)))
+
+(def deletions [random-terminal-deletion random-interstitial-deletion])
+(defn random-band-deletion-driver []
+  (let [r (rand-int (count deletions))]
+    ((get deletions r))))
+
+(defn random-chromosome-deletion []
   (e/deletion 1 (random-chromosome)))
 
-(defn random-addition []
+(defn random-band-addition []
+  (e/addition 1 (random-band)))
+
+(defn random-chromosome-addition []
   (e/addition 1 (random-chromosome)))
 
-(def abnormalities [random-deletion random-addition])
+(def abnormalities [random-chromosome-deletion
+  random-band-deletion-driver random-chromosome-addition
+  random-band-addition])
 (defn random-abnormality []
   (let [r (rand-int (count abnormalities))]
     ((get abnormalities r))))
 
-;; TODO check that they are distinct/unique
+;; TODO check that they are only two at most of the same abnormality
 (defn random-abnormality-driver [max]
   (let [n (rand-int max)]
     (for [i (range n)]
       (random-abnormality))))
 
+(defn refine-label [clazz]
+  (let [k (p/parse-karyotype-class randomkaryotype clazz)]
+    (refine clazz :label
+            (str "The " k " Karyotype"))))
+
 (defn random-karyotype [name max]
-  (karyotype-class name
-                   :subclass (random-abnormality-driver max)))
+  (refine-label (karyotype-class name
+                                 :subclass (random-abnormality-driver max))))
 
 (defn random-karyotype-driver [number max]
   (doseq [i (range number)]
     (random-karyotype i max)))
-
-"Number of random karyotypes"
-(def n 1000000)
-"Max number of abnormalities"
-(def m 3)
-
-(random-karyotype-driver n m)
-
-;; TODO
-;; paper - left/right http://www.cs.man.ac.uk/~mikroyae/#Publications
-;; graphing - incanter https://github.com/liebke/incanter
-;; need to create driver for fission
-;; seperate drivers from patterns in event and features
