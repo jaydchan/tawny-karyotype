@@ -9,17 +9,16 @@
 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 ;; GNU General Public License for more details.
+
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
 (ns ncl.karyotype.core
   (:use [tawny.owl])
-  ;; (:require [ncl.karyotype human karyotype events features named iscnexamples
-  ;;            parsekaryotype])
   (:require [ncl.karyotype human karyotype events features named
-             randomkaryotype] [tawny.reasoner])
+             iscnexamples parsekaryotype randomkaryotype])
   (:gen-class))
 
 ;; to run:
@@ -56,15 +55,7 @@
   ;;   (save-ontology "parsekaryotype.omn" :omn)
   ;;   (save-ontology "parsekaryotype.owl" :owl))
 
-  (with-ontology ncl.karyotype.randomkaryotype/randomkaryotype
-    (save-ontology "randomkaryotype.omn" :omn)
-    (save-ontology "randomkaryotype.owl" :owl))
-  
-  (tawny.reasoner/reasoner-factory :hermit)
-  (println "Reasoning")
-  (time
-   (println "consistent:"
-           (tawny.reasoner/coherent? ncl.karyotype.randomkaryotype/randomkaryotype)))
-
-
+  ;; (with-ontology ncl.karyotype.randomkaryotype/randomkaryotype
+  ;;   (save-ontology "randomkaryotype.omn" :omn)
+  ;;   (save-ontology "randomkaryotype.owl" :owl))
 )
