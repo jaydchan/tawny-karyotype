@@ -17,8 +17,7 @@
 
 (ns ncl.karyotype.events
   (:use [tawny.owl])
-  (:require [tawny [reasoner :as r]]
-            [ncl.karyotype [karyotype :as k]]
+  (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]))
 
 (defontology events
