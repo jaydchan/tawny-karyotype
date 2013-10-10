@@ -17,8 +17,7 @@
 
 (ns ncl.karyotype.parsekaryotype
   (:use [tawny.owl])
-  (:require [tawny [reasoner :as r]]
-            [ncl.karyotype [karyotype :as k]]
+  (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
             [ncl.karyotype [events :as e]]
             [ncl.karyotype [features :as f]]
@@ -306,13 +305,8 @@ axiom is of type derivedFrom."
   (let [base (re-find #"k[\d_XY]+" axiom)]
     (clojure.string/replace (subs base 1) #"_" ",")))
 
-(defn- sort-chromosomes
-  "Returns a sorted vector of restrictions - i.e. hasDerived
-  restriction, and other restrictions which are sorted by chromosome
-  value (X,Y,1-22).
-class is of type ISCNExampleKaryotype."
-  [class]
-  (into [] (superclasses class)))
+(defn- get-superclasses [clazz]
+  (into [] (direct-superclasses clazz)))
 
 (defn- get-event-string
   "Returns the String representation of the event restriction.
@@ -365,40 +359,71 @@ axiom is of type hasEvent."
    ;; (str "trp(" (get-chromosome axiom) ")(" (get-band axiom) ")"
 ))
 
+(defn subclass-karyotype? [o entity]
+  (let [c (into [] (direct-subclasses o k/Karyotype))]
+    (some (partial = entity) c)))
+
 (defn- get-axiom-string
   "Returns the string representation of the restriction.
 axiom is of type OWL Object Property."
-  [axiom]
-  (cond
-   (re-find #"derivedFrom" axiom)
-   (get-start axiom)
-   (re-find #"hasEvent" axiom)
-   (get-event-string axiom)))
+  [o entity]
+  (let [e (str entity)]
+    (cond
+     (re-find #"derivedFrom" e)
+     (get-start e)
+     (re-find #"hasEvent" e)
+     (get-event-string e)
+     (subclass-karyotype? o entity)
+     "IGNORE-ME"
+     )))
 
-(defn- parse-karyotype-class
+(defn find-chromosome [s]
+  (re-find #"\d+,X[XY]|\d+|X|Y" s))
+
+(defn chromosome-compare [arg1 arg2]
+  (let [c1 (find-chromosome arg1)
+        c2 (find-chromosome arg2)]
+    (cond
+     (re-find #"\d+,X[XY]" arg1)
+     -1
+     (re-find #"\d+,X[XY]" arg2)
+     +1
+     (= (type c1) (type c2))
+     (compare c1 c2))))
+
+(defn sort-by-chromosome [c]
+  "TOFIX Returns a sorted vector of restrictions - i.e. hasDerived
+  restriction, and other restrictions which are sorted by chromosome
+  value (X,Y,1-22).
+class is of type ISCNExampleKaryotype."
+  (try
+    (sort chromosome-compare c)
+  (catch Exception e (println "Error " c))))
+
+(defn parse-karyotype-class
   "Returns the ISCN String of an OWL Karyotype Class.
 Class is of type ISCNExampleKaryotype."
-  [class]
-  (let [s (apply str (for [superclass (sort-chromosomes class)
-                           :let [axiom (get-axiom-string (str superclass))]
-                           :when (complement (nil? axiom))]
-                       axiom))]
+  [o clazz]
+  (let [strings (for [superclass (get-superclasses clazz)
+                           :let [axiom (get-axiom-string o superclass)]]
+                  axiom)
+        s (apply str (sort-by-chromosome (remove #{"IGNORE-ME"} strings)))]
     s))
 
 (defn- create-karyotype-string0
   "Prints details of the string input - used for testing purposes.
 detail is of type boolean.
 name is of type String."
-  [detail name]
-  (let [class (owl-class (make-safe name))]
+  [o detail name]
+  (let [clazz (owl-class (make-safe name))]
     ;; If true, print the name, owl class, and resulting string.
     (if (true? detail)
       [(println (str "NAME: " name))
       (println (str "CLASS: " class))
-      (println (str "STRING: " (parse-karyotype-class class)))])))
+      (println (str "STRING: " (parse-karyotype-class o clazz)))])))
 
 ;; get ISCN String
-(def create-karyotype-string (partial create-karyotype-string0 false))
+(def create-karyotype-string (partial create-karyotype-string0 parsekaryotype false))
 (create-karyotype-string "26,X,+4,+6,+21")
 (create-karyotype-string "71,XXX,+8,+10")
 (create-karyotype-string "89,XXYY,-1,-3,-5,+8,-21")
@@ -411,5 +436,5 @@ name is of type String."
 (create-karyotype-string "46,XX,del(5)(q13q33)")
 (create-karyotype-string "46,XX,del(5)(q13q13)")
 
-(def create-karyotype-string (partial create-karyotype-string0 true))
-(create-karyotype-string "26,X,+4,+6,+21")
+(def create-karyotype-string (partial create-karyotype-string0 parsekaryotype true))
+;; (create-karyotype-string "26,X,+4,+6,+21")
