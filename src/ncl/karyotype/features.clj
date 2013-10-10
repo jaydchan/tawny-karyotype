@@ -41,6 +41,14 @@
    ;;:domain Feature
    ))
 
+(as-inverse
+ (defoproperty hasRearrangedChromosome
+   :range k/Karyotype)
+
+ (defoproperty isRearrangedChromosomeOf
+   :domain k/Karyotype
+   ))
+
 
 ;; OWL CLASSES - STRUCTURAL FEATURES
 (as-disjoint-subclasses
@@ -76,9 +84,11 @@
   "Returns a derivative restriction.
 n is the number of derivative restrictions.
 args is a list of events."
-  [n & args]
+  [n chromosome & args]
   (exactly n hasFeature
-           (owl-and DerivativeChromosome args)))
+           (owl-and DerivativeChromosome
+                    (owl-some isRearrangedChromosomeOf chromosome
+                    args))))
 
 ;; MUST be defined before dicentric as dicentric calls isodicentric function!
 (defn isodicentric
