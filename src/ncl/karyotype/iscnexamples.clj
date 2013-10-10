@@ -415,7 +415,7 @@
   ;;                 h/HumanChromosome3Bandq13.1]))
   (owl-some f/hasFeature
            (owl-and f/DerivativeChromosome
-                   h/HumanChromosome1
+                   (owl-some f/isRearrangedChromosomeOf h/HumanChromosome1)
                    (owl-some e/hasEvent
                             (owl-and
                              e/Translocation
@@ -3382,4 +3382,4 @@ deletion, and also the breakpoints are unknown.'"
 
 ) ;; ends as-disjoint
 
-(println "TOTAL" (count (into [] (subclasses ISCNExampleKaryotype))))
+;; (println "TOTAL" (count (into [] (subclasses ISCNExampleKaryotype))))
