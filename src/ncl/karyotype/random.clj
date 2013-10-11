@@ -15,17 +15,17 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.randomkaryotype
+(ns ncl.karyotype.random
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
             [ncl.karyotype [events :as e]]
             [ncl.karyotype [features :as f]]
-            [ncl.karyotype [named :as n]]
-            [ncl.karyotype [parsekaryotype :as p]]))
+            [ncl.karyotype [base :as b]]
+            [ncl.karyotype [parse :as p]]))
 
-(defontology randomkaryotype
-  :iri "http://ncl.ac.uk/karyotype/randomkaryotype"
+(defontology random
+  :iri "http://ncl.ac.uk/karyotype/random"
   :prefix "rkar:")
 
 ;; import all ncl.karyotype axioms
@@ -33,12 +33,12 @@
 (owl-import h/human)
 (owl-import e/events)
 (owl-import f/features)
-(owl-import n/named)
+(owl-import b/base)
 
 (defclass RandomKaryotype
   :subclass k/Karyotype)
 
-(def sex (into [] (direct-subclasses n/named n/k46_XN)))
+(def sex (into [] (direct-subclasses b/base b/k46_XN)))
 (defn random-sex []
   (let [r (rand-int (count sex))]
     (get sex r)))
@@ -48,7 +48,7 @@
   (apply owl-class
          (list* (str "r" name)
                 :subclass RandomKaryotype
-                (owl-some n/derivedFrom (random-sex))
+                (owl-some b/derivedFrom (random-sex))
                 frames)))
 
 ;; missing chromo 2-22,X,Y bands
@@ -107,7 +107,7 @@
       (random-abnormality))))
 
 (defn refine-label [clazz]
-  (let [k (p/parse-karyotype-class randomkaryotype clazz)]
+  (let [k (p/parse-karyotype-class random clazz)]
     (refine clazz :label
             (str "The " k " Karyotype"))))
 

@@ -15,25 +15,25 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.parsekaryotype
+(ns ncl.karyotype.parse
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
             [ncl.karyotype [events :as e]]
             [ncl.karyotype [features :as f]]
-            [ncl.karyotype [named :as n]]
+            [ncl.karyotype [base :as b]]
             [ncl.karyotype [iscnexamples :as i]]))
 
-(defontology parsekaryotype
-  :iri "http://ncl.ac.uk/karyotype/parsekaryotype"
-  :prefix "pkr:")
+(defontology parse
+  :iri "http://ncl.ac.uk/karyotype/parse"
+  :prefix "par:")
 
 ;; import all ncl.karyotype axioms
 (owl-import k/karyotype)
 (owl-import h/human)
 (owl-import e/events)
 (owl-import f/features)
-(owl-import n/named)
+(owl-import b/base)
 
 ;; FUNCTIONS
 (defn- make-safe
@@ -63,35 +63,35 @@ s id of type String."
      ;; If karyotype is near-haploid
      (<= value 34)
      (if (re-find #"Y" karyotype)
-       n/k23_Y
-       n/k23_X)
+       b/k23_Y
+       b/k23_X)
      ;; If karyotype is near-diploid
      (and (>= value 35) (<= value 57))
      (if (re-find #"Y" karyotype)
-       n/k46_XY
-       n/k46_XX)
+       b/k46_XY
+       b/k46_XX)
      ;; If karyotype is near-triploid
      (and (>= value 58) (<= value 80))
      (let [Yno (get-no-of-Y karyotype)]
        (cond
         (= Yno 0)
-        n/k69_XXX
+        b/k69_XXX
         (= Yno 1)
-        n/k69_XXY
+        b/k69_XXY
         (> Yno 1)
-        n/k69_XYY))
+        b/k69_XYY))
      ;; If karyotype is near-tetraploid
      (and (>= value 81) (<= value 103))
      (let [Yno (get-no-of-Y karyotype)]
        (cond
         (= Yno 0)
-        n/k92_XXXX
+        b/k92_XXXX
         (= Yno 1)
-        n/k92_XXXY
+        b/k92_XXXY
         (= Yno 2)
-        n/k92_XXYY
+        b/k92_XXYY
         (> Yno 2)
-        n/k92_XYYY))
+        b/k92_XYYY))
      :default
      (throw (IllegalArgumentException.
              (str "Karyotype syntax not recognised: " karyotype))))))
@@ -249,7 +249,7 @@ s id of type String."
                :label (str "The " karyotype " karyotype")
                :subclass i/ISCNExampleKaryotype
                (if-not (re-find #"c" karyotype)
-                 (owl-some n/derivedFrom (get-derived-from karyotype)))))
+                 (owl-some b/derivedFrom (get-derived-from karyotype)))))
     (get-subclasses (owl-class name) karyotype)))
 
 ;; define karyotypes
@@ -423,7 +423,7 @@ name is of type String."
       (println (str "STRING: " (parse-karyotype-class o clazz)))])))
 
 ;; get ISCN String
-(def create-karyotype-string (partial create-karyotype-string0 parsekaryotype false))
+(def create-karyotype-string (partial create-karyotype-string0 parse false))
 (create-karyotype-string "26,X,+4,+6,+21")
 (create-karyotype-string "71,XXX,+8,+10")
 (create-karyotype-string "89,XXYY,-1,-3,-5,+8,-21")
@@ -436,5 +436,5 @@ name is of type String."
 (create-karyotype-string "46,XX,del(5)(q13q33)")
 (create-karyotype-string "46,XX,del(5)(q13q13)")
 
-(def create-karyotype-string (partial create-karyotype-string0 parsekaryotype true))
+(def create-karyotype-string (partial create-karyotype-string0 parse true))
 ;; (create-karyotype-string "26,X,+4,+6,+21")

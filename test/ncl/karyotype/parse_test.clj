@@ -15,17 +15,16 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.parsekaryotype_test
+(ns ncl.karyotype.parse_test
   (:use [clojure.test])
   (:require
-   [ncl.karyotype.parsekaryotype :as p]
-   [ncl.karyotype.named :as n]
+   [ncl.karyotype.parse :as p]
    [tawny.owl :as o]
    [tawny.reasoner :as r]))
 
 (defn ontology-reasoner-fixture [tests]
   (r/reasoner-factory :hermit)
-  (o/ontology-to-namespace p/parsekaryotype)
+  (o/ontology-to-namespace p/parse)
   (binding [r/*reasoner-progress-monitor*
             (atom
             r/reasoner-progress-monitor-silent)]
