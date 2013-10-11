@@ -19,96 +19,21 @@
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
-            [ncl.karyotype [events :as e]]))
+            [ncl.karyotype [events :as e]]
+            [ncl.karyotype [base :as b]]))
 
 (defontology named
   :iri "http://ncl.ac.uk/karyotype/named"
-  :prefix "nmd:"
-  )
+  :prefix "nmd:")
 
 ;; import all ncl.karyotype axioms
 (owl-import k/karyotype)
 (owl-import h/human)
 (owl-import e/events)
+(owl-import b/base)
 
 (defclass NamedKaryotype
   :subclass k/Karyotype)
-
-(defclass BaseKaryotype
-  :subclass k/Karyotype)
-
-;; define object properties
-(as-inverse
- (defoproperty derivedFrom
-   :characteristic :transitive
-   :domain k/Karyotype
-   :range k/Karyotype)
-
- (defoproperty derivedTo
-   :range k/Karyotype
-   :domain k/Karyotype))
-
-;; define chain properties
-;; due to build dependancy, the subproperty chain axiom for
-;; hasDerivedEvent and isDerivedEventOf is defined here i.e. after
-;; derivedFrom and derivedTo have been defined.
-(add-subpropertychain e/hasDerivedEvent (list derivedFrom e/hasEvent))
-(add-subpropertychain e/isDerivedEventOf (list e/isEventOf derivedTo))
-
-;; define all the baseKaryotypes
-;; we have to pass these in as strings because they start with
-;; integers which brings up an NumberFormatException therefore we
-;; could use :name "46_XX" or :label "The 46,XX karyotype"
-
-;; define all haploid base karyotypes
-(defclass k23_N
-  :label "The 23,N karyotype"
-  :subclass BaseKaryotype)
-(as-disjoint-subclasses
- k23_N
- (defclass k23_X
-   :label "The 23,X karyotype")
- (defclass k23_Y
-   :label "The 23,Y karyotype"))
-
-;; define all diploid base karyotypes
-(defclass k46_XN
-  :label "The 46,XN karyotype"
-  :subclass BaseKaryotype)
-(as-disjoint-subclasses
- k46_XN
- (defclass k46_XX
-   :label "The 46,XX karyotype")
- (defclass k46_XY
-   :label "The 46,XY karyotype"))
-
-;; define all triploid base karyotypes #CHECK
-(defclass k69_XNN
-  :label "The 69,XNN karyotype"
-  :subclass BaseKaryotype)
-(as-disjoint-subclasses
- k69_XNN
- (defclass k69_XXX
-   :label "The 69,XXX karyotype")
- (defclass k69_XXY
-   :label "The 69,XXY karyotype")
- (defclass k69_XYY
-   :label "The 69,XYY karyotype"))
-
-;; define all tetraploid base karyotypes #CHECK
-(defclass k92_XNNN
-  :label "The 92,XNNN karyotype"
-  :subclass BaseKaryotype)
-(as-disjoint-subclasses
- k92_XNNN
- (defclass k92_XXXX
-   :label "The 92,XXXX karyotype")
- (defclass k92_XXXY
-   :label "The 92,XXXY karyotype")
- (defclass k92_XXYY
-   :label "The 92,XXYY karyotype")
- (defclass k92_XYYY
-   :label "The 92,XYYY karyotype"))
 
 ;; Define the namedKaryotypes
 
@@ -121,7 +46,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XN)
+   (owl-some b/derivedFrom b/k46_XN)
    (e/deletion 1 h/HumanSexChromosome)))
 
 ;; An (male) individual with an extra X chromosome ;; aka 47,XXY ;;
@@ -130,7 +55,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XY)
+   (owl-some b/derivedFrom b/k46_XY)
    (e/addition 1 h/HumanChromosomeX)
    (owl-not
     (owl-some e/hasEvent
@@ -141,7 +66,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XY)
+   (owl-some b/derivedFrom b/k46_XY)
    (owl-some e/hasEvent
             (owl-and e/Addition h/HumanChromosomeX))))
 
@@ -156,7 +81,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XN)
+   (owl-some b/derivedFrom b/k46_XN)
    (e/addition 1 h/HumanChromosome8)))
 
 ;; An individual with three copies of chromosome 9
@@ -164,7 +89,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XN)
+   (owl-some b/derivedFrom b/k46_XN)
    (e/addition 1 h/HumanChromosome9)))
 
 ;; An individual with three copies of chromosome 13 ;;aka Trisomy13
@@ -172,7 +97,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XN)
+   (owl-some b/derivedFrom b/k46_XN)
    (e/addition 1 h/HumanChromosome13)))
 
 ;; An individual with three copies of chromosome 16
@@ -180,7 +105,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XN)
+   (owl-some b/derivedFrom b/k46_XN)
    (e/addition 1 h/HumanChromosome16)))
 
 ;; An individual with three copies of chromosome 18 ;;aka Trisomy18
@@ -188,7 +113,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XN)
+   (owl-some b/derivedFrom b/k46_XN)
    (e/addition 1 h/HumanChromosome18)))
 
 ;; An individual with three copies of chromosome 21 ;;aka Trisomy21
@@ -196,7 +121,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XN)
+   (owl-some b/derivedFrom b/k46_XN)
    (e/addition 1 h/HumanChromosome21)))
 
 ;; An individual with three copies of chromosome 22
@@ -204,7 +129,7 @@
   :subclass NamedKaryotype
   :equivalent
   (owl-and
-   (owl-some derivedFrom k46_XN)
+   (owl-some b/derivedFrom b/k46_XN)
    (e/addition 1 h/HumanChromosome22)))
 
 ;; Named Karyotypes that are caused by structural abnormalities
@@ -214,7 +139,7 @@
 ;;   :subclass NamedKaryotype
 ;;   :equivalent
 ;;   (owl-and
-;;    (owl-some derivedFrom k46_XN)
+;;    (owl-some b/derivedFrom b/k46_XN)
 ;;    (owl-some e/hasEvent
 ;;             (owl-and e/Deletion
 ;;                     (owl-some e/hasBreakPoint h/HumanChromosome1Bandp)))))
@@ -227,7 +152,7 @@
 ;;   :subclass NamedKaryotype
 ;;   :equivalent
 ;;   (owl-and
-;;    (owl-some derivedFrom k46_XN)
+;;    (owl-some b/derivedFrom b/k46_XN)
 ;;    (owl-some e/hasEvent
 ;;             (owl-and e/Deletion
 ;;                     (owl-some e/hasBreakPoint h/HumanChromosome4Bandp)))))
@@ -282,39 +207,39 @@
 
 (defclass HaploidKaryotype
   :equivalent
-  (owl-or k23_N
-         (owl-some derivedFrom k23_N)))
+  (owl-or b/k23_N
+         (owl-some b/derivedFrom b/k23_N)))
 
 (defclass DiploidKaryotype
   :equivalent
-  (owl-or k46_XN
-         (owl-some derivedFrom k46_XN)))
+  (owl-or b/k46_XN
+         (owl-some b/derivedFrom b/k46_XN)))
 
 (defclass TriploidKaryotype
   :equivalent
-  (owl-or k69_XNN
-         (owl-some derivedFrom k69_XNN)))
+  (owl-or b/k69_XNN
+         (owl-some b/derivedFrom b/k69_XNN)))
 
 (defclass TetraploidKaryotype
   :equivalent
-  (owl-or k92_XNNN
-         (owl-some derivedFrom k92_XNNN)))
+  (owl-or b/k92_XNNN
+         (owl-some b/derivedFrom b/k92_XNNN)))
 
 ;; Define gender - diploid only
 
 ;; male
 (defclass MaleKaryotype
   :equivalent
-  (owl-or k46_XY
-         (owl-some derivedFrom k46_XY)))
+  (owl-or b/k46_XY
+         (owl-some b/derivedFrom b/k46_XY)))
 
 ;; female = those derived from 46,XX - as 46,XY is an asserted
 ;; subclass of 46,XN cannot be included in the definition - what
 ;; happens about 45,X?
 (defclass FemaleKaryotype
   :equivalent
-  (owl-or k46_XX
-         (owl-some derivedFrom k46_XX)))
+  (owl-or b/k46_XX
+         (owl-some b/derivedFrom b/k46_XX)))
 
 ;; Define numerical abnormalities - in order for these to work, need
 ;; to import the axioms from h/human and e/events
