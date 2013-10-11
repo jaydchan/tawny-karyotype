@@ -17,8 +17,8 @@
 
 (ns ncl.karyotype.core
   (:use [tawny.owl])
-  (:require [ncl.karyotype human karyotype events features named
-             iscnexamples parsekaryotype randomkaryotype])
+  (:require [ncl.karyotype human karyotype events features base named
+             iscnexamples parse random])
   (:gen-class))
 
 ;; to run:
@@ -43,6 +43,10 @@
     (save-ontology "features.omn" :omn)
     (save-ontology "features.owl" :owl))
 
+  (with-ontology ncl.karyotype.base/base
+    (save-ontology "base.omn" :omn)
+    (save-ontology "base.owl" :owl))
+
   (with-ontology ncl.karyotype.named/named
     (save-ontology "named.omn" :omn)
     (save-ontology "named.owl" :owl))
@@ -51,11 +55,11 @@
     (save-ontology "iscnexamples.omn" :omn)
     (save-ontology "iscnexamples.owl" :owl))
 
-  (with-ontology ncl.karyotype.parsekaryotype/parsekaryotype
-    (save-ontology "parsekaryotype.omn" :omn)
-    (save-ontology "parsekaryotype.owl" :owl))
+  (with-ontology ncl.karyotype.parse/parse
+    (save-ontology "parse.omn" :omn)
+    (save-ontology "parse.owl" :owl))
 
-  (with-ontology ncl.karyotype.randomkaryotype/randomkaryotype
-    (save-ontology "randomkaryotype.omn" :omn)
-    (save-ontology "randomkaryotype.owl" :owl))
+  (with-ontology ncl.karyotype.random/random
+    (save-ontology "random.omn" :omn)
+    (save-ontology "random.owl" :owl))
 )
