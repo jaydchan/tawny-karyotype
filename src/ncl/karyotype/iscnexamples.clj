@@ -21,6 +21,7 @@
             [ncl.karyotype [human :as h]]
             [ncl.karyotype [events :as e]]
             [ncl.karyotype [features :as f]]
+            [ncl.karyotype [base :as b]]
             [ncl.karyotype [named :as n]]))
 
 (defontology iscnexamples
@@ -32,6 +33,7 @@
 (owl-import h/human)
 (owl-import e/events)
 (owl-import f/features)
+(owl-import b/base)
 (owl-import n/named)
 
 (defclass ISCNExampleKaryotype
@@ -48,7 +50,7 @@
   of chromosomes 4, 6, and 21, and a single copy of all other
   chromosomes.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k23_X)
+  (owl-some b/derivedFrom b/k23_X)
   (e/addition 1 h/HumanChromosome4)
   (e/addition 1 h/HumanChromosome6)
   (e/addition 1 h/HumanChromosome21))
@@ -59,7 +61,7 @@
   copies of chromosomes 8 and 10, and three copies of all other
   chromosomes.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k69_XXX)
+  (owl-some b/derivedFrom b/k69_XXX)
   (e/addition 1 h/HumanChromosome8)
   (e/addition 1 h/HumanChromosome10))
 ;; example tetraploid karyotype
@@ -69,7 +71,7 @@
   copies of chromosomes 1, 3, 5, and 21, five copies of chromosome 8,
   and four copies of all other autosomes.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k92_XXYY)
+  (owl-some b/derivedFrom b/k92_XXYY)
   (e/addition 1 h/HumanChromosome8)
   (e/deletion 1 h/HumanChromosome1)
   (e/deletion 1 h/HumanChromosome3)
@@ -86,9 +88,9 @@
   :comment "ISCN2009 pg 56 -> 'A karyotype with one X
   chromosome (Turner syndrome).'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XN)
+            (owl-some b/derivedFrom b/k46_XN)
             (e/deletion 1 h/HumanSexChromosome))))
 
 (defclass k47_XXY
@@ -96,9 +98,9 @@
   :comment "ISCN2009 pg 56 -> 'A karyotype with two X
   chromosomes and one Y chromosome (Klinefelter syndrome).'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosomeX))))
 
 (defclass k47_XXX
@@ -106,9 +108,9 @@
   :comment "ISCN2009 pg 56 -> 'A karyotype with three X
   chromosomes.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XX)
+            (owl-some b/derivedFrom b/k46_XX)
             (e/addition 1 h/HumanChromosomeX))))
 
 (defclass k47_XYY
@@ -116,9 +118,9 @@
   :comment "ISCN2009 pg 56 -> 'A karyotype with one X
   chromosome and two Y chromosomes.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosomeY))))
 
 (defclass k48_XXXY
@@ -126,9 +128,9 @@
   :comment "ISCN2009 pg 56 -> 'A karyotype with three X
   chromosomes and one Y chromosome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosomeX))))
 
 ;; mos 47,XXY[10]/46,XY[20]
@@ -141,35 +143,35 @@
   :comment "ISCN2009 pg 56 -> 'A tumor karyotype in a female with an
   additional X chromosome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosomeX))
 (defclass k45_X_-X
   :label "The 45,X,-X karyotype"
   :comment "ISCN2009 pg 56 -> 'A tumor karyotype in a female with loss
   of one X chromosome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 1 h/HumanChromosomeX))
 (defclass k45_X_-Y
   :label "The 45,X,-Y karyotype"
   :comment "ISCN2009 pg 56 -> 'A tumor karyotype in a male with loss
   of the Y chromosome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/deletion 1 h/HumanChromosomeY))
 (defclass k45_Y_-X
   :label "The 45,Y,-X karyotype"
   :comment "ISCN2009 pg 57 -> 'A tumor karyotype in a male with loss
   of the X chromosome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/deletion 1 h/HumanChromosomeX))
 (defclass k48_XY_+X_+Y
   :label "The 48,XY,+X,+Y karyotype"
   :comment "ISCN2009 pg 57 -> 'A tumor karyotype in a male with one
   additional X and one additional Y chromosome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/addition 1 h/HumanChromosomeX)
   (e/addition 1 h/HumanChromosomeY))
 
@@ -180,9 +182,9 @@
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired additional
   X chromosome in a patient with Klinefelter syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosomeX))) ;;aka 47,XXY
   (e/addition 1 h/HumanChromosomeX))
 (defclass k46_Xc_+X
@@ -190,9 +192,9 @@
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired additional
   X chromosome in a patient with Turner syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XN)
+            (owl-some b/derivedFrom b/k46_XN)
             (e/deletion 1 h/HumanAutosome))) ;;aka 45,X
   (e/addition 1 h/HumanChromosomeX))
 (defclass k46_XXYc_-X
@@ -200,9 +202,9 @@
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired loss of
   one X chromosome in a patient with Klinefelter syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosomeX))) ;;aka 47,XXY
   (e/deletion 1 h/HumanChromosomeX))
 (defclass k44_Xc_-X
@@ -210,9 +212,9 @@
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired loss of
   the X chromosome in a patient with Turner syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XN)
+            (owl-some b/derivedFrom b/k46_XN)
             (e/deletion 1 h/HumanSexChromosome))) ;;aka 45,X
   (e/deletion 1 h/HumanChromosomeX))
 (defclass k46_Xc_+21
@@ -220,9 +222,9 @@
   :comment "ISCN2009 pg 57 -> 'Tumor cells with an acquired eaxtra
   chromosome 21 in a patient with Turner syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XN)
+            (owl-some b/derivedFrom b/k46_XN)
             (e/deletion 1 h/HumanSexChromosome))) ;;aka 45,X
   (e/addition 1 h/HumanChromosome21))
 
@@ -233,16 +235,16 @@
 ;;   with an ectra X chromosome. The question mark indicates that it is
 ;;   unclear the extra X is constitutional or acquired.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom #TODO))
+;;   (owl-some b/derivedFrom #TODO))
 
 ;; (defclass k48_XXY_marc
 ;;   :label "The 48,XXY,mar c karyotype"
 ;;   :comment "ISCN2009 pg 57 -> 'For constitutional markers, there is a
 ;;   space between mar and c.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom
+;;   (owl-some b/derivedFrom
 ;;            (owl-and
-;;             (owl-some n/derivedFrom n/k46_XY)
+;;             (owl-some b/derivedFrom b/k46_XY)
 ;;             (e/addition 1 h/HumanChromosomeX)
 ;;             (f/marker 1)))) ;;aka 48,XXY,mar
 
@@ -251,28 +253,28 @@
   :label "The 47,XX,+21 karyotype"
   :comment "ISCN2009 pg 57 -> 'A karyotype with trisomy 21.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosome21))
 (defclass k48_XX_+13_+21
   :label "The 48,XX,+13,+21 karyotype"
   :comment "ISCN2009 pg 57 -> 'A karyotype with trisomy 13 and trisomy
   21.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosome13)
   (e/addition 1 h/HumanChromosome21))
 (defclass k45_XX_-22
   :label "The 45,XX,-22 karyotype"
   :comment "ISCN2009 pg 57 -> 'A karyotype with monosomy 22.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 1 h/HumanChromosome22))
 (defclass k46_XX_+8_-21
   :label "The 46,XX,+8,-21 karyotype"
   :comment "ISCN2009 pg 58 -> 'A karyotype with trisomy 8 and monosomy
   21.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosome8)
   (e/deletion 1 h/HumanChromosome21))
 
@@ -282,9 +284,9 @@
   :comment "ISCN2009 pg 58 -> 'An acquired extra chromosome 21 in a
   patient with Down syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosome21))) ;;aka 47,XY,+21
   (e/addition 1 h/HumanChromosome21))
 (defclass k46_XY_+21c_-21
@@ -292,9 +294,9 @@
   :comment "ISCN2009 pg 58 -> 'Acquired loss of one chromosome 21 in a
   patient with Down syndrome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosome21))) ;;aka 47,XY,+21
   (e/deletion 1 h/HumanChromosome21))
 
@@ -311,7 +313,7 @@
   :comment "ISCN2009 pg 60 -> 'Two normal chromosomes 7 and one with a
   deletion of the short arm.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k69_XXX)
+  (owl-some b/derivedFrom b/k69_XXX)
   (e/deletion 1 h/HumanChromosome7Bandp11.2))
 
 (defclass k69_XXY_del!7!!q22!_inv!7!!p13q22!_t!7_14!!p15_q11.1!
@@ -320,7 +322,7 @@
   arm deletion, one has an inversion, and one is involved in a balanced
   translocation with chromosome 14.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k69_XXY)
+  (owl-some b/derivedFrom b/k69_XXY)
   (e/deletion 1 h/HumanChromosome7Bandq22)
   (e/inversion 1
                h/HumanChromosome7Bandp13
@@ -336,7 +338,7 @@
   additional structurally abnormal chromosome 7 with a deletion of the
   short arm.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k69_XXX)
+  (owl-some b/derivedFrom b/k69_XXX)
   (e/addition 1 h/HumanChromosome7)
   (e/deletion 1 h/HumanChromosome7Bandp11.2))
 
@@ -346,7 +348,7 @@
   7: one has a deletion of the short arm, and one is involved in a
   balanced translocation with chromosome 14.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k92_XXYY)
+  (owl-some b/derivedFrom b/k92_XXYY)
   (e/deletion 1 h/HumanChromosome7Bandp11.2)
   (e/translocation 1
                    [h/HumanChromosome7Bandp15]
@@ -357,7 +359,7 @@
   :comment "ISCN2009 pg 60 -> 'One normal chromosome 7 and three with
   different deletions'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k92_XXYY)
+  (owl-some b/derivedFrom b/k92_XXYY)
   (e/deletion 1 h/HumanChromosome7Bandp11.2)
   (e/deletion 1 h/HumanChromosome7Bandq22)
   (e/deletion 1 h/HumanChromosome7Bandq34))
@@ -371,7 +373,7 @@
   translocation between the X chromosome and chromosome 8. Note that
   the normal sex chromosome, in this case a Y, is shown first.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosomeXBandp22.3]
                    [h/HumanChromosome8Bandq24.1]))
@@ -384,7 +386,7 @@
 ;;   chromosome. It is obvious from the description that the karyotype
 ;;   contains one normal chromosome 1 and two normal chromosomes 3.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   ;; (f/derivative h/HumanChromosome10
 ;;   ;;               (e/translocation
 ;;   ;;                [h/HumanChromosome1Bandp22
@@ -408,7 +410,7 @@
   chromosome. It is obvious from the description that the karyotype
   contains one normal chromosome 1 and two normal chromosomes 3.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   ;; (f/derivative h/HumanChromosome10
   ;;               (e/translocation
   ;;                [h/HumanChromosome1Bandp22
@@ -434,7 +436,7 @@
   inserted at band p22 in one chromosome 1. The homologous chromosome
   1 is normal.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/insertion 1
                h/HumanChromosome1Bandp22
                h/HumanChromosomeBand
@@ -447,7 +449,7 @@
 ;;   chromosome 10; the homologous chromosome 10 is lost. In this
 ;;   situation the missing chromosome 10 must, of course, be indicated.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   (e/deletion 1 h/HumanChromosome10)
 ;;   ;; (f/derivative 1 h/HumanChromosome10
 ;;   ;;               (e/translocation
@@ -473,7 +475,7 @@
   19p13.3, but neither the origin of the extra segment nor the type of
   arrangement is known.' 46,XX,add(19)(?::p13.3->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosome19Bandp13.3))
 
 (defclass k46_XY_add!12!!q13!
@@ -481,7 +483,7 @@
   :comment "ISCN2009 pg 60 -> 'Additional material of unknown origin
   replaces the segment 12q13qter.' 46,XY,add(12)(pter->q13::?)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/addition 1 h/HumanChromosome12Bandq13))
 
 ;; TODO
@@ -491,7 +493,7 @@
 ;;   is attached at band 5p15.3 in the short arm and additional material
 ;;   replaces the seqment 5q23qter in the long arm.' 46,XX,der(5)(?::p15.3->q23::?)"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/deletion 1 h/HumanChromosome5)
 ;;   ;; (f/derivative 1 h/HumanChromosome5
 ;;   ;;               (e/addition 1 h/HumanChromosome5Bandp15.3)
@@ -510,7 +512,7 @@
   that unknown material had replaced the segment 5q13qter.'
   46,XX,ins(5;?)(pter->q13::?::q13->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/insertion 1
                h/HumanChromosome5Bandq13
                h/HumanChromosomeBand
@@ -525,7 +527,7 @@
   arm of chromomsome 5 and the long arm lying between the centromere
   and band 5q13.' 46,XX,del(5)(pter->q13:)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 1 h/HumanChromosome5Bandq13))
 
 (defclass k46_XX_del!5!!q13!-new
@@ -535,7 +537,7 @@
   arm of chromomsome 5 and the long arm lying between the centromere
   and band 5q13.' 46,XX,del(5)(pter->q13:)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion-new 1 h/HumanChromosome5Bandq13))
 
 (defclass k46_XX_del!5!!q13q33!
@@ -544,7 +546,7 @@
   reunion (::) of bands 5q13 and 5q33. The segment lying between these
   bands has been deleted.' 46,XX,del(5)(pter->q13::q33->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 1
               h/HumanChromosome5Bandq13
               h/HumanChromosome5Bandq33))
@@ -555,7 +557,7 @@
   reunion (::) of bands 5q13 and 5q33. The segment lying between these
   bands has been deleted.' 46,XX,del(5)(pter->q13::q33->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion-new 1
               h/HumanChromosome5Bandq13
               h/HumanChromosome5Bandq33))
@@ -566,7 +568,7 @@
   segment within band 5q13, i.e., both breakpoints are in band 5q13.'
   46,XX,del(5)(pter->q13::q13->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 1
               h/HumanChromosome5Bandq13
               h/HumanChromosome5Bandq13))
@@ -577,7 +579,7 @@
 5, but it is unclear whether it is a terminal or an interstitial
 deletion, and also the breakpoints are unknown.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 1
               h/HumanChromosome5Bandq
               h/HumanChromosome5Bandq))
@@ -587,7 +589,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 61 -> 'Interstitial deletion of a small
   segment within band Xp21'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/deletion 1
               h/HumanChromosomeXBandp21
               h/HumanChromosomeXBandp21))
@@ -607,7 +609,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   terminal deletions in both the short and long arms with breakpoints
 ;;   in bands 9p12 and 9q31.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   ;; (f/derivative 1 h/HumanChromosome9
 ;;   ;;               (e/deletion 1 h/HumanChromosome9Bandp12)
 ;;   ;;               (e/deletion 1 h/HumanChromosome9Bandq31)))
@@ -631,7 +633,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   an interstitial deletion of the long arm with breakpoints in 9q22
 ;;   and 9q33.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   ;; (f/derivative 1 h/HumanChromosome9
 ;;   ;;               (e/inversion 1 h/HumanChromosome9Bandp13
 ;;   ;;                            h/HumanChromosome9Bandp23)
@@ -657,7 +659,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   7p22. Similarly, additional material of unknown origin is attached
 ;;   to 7q22, replacing the segment 7q22qter.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome7
 ;;   ;;               (e/addition 1 h/HumanChromosome7Bandp22)
 ;;   ;;               (e/addition 1 h/HumanChromosome7Bandq22)))
@@ -675,7 +677,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   additional material of unknown origin attached at 5p15.1 and a
 ;;   terminal deletion of the long arm distal to band 5q13.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome5
 ;;   ;;               (e/addition 1 h/HumanChromosome5Bandp15.1)
 ;;   ;;               (e/addition 1 h/HumanChromosome5Bandq13)))
@@ -694,7 +696,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   :comment "ISCN2009 pg 63 -> 'A male showing a derivative X
 ;;   chromosome derived from a tranlocation between Xp22.3 and 8q24.1.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   ;; (f/derivative 1 h/HumanChromosomeX
 ;;   ;;               (e/translocation 1 2 h/HumanChromosomeXBandp22.3
 ;;   ;;                                h/HumanChromosome8Bandq24.1)))
@@ -721,7 +723,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   3. The karyotype is unbalanced with loss of the segemnt 1p22pter and
 ;;   gain of 3q13.1qter.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome1Bandp22
 ;;   ;;                                h/HumanChromosome3Bandq13.1)))
@@ -746,7 +748,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   the t(1;3) that has been lost, but the karyotype cannot make
 ;;   explicit such assumptions.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome1Bandp22
 ;;   ;;                                h/HumanChromosome3Bandq13.1))
@@ -774,7 +776,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   1p32 and the other involving the long arm with a breakpoint in
 ;;   1q25.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome1Bandp32
 ;;   ;;                                h/HumanChromosome3Bandq21)
@@ -810,7 +812,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   1p32, and a translocation of the segment 7q11.2qter to band 3q28 of
 ;;   the chromosome 3 segment attached to chromosome 1.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome1Bandp32
 ;;   ;;                                h/HumanChromosome3Bandq21)
@@ -845,7 +847,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   from a t(1;3) with a breakpoint in 1p32 and a duplication of the
 ;;   long arm segment 1q25q42.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;; ;;   (f/derivative 1 h/HumanChromosome1
 ;; ;;                 (e/translocation 1 2 h/HumanChromosome1Bandp32
 ;; ;;                                  h/HumanChromosome3Bandq21)
@@ -875,7 +877,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   a terminal deletion of the short arm with a breakpoint in 9p12, and
 ;;   by a t(9;13) involving the long arm with a breakpoint in 9q34.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   ;; (f/derivative 1 h/HumanChromosome9
 ;;   ;;               (e/deletion 1 h/HumanChromosome9Bandp12)
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome9Bandq34
@@ -907,7 +909,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   aberrations are listed according to the orientation of chromosome 1,
 ;;   from the p arm to the q arm.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;; ;;   (f/derivative 1 h/HumanChromosome1
 ;; ;;                 (e/translocation 1 2 h/HumanChromosome1Bandp32
 ;; ;;                                  h/HumanChromosome11Bandq13)
@@ -947,7 +949,7 @@ deletion, and also the breakpoints are unknown.'"
 ;; ;;   when there are two breakpoints in the recipient chromosome, the
 ;; ;;   proximal one is listed as the point of insertion.'"
 ;; ;;   :subclass ISCNExampleKaryotype
-;; ;;   (owl-some n/derivedFrom n/k46_XX)
+;; ;;   (owl-some b/derivedFrom b/k46_XX)
 ;; ;;   (f/derivative 1 h/HumanChromosome1
 ;; ;;                 (e/deletion 1 h/HumanChromosome1Bandp22
 ;; ;;                             h/HumanChromosome1Bandp34)
@@ -965,7 +967,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   the derivative chromosome is specified as the point of insertion of
 ;;   the unknown material.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;; ;;   (f/derivative 1 h/HumanChromosome7
 ;; ;;                 (e/translocation 1 2 h/HumanChromosome2Bandq21
 ;; ;;                                  h/HumanChromosome7Bandq22)
@@ -1000,7 +1002,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   arm, with breakpoints at 8p23 and 8q22, respectively, and a
 ;;   pericentric inversion with breakpoints at 8p22 and 8q13.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;; ;;   (f/derivative 1 h/HumanChromosome8
 ;; ;;                 (e/translocation 1 2 h/HumanChromosome8Bandp23
 ;; ;;                                  h/HumanChromosome17Bandq21)
@@ -1045,7 +1047,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   derivative chromosome 22 generated by a t(9;22), i.e., an
 ;;   isochromosome for the long arm of a Ph chromosome.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/isoderivative 1 h/HumanChromosome22
 ;;   ;;                  h/HumanChromosome22Bandq10
 ;;   ;;                  (e/translocation 1 2 h/HumanChromosome9Bandq34
@@ -1069,7 +1071,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   the derivative chromosome 9 resulting from an insertion of the
 ;;   segment 12q13q22 at band 9p13.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   ;; (f/isoderivative 1 h/HumanChromosome9
 ;;   ;;                  h/HumanChromosome9Bandp10
 ;;   ;;                  (e/direct-insertion 1 h/HumanChromosome9Bandp13
@@ -1095,7 +1097,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosome 7. In addition, the segment 3q21qter has been
 ;;   translocated onto the long arm of chromosome 7 at band 7q21.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome5 h/HumanChromosome7
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome5Bandq22
 ;;   ;;                                h/HumanChromosome7Bandp13)
@@ -1131,7 +1133,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   segemnt as in the previous example is inserted between the long arm
 ;;   of chromosome 5 and the short arm of chromosome 7 at band 7q32.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome5 h/HumanChromosome7
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome3Bandq21
 ;;   ;;                                h/HumanChromosome5Bandq22)
@@ -1167,7 +1169,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosomes as in the previous example but with a additional
 ;;   terminal deletion of the long arm of chromosome 7 at band 7q32.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome5 h/HumanChromosome7
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome3Bandq21
 ;;   ;;                                h/HumanChromosome5Bandq22)
@@ -1209,7 +1211,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   translocated to one arm at band 8q24.1 and a deletion at band 8q22
 ;;   in the other arm.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome8Bandq10 h/HumanChromosome8Bandq10
 ;;   ;;               (e/deletion 1 h/HumanChromosome8Bandq22)
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome8Bandq24.1
@@ -1239,7 +1241,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosome 9 from band 9q22 has been translocated to a
 ;;   centromere-containing derivative chromosome of unknown origin.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   (e/addition 1 h/HumanChromosome)
 ;;   ;; (f/derivative 1 h/HumanChromosome
 ;;   ;;               (e/translocation 1 2 h/HumanChromosomeBand
@@ -1266,7 +1268,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   insertion in the long arm of the chromosome 7 segment between bands
 ;;   7q11.2 and 7q32.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome)
 ;;   ;; (f/derivative 1 h/HumanChromosome
 ;;   ;;               (e/translocation 1 2 h/HumanChromosomeBand
@@ -1302,7 +1304,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   previous example, and a homogeneously staining region in the long
 ;;   arm.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome)
 ;;   ;; (f/derivative 1 h/HumanChromosome
 ;;   ;;               (e/translocation 1 2 h/HumanChromosomeBand
@@ -1339,7 +1341,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosome 9. There are two normal chromosmoes 12, two normal
 ;;   chromosomes 22, but no normal chromosome 9.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome9
 ;;   ;;               (e/deletion 1 h/HumanChromosome9Bandp12)
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome9Bandq34
@@ -1393,7 +1395,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   additional Ph chromosome. The breakpoints in the extra der(22) need
 ;;   not be repeated.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/translocation 1
 ;;                    [h/HumanChromosome9Bandq34]
 ;;                    [h/HumanChromosome22Bandq11.2])
@@ -1424,7 +1426,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   t(1;11), which both contrivute to the der(1), are not repeated in
 ;;   the description of der(3) and der(11).'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome1Bandp32
 ;;   ;;                                h/HumanChromosome3Bandq21)
@@ -1499,7 +1501,7 @@ deletion, and also the breakpoints are unknown.'"
   and reunion of sister chromatids, it may be designated, e.g.,
   dic(13)(q14q32).'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/dicentric 1
                h/HumanChromosome13Bandq14
                h/HumanChromosome13Bandq32))
@@ -1514,7 +1516,7 @@ deletion, and also the breakpoints are unknown.'"
   imbalance of this abnormality is loss of the segments distal to
   13q22 and 15q24.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/dicentric 1
                h/HumanChromosome13Bandq22
                h/HumanChromosome15Bandq24))
@@ -1531,7 +1533,7 @@ deletion, and also the breakpoints are unknown.'"
   imbalance is partial trisomy for the segment 13pterq22 and loss of
   the segemnt 15q24qter.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosome13)
   (f/dicentric 1
                h/HumanChromosome13Bandq22
@@ -1547,7 +1549,7 @@ deletion, and also the breakpoints are unknown.'"
   imbalance of this abnormality is loss of the segments distal to
   14p11.2 and 21p11.2.)'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/dicentric 1
                h/HumanChromosome14Bandp11.2
                h/HumanChromosome21Bandp11.2))
@@ -1559,7 +1561,7 @@ deletion, and also the breakpoints are unknown.'"
   composed of one chromosome 17 with a break at band 17q22 and an
   unknown chromosome with an intact centromere.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/addition 1 h/HumanChromosome17)
   (e/addition 1 h/HumanChromosome)
   (f/dicentric 1
@@ -1574,7 +1576,7 @@ deletion, and also the breakpoints are unknown.'"
   chromosome. Th resulting net imbalance is loss of the segment
   Yq12qter and gain of Ypterq12.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/isodicentric 1 h/HumanChromosomeYBandq12))
 
 (defclass k46_XX_idic!21!!q22.3!
@@ -1586,7 +1588,7 @@ deletion, and also the breakpoints are unknown.'"
   are effectively three copies of the chromosome 21 long arm, ther
   normal chromosome 21 is not designated with a (+) sign.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/isodicentric 1 h/HumanChromosome21Bandq22.3))
 
 ;; REDIFINE
@@ -1596,7 +1598,7 @@ deletion, and also the breakpoints are unknown.'"
   13. There are two chromosomes 13 and the idic(13). Another example
   shown in Section 9.2.11.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 2 h/HumanChromosome13)
   (f/isodicentric 1 h/HumanChromosome13Bandq22))
 
@@ -1610,7 +1612,7 @@ deletion, and also the breakpoints are unknown.'"
   between homologues, dic(15;15)(q12;q12), (or psu dic, see below),
   would be more appropriate designation.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/addition 2 h/HumanChromosome15)
   (f/isodicentric 1 h/HumanChromosome15Bandq12))
 
@@ -1627,7 +1629,7 @@ deletion, and also the breakpoints are unknown.'"
   between homologues, dic(15;15)(q12;q12), (or psu dic, see below),
   would be more appropriate designation.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/addition 2 h/HumanChromosome15)
   (f/dicentric 1
                h/HumanChromosome15Bandq12
@@ -1642,7 +1644,7 @@ deletion, and also the breakpoints are unknown.'"
   psu dic(15;13). The centromere of the chromosome mentioned first,
   i.e., chromosome 15, is the active one.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/pseudo_dicentric 1
                       h/HumanChromosome15Bandq12
                       h/HumanChromosome15Bandq12))
@@ -1653,7 +1655,7 @@ deletion, and also the breakpoints are unknown.'"
   replaced one chromosome 20, resulting in three copies of
   20pterq11.2. The psu idic(20) has one active centromere.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/pseudo_dicentric 1
                       h/HumanChromosome15Bandq12
                       h/HumanChromosome15Bandq12))
@@ -1667,7 +1669,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 69 -> 'Direct duplication of the segment
   between bands 1q22 and 1q25.' 46,XX,dup(1)(pter->q25::q22->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/direct-duplication 1
                         h/HumanChromosome1Bandq22
                         h/HumanChromosome1Bandq25))
@@ -1683,7 +1685,7 @@ deletion, and also the breakpoints are unknown.'"
   46,XY,dup(1)(pter->q25::q25->q22::q25->qter) or
   46,XY,dup(1)(pter->q22::q25->q22::q22->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/inverse-duplication 1
                          h/HumanChromosome1Bandq25
                          h/HumanChromosome1Bandq22))
@@ -1698,7 +1700,7 @@ deletion, and also the breakpoints are unknown.'"
   according to the morpohology of the derivative chromosomes.'
   47,XY,-10,+fis(10)(pter->p10:),+fis(10)(qter->q10:)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/deletion 1 h/HumanChromosome10)
   (e/fission 1 h/HumanChromosome10Bandp10)
   (e/fission 1 h/HumanChromosome10Bandq10))
@@ -1710,7 +1712,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 69 -> 'A fragile site in subband Xq27.3 on one
   X chromosome in a female.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/fragilesite 1 h/HumanChromosomeXBandq27.3))
 
 (defclass k46_Y_fra!X!!q27.3!
@@ -1718,7 +1720,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 69 -> 'A fragile site in subband Xq27.3 on one
   X chromosome in a male.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/fragilesite 1 h/HumanChromosomeXBandq27.3))
 
 (defclass k45_fra!X!!q27.3!
@@ -1726,9 +1728,9 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 69 -> 'A fragile site in subband Xq27.3 on one
   X chromosome in a Turner syndrome patient'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XN)
+            (owl-some b/derivedFrom b/k46_XN)
             (e/deletion 1 h/HumanSexChromosome))) ;; aka 45,X
   (f/fragilesite 1 h/HumanChromosomeXBandq27.3))
 
@@ -1737,9 +1739,9 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 69 -> 'A fragile site in subband Xq27.3 on one
   X chromosome in a Klinefelter syndrome patient.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosomeX))) ;; aka 47,XXY
   (f/fragilesite 1 h/HumanChromosomeXBandq27.3))
 
@@ -1750,7 +1752,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 70 -> 'A homogeneously staining region in band
   1p22.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/hsr 1 h/HumanChromosome1Bandp22))
 
 ;; examples with a chromosome that contains multiple hsr or one hsr
@@ -1763,7 +1765,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosome 1: one in band 1p22 in the short arm and the other in
 ;;   band 1q31 in the long arm.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (f/hsr 1 h/HumanChromosome1Bandp22)
 ;;   ;;               (f/hsr 1 h/HumanChromosome1Bandq31)))
@@ -1785,7 +1787,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   or larger than the deleted segment. The hsr is by convention
 ;;   assigned to the poximal deletion breakpoint band.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (e/deletion 1 h/HumanChromosome1Bandp21
 ;;   ;;                           h/HumanChromosome1Bandp33)
@@ -1810,7 +1812,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   interface between the recipient and donor chromosomes. The hsr is
 ;;   located proximal to the segment inserted from chromosome 7.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (e/direct-insertion 1 h/HumanChromosome1Bandq21
 ;;   ;;                                   h/HumanChromosome7Bandp11.2
@@ -1839,7 +1841,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   between the recipient and donor chromosomes. The hsr is located
 ;;   distal to the segment inserted from chromosome 7.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (e/direct-insertion 1 h/HumanChromosome1Bandq21
 ;;   ;;                                   h/HumanChromosome7Bandp11.2
@@ -1872,7 +1874,7 @@ deletion, and also the breakpoints are unknown.'"
   than band 2q31.'
   46,XX,ins(2)(pter->p13::q31->q21::p13->q21::q31->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/direct-insertion 1
                       h/HumanChromosome2Bandp13
                       h/HumanChromosome2Bandq21
@@ -1888,7 +1890,7 @@ deletion, and also the breakpoints are unknown.'"
   than band 2q31.'
   46,XX,ins(2)(pter->p13::q31->q21::p13->q21::q31->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/direct-insertion-new 1 [h/HumanChromosome2Bandp13
                          h/HumanChromosome2Bandq21
                          h/HumanChromosome2Bandq31]))
@@ -1903,7 +1905,7 @@ deletion, and also the breakpoints are unknown.'"
   than band 2q31.'
   46,XX,ins(2)(pter->p13::q31->q21::p13->q21::q31->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/direct-insertion-new 1 [h/HumanChromosome2Bandp13]
                       [h/HumanChromosome2Bandq21
                        h/HumanChromosome2Bandq31]))
@@ -1918,7 +1920,7 @@ deletion, and also the breakpoints are unknown.'"
   been reversed with respect to the centromere.'
   46,XY,ins(2)(pter->p13::q21->q31::p13->q21::q31->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/inverse-insertion 1
                        h/HumanChromosome2Bandp13
                        h/HumanChromosome2Bandq31
@@ -1936,7 +1938,7 @@ deletion, and also the breakpoints are unknown.'"
   chromosome is specified first.'
   46,XY,ins(5;2)(5pter->5p14::2q32->2q22::5p14->5qter;2pter->2q22::2q32->2qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/direct-insertion 1
                       h/HumanChromosome5Bandp14
                       h/HumanChromosome2Bandq22
@@ -1952,7 +1954,7 @@ deletion, and also the breakpoints are unknown.'"
   than band 2q32.'
   46,XY,ins(5;2)(5pter->5p14::2q22->2q32::5p14->5qter;2pter->2q22::2q32->2qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/inverse-insertion 1
                        h/HumanChromosome5Bandp14
                        h/HumanChromosome2Bandq32
@@ -1964,7 +1966,7 @@ deletion, and also the breakpoints are unknown.'"
   from chromosome 2 into band 5q31.'
   46,XX,ins(5;2)(5pter->5q31::2p13->2p23::5q31->5qter;2pter->2p23::2p13->2qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/direct-insertion 1
                       h/HumanChromosome5Bandq31
                       h/HumanChromosome2Bandp13
@@ -1976,7 +1978,7 @@ deletion, and also the breakpoints are unknown.'"
   chromosome 2 into band 5q31 in an inverted orientation.'
   46,XX,ins(5;2)(5pter->5q31::2p23->2p13::5q31->5qter->2p23::2p13->2qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/inverse-insertion 1
                        h/HumanChromosome5Bandq31
                        h/HumanChromosome2Bandp23
@@ -1990,7 +1992,7 @@ deletion, and also the breakpoints are unknown.'"
   and union have occurred at bands 3q21 and 3q26.2.'
   46,XX,inv(3)(pter->q21::q26.2->q21::q26.2->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/inversion 1
                h/HumanChromosome3Bandq21
                h/HumanChromosome3Bandq26.2))
@@ -2001,7 +2003,7 @@ deletion, and also the breakpoints are unknown.'"
   and reunion have occurred at bands 3p13 and 3q21.'
   46,XY,inv(3)(pter->p13::q21->p13::q21->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/inversion 1
                h/HumanChromosome3Bandp13
                h/HumanChromosome3Bandq21))
@@ -2016,7 +2018,7 @@ deletion, and also the breakpoints are unknown.'"
   i(17q) may be used in text but not in the karyotype to describe this
   isochromosome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/isochromosome 1 h/HumanChromosome17Bandq10))
 
 (defclass k46_X_i!X!!q10!
@@ -2024,7 +2026,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 72 -> 'One normal X chromosome and an
   isochromosome for the long arm of one X chromosome.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/isochromosome 1 h/HumanChromosomeXBandq10))
 
 (defclass k47_XY_i!X!!q10!
@@ -2032,9 +2034,9 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 72 -> 'A male showing an isochromosome of the
   long arm of the X chromosome in addition to a normal X and Y.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosomeX))) ;; aka 47,XXY
   (f/isochromosome 1 h/HumanChromosomeXBandq10))
 
@@ -2044,7 +2046,7 @@ deletion, and also the breakpoints are unknown.'"
   the long arms of chromosome 17 and the short arm materials between
   the centromeresand the breakpoints in 17p11.2.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/isodicentric 1 h/HumanChromosome17Bandp11.2))
 
 (defclass k46_XX_i!21!!q10!
@@ -2056,7 +2058,7 @@ deletion, and also the breakpoints are unknown.'"
   copies of the long arm of chromosome 21, the normal chromosome 21 is
   not designated with a (+) sign.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/isochromosome 1 h/HumanChromosome21Bandq10))
 
 
@@ -2065,7 +2067,7 @@ deletion, and also the breakpoints are unknown.'"
   :label "The 47,XX,+mar karyotype"
   :comment "ISCN2009 pg 73 -> 'On additional marker chromosome'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/marker 1))
 
 (defclass k47_XX_t!12_16!!q13_p11.2!_+mar
@@ -2073,7 +2075,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 73 -> 'One marker chromosome in addition to
   t(12;16).'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosome12Bandq13]
                    [h/HumanChromosome16Bandp11.2])
@@ -2084,7 +2086,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 73 -> 'Two marker chromosomes in addition to
   t(X;18).'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosomeXBandp11.2]
                    [h/HumanChromosome18Bandq11.2])
@@ -2101,7 +2103,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   the chromosome is composed of the chromosome 15 segemnt distal to
 ;;   band 15q22.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome
 ;;   ;;               (e/translocation 1 2 h/HumanChromosomeBand
 ;;   ;;                               h/HumanChromosome15Bandq22)))
@@ -2137,7 +2139,7 @@ deletion, and also the breakpoints are unknown.'"
   bands 1q23 and 1q32.'
   46,XX,qdp(1)(pter->q32::q23->q32::q23->q32::q23->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/quadruplication 1
                      h/HumanChromosome1Bandq23.1
                      h/HumanChromosome1Bandq32.3))
@@ -2151,7 +2153,7 @@ deletion, and also the breakpoints are unknown.'"
   reunion have occurred at bands 7p22 and 7q36. The segments distal to
   these breakpoints have been deleted.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/ring 1
           h/HumanChromosome1Bandq23.1 h/HumanChromosome1Bandq32.3))
 
@@ -2163,7 +2165,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   breakpoints in 1p36.1 and 1q23, and the acentric segment between
 ;;   bands 3q21 and 3q27 of chromosome 3.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (f/ring
 ;;   ;;                h/HumanChromosome1Bandp36.1 h/HumanChromosome1Bandq23
@@ -2191,7 +2193,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   the previous example, but the orientation of the acentric segment is
 ;;   reversed.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   ;; (f/derivative 1 h/HumanChromosome1
 ;;   ;;               (f/ring 1
 ;;   ;;                       h/HumanChromosome1Bandp36.1 h/HumanChromosome1Bandq23
@@ -2217,7 +2219,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   :comment "ISCN2009 pg 75 -> 'A ring composed of chromosome 1 with
 ;;   breakpoints in 1p36.1 and 1q23, and an unknown acentric segment.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (f/derivative 1 h/HumanChromosome1
 ;;                 (f/ring 1 h/HumanChromosome1Bandp36.1
 ;;                         h/HumanChromosome1Bandq23 h/HumanChromosomeBand
@@ -2230,7 +2232,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   centromere is unknown, but the ring contains the acentric segments
 ;;   3q21 to 3q26.2 and 5q13 to 5q33.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome)
 ;;   ;; (f/derivative 1 h/HumanChromosome
 ;;   ;;               (f/ring 1
@@ -2269,7 +2271,7 @@ deletion, and also the breakpoints are unknown.'"
   :label "The 49,XX,+1,+3,r(7),+8 karyotype"
   :comment "ISCN2009 pg 76"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosome1)
   (e/addition 1 h/HumanChromosome3)
   (e/addition 1 h/HumanChromosome8)
@@ -2280,7 +2282,7 @@ deletion, and also the breakpoints are unknown.'"
   :label "The 50,XX,+1,+3,+8,+r karyotype"
   :comment "ISCN2009 pg 76"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosome1)
   (e/addition 1 h/HumanChromosome3)
   (e/addition 1 h/HumanChromosome8)
@@ -2294,7 +2296,7 @@ deletion, and also the breakpoints are unknown.'"
   :label "The 50,XX,+1,+3,+8,+r,+mar karyotype"
   :comment "ISCN2009 pg 76"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosome1)
   (e/addition 1 h/HumanChromosome3)
   (e/addition 1 h/HumanChromosome8)
@@ -2315,7 +2317,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 77 -> 'Association between the telomeric
   regions of the long arms of chromosomes 12 and 13.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (exactly 1 f/hasFeature
            (owl-and f/TelomericAssociations
                    (owl-and
@@ -2330,7 +2332,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 77 -> 'Association between the telomeric
   regions of Xq and 12p, and 12q and 3q.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (exactly 1 f/hasFeature
            (owl-and f/TelomericAssociations
                    (owl-and
@@ -2350,7 +2352,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 77 -> 'Association between the telomeric
   regions of 1p and Xq, Xp and 12p, and 12q and 7p.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (exactly 1 f/hasFeature
            (owl-and f/TelomericAssociations
                    (owl-and
@@ -2379,7 +2381,7 @@ deletion, and also the breakpoints are unknown.'"
   exchanged.'
   46,XY,t(2;5)(2pter->2q21::5q31->5qter;5pter->5q31::2q21->2qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosome2Bandq21]
                    [h/HumanChromosome5Bandq31]))
@@ -2391,7 +2393,7 @@ deletion, and also the breakpoints are unknown.'"
   exchanged.'
   46,XY,t(2;5)(5qter->5q31::2p12->2qter;5pter->5q31::2p12->2pter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosome2Bandp12]
                    [h/HumanChromosome5Bandq31]))
@@ -2407,7 +2409,7 @@ deletion, and also the breakpoints are unknown.'"
   should be designated 46,Y,t(X;13) and not 46,XY,t(X;13).'
   46,X,t(X;13)(Xpter->Xq27::13q12->13qter;13pter->13q12::Xq27->Xqter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosomeXBandq27]
                    [h/HumanChromosome13Bandq12]))
@@ -2419,7 +2421,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosome and a Y chromosome with breakpoints at bands Xq22 and
 ;;   Yq11.2.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   (e/translocation 1 h/HumanChromosomeXBandq22 h/HumanChromosomeYq11.2))
 
 ;; ;; ERROR in book! - there is no resolution band for Y q11.2
@@ -2431,7 +2433,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   1p31. Abnormalities of the X chromosome are listed before those of
 ;;   the Y chromosome.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   (e/translocation 1 h/HumanChromosomeXBand11.2 h/HumanChromosome18Bandq11.2)
 ;;   (e/translocation 1 h/HumanChromosomeYBand11.2 h/HumanChromosome1Bandp31))
 
@@ -2446,7 +2448,7 @@ deletion, and also the breakpoints are unknown.'"
   46,XX,t(2;7;5)(5qter->5q23::2p21->2qter; 7pter7q22::2p21->2pter;
   5pter->5q23::7q22->7qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosome2Bandp21]
                    [h/HumanChromosome7Bandq22]
@@ -2461,7 +2463,7 @@ deletion, and also the breakpoints are unknown.'"
   the chromosome X at Xq24.' 46,X,t(X;22;1)(Xpter->Xq24::1p33_>1pter;
   22pter->22q11.2::Xq24->Xqter; 22qter->22q11.2::1p33->1qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosomeXBandq24]
                    [h/HumanChromosome22Bandq11.2]
@@ -2483,7 +2485,7 @@ deletion, and also the breakpoints are unknown.'"
   46,XX,t(2;7;7*)(2pter->2q21::7*p13->7*pter;
   7pter->7q22::2q21->2qter; 7qter->7q22::7*p13->7*qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosome3Bandq21]
                    [h/HumanChromosome7Bandq22]
@@ -2502,7 +2504,7 @@ deletion, and also the breakpoints are unknown.'"
   9pter->9q34::3p13->3pter; 22pter->22q11.2::9q34->9qter;
   21pter->21q21::22q11.2->22qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosome3Bandp13]
                    [h/HumanChromosome9Bandq34]
@@ -2524,7 +2526,7 @@ deletion, and also the breakpoints are unknown.'"
   9pter->9q22::3p13->3pter; 9*pter->9*q34::9q22->9qter;
   22pter->22q11.2::9*q34->9*ter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosome3Bandp13]
                    [h/HumanChromosome9Bandq22]
@@ -2539,7 +2541,7 @@ deletion, and also the breakpoints are unknown.'"
   been exchanged.' 46,XY,t(5;6)(5pter->5q13::6q15->6q23::5q23->5qter;
   6pter->6q15::5q13->5q23::6q23->6qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosome5Bandq13]
                    [h/HumanChromosome5Bandq23]
@@ -2561,7 +2563,7 @@ deletion, and also the breakpoints are unknown.'"
   14pter->14q21::5q13->5q23::14q24->14qter; +
   9ter->9p23::14q21->14q21->14q24::9p12->9qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   ;; (e/translocation 1
   ;;                  [h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23]
   ;;                  [h/HumanChromosome14Bandq24 h/HumanChromosome14Bandq21]
@@ -2601,7 +2603,7 @@ deletion, and also the breakpoints are unknown.'"
   has been fused with the short arm of chromosome 3.'
   46,XY,t(1;3)(1pter->1p10::3q10->3qter;3pter->3p10::1q10->1qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosome1Bandp10]
                    [h/HumanChromosome3Bandq10]))
@@ -2614,7 +2616,7 @@ deletion, and also the breakpoints are unknown.'"
   centromeres.'
   46,XY,t(1;3)(1pter->1p10::3p10->3pter;1qter->1q10::3q10->3qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosome1Bandp10]
                    [h/HumanChromosome3Bandp10]))
@@ -2631,7 +2633,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   monosomy for the long arm of chromosome 1 and monosomy for the short
 ;;   arm of chromosome 3.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
 ;; (defclass k46_XX_+1_der!1_3!!p10_q10!
@@ -2646,7 +2648,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   the der(1;3). The resulting net imbalance is trisomy for 1p and
 ;;   monosomy 3p.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome1)
 ;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
@@ -2662,7 +2664,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   the der(1;3). The resulting net imbalance is monosomy for 1q and
 ;;   trisomy 3q.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome3)
 ;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
@@ -2675,7 +2677,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   1, two normal chromosomes 3, and the der(1;3). The resulting net
 ;;   imbalance is trisomy for 1p, and trisomy for 3q.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome1)
 ;;   (e/addition 1 h/HumanChromosome3)
 ;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
@@ -2691,7 +2693,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosome 3, and the der(1;3). The resulting net imbalance is
 ;;   nullisomy for 1q, monosomy for 1p, and monosomy for 3p.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/deletion 1 h/HumanChromosome1)
 ;;   (f/derivative 1 h/HumanChromosome1Bandp10 h/HumanChromosome3Bandq10))
 
@@ -2706,7 +2708,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   one normal chromosome 21, and the der(13;21). The resulting net
 ;;   imbalance is loss of the short arms of chromosomes 13 and 21.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (f/derivative 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
 ;; (defclass k45_XX_rob!13_21!!q10_q10!
@@ -2719,7 +2721,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   one normal chromosome 21, and the der(13;21). The resulting net
 ;;   imbalance is loss of the short arms of chromosomes 13 and 21.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (f/robertsonian 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
 ;; (defclass k46_XX_der!13_21!!q10_q10!_+21
@@ -2735,7 +2737,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   loss of the short arm of chromosome 13 and trisomy for the long arm
 ;;   of chromosome 21.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome21)
 ;;   (f/derivative 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
@@ -2752,7 +2754,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   loss of the short arm of chromosome 13 and trisomy for the long arm
 ;;   of chromosome 21.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome21)
 ;;   (f/robertsonian 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
@@ -2769,7 +2771,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   loss of the short arm of chromosome 21 and trisomy for the long arm
 ;;   of chromosome 13.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome13)
 ;;   (f/derivative 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
@@ -2786,7 +2788,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   loss of the short arm of chromosome 21 and trisomy for the long arm
 ;;   of chromosome 13.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome13)
 ;;   (f/robertsonian 1 h/HumanChromosome13Bandq10 h/HumanChromosome21Bandq10))
 
@@ -2798,7 +2800,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   21, indicated by the 46 count. The normal chromosome 21 is
 ;;   designated with a (+)'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome21)
 ;;   (f/derivative 1 h/HumanChromosome21Bandq10 h/HumanChromosome21Bandq10))
 
@@ -2810,7 +2812,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   21, indicated by the 46 count. The normal chromosome 21 is
 ;;   designated with a (+)'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 1 h/HumanChromosome21)
 ;;   (f/robertsonian 1 h/HumanChromosome21Bandq10 h/HumanChromosome21Bandq10))
 
@@ -2824,7 +2826,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 82 -> 'A tricentric chromosome in which band
   4q31.1 is fused with 12q222 and 12p13 is fused with 9q34.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/tricentric 1 h/HumanChromosome4Bandq31.2
                 h/HumanChromosome12Bandq22 h/HumanChromosome12Bandp13
                 h/HumanChromosome9Bandq34))
@@ -2840,7 +2842,7 @@ deletion, and also the breakpoints are unknown.'"
   the triplications of this segment.'
   46,XX,trp(1)(pter->q32::q21->q32::q21->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/direct-triplication 1
                          h/HumanChromosome1Bandq23.1
                          h/HumanChromosome1Bandq32.3))
@@ -2851,7 +2853,7 @@ deletion, and also the breakpoints are unknown.'"
   between bands 1q21 and 1q32.'
   46,XX,inv trp(1)(pter->q32::q32->q21::q21->qter)"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/inverse-triplication 1
                           h/HumanChromosome1Bandq23.1
                           h/HumanChromosome1Bandq32.3))
@@ -2866,7 +2868,7 @@ deletion, and also the breakpoints are unknown.'"
   chromosomes, there is no need to indicate the missing normal
   chromosomes.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 2
               h/HumanChromosome6Bandq13
               h/HumanChromosome6Bandq23))
@@ -2878,7 +2880,7 @@ deletion, and also the breakpoints are unknown.'"
   additional deleted chromosomes 6 with breakpoints at bands 6q13 and
   6q23.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 2 h/HumanChromosome6)
   (e/deletion 2
               h/HumanChromosome6Bandq13
@@ -2893,7 +2895,7 @@ deletion, and also the breakpoints are unknown.'"
   supernumerary deleted chromosome has to be preceded by a plus
   sign.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 1 h/HumanChromosome6)
   (e/deletion 3
               h/HumanChromosome6Bandq13
@@ -2905,7 +2907,7 @@ deletion, and also the breakpoints are unknown.'"
   two normal chromosomes6; in addition, there are two extra
   chromosomes 7.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/addition 2 h/HumanChromosome7)
   (e/deletion 2
               h/HumanChromosome6Bandq13
@@ -2917,7 +2919,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   :comment "ISCN2009 pg 83 -> 'A balanced t(8;14) plus two additional
 ;;   copies of the derivative chromosome 14.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 2 h/HumanChromosome14)
 ;;   ;; (f/derivative 2 h/HumanChromosome14
 ;;   ;;               (e/translocation 1 2 h/HumanChromosome8Bandq24.1
@@ -2948,7 +2950,7 @@ deletion, and also the breakpoints are unknown.'"
   chromosomes 8 and 14. Thus, there are two normal chromosomes 8 and
   14.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k92_XXXX)
+  (owl-some b/derivedFrom b/k92_XXXX)
   (e/translocation 2
                    [h/HumanChromosome8Bandq24.1]
                    [h/HumanChromosome14Bandq32]))
@@ -2960,7 +2962,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   balanced t(8;14) plus two additional copies of the derivative
 ;;   chromosome 14. There are two normal chromosomes 8 and 14.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k92_XXYY)
+;;   (owl-some b/derivedFrom b/k92_XXYY)
 ;;   (e/addition 2 h/HumanChromosome14)
 ;;   (f/derivative 2 h/HumanChromosome14
 ;;                 (e/translocation 1 2 h/HumanChromosome8Bandq24.1
@@ -2978,7 +2980,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   normal chromosomes 14; consequently there is no normal chromosome
 ;;   14.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k92_XXYY)
+;;   (owl-some b/derivedFrom b/k92_XXYY)
 ;;   (e/addition 1 h/HumanChromosome14)
 ;;   (f/derivative 2 h/HumanChromosome14
 ;;                 (e/translocation 1 2 h/HumanChromosome8Bandq24.1
@@ -2994,7 +2996,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   balanced t(8;14), three extra copies of the derivative chromosome
 ;;   14, and one normal chromosome 14.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k92_XXYY)
+;;   (owl-some b/derivedFrom b/k92_XXYY)
 ;;   (e/addition 2 h/HumanChromosome14)
 ;;   (f/derivative 2 h/HumanChromosome14
 ;;                 (e/translocation 1 2 h/HumanChromosome8Bandq24.1
@@ -3007,7 +3009,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosome complement with one normal chromosome 8 and two copies of
 ;;   an isochromosome for the long arm of chromosome 8.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 2 h/HumanChromosome8)
 ;;   (f/isochromosome 2 h/HumanChromosome8Bandq10))
 
@@ -3017,7 +3019,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosome complement with one normal chromosome 8 and two copies of
 ;;   an isochromosome for the long arm of chromosome 8.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 2 h/HumanChromosome8)
 ;;   (f/isochromosome 2 h/HumanChromosome8Bandq10))
 
@@ -3027,99 +3029,99 @@ deletion, and also the breakpoints are unknown.'"
 (defclass k45_Y
   :label "The 45,Y karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/deletion 1 h/HumanChromosomeX))))
 (defclass k46_YY
   :label "The 46,YY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/deletion 1 h/HumanChromosomeX)
             (e/addition 1 h/HumanChromosomeY))))
 (defclass k47_YYY
   :label "The 47,YYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/deletion 1 h/HumanChromosomeX)
             (e/addition 2 h/HumanChromosomeY))))
 (defclass k48_XXXX
   :label "The 48,XXXX karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XX)
+            (owl-some b/derivedFrom b/k46_XX)
             (e/addition 2 h/HumanChromosomeX))))
 (defclass k48_XXYY
   :label "The 48,XXYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosomeX)
             (e/addition 1 h/HumanChromosomeY))))
 (defclass k48_XYYY
   :label "The 48,XYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 2 h/HumanChromosomeY))))
 (defclass k48_YYYY
   :label "The 48,YYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/deletion 1 h/HumanChromosomeX)
             (e/addition 3 h/HumanChromosomeY))))
 (defclass k49_XXXXX
   :label "The 49,XXXXX karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XX)
+            (owl-some b/derivedFrom b/k46_XX)
             (e/addition 3 h/HumanChromosomeX))))
 (defclass k49_XXXXY
   :label "The 49,XXXXY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 3 h/HumanChromosomeX))))
 (defclass k49_XXXYY
   :label "The 49,XXXYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 2 h/HumanChromosomeX)
             (e/addition 1 h/HumanChromosomeY))))
 (defclass k49_XXYYY
   :label "The 49,XXYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 1 h/HumanChromosomeX)
             (e/addition 2 h/HumanChromosomeY))))
 (defclass k49_XYYYY
   :label "The 49,XYYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/addition 3 h/HumanChromosomeY))))
 (defclass k49_YYYYY
   :label "The 49,YYYYY karyotype"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom
+  (owl-some b/derivedFrom
            (owl-and
-            (owl-some n/derivedFrom n/k46_XY)
+            (owl-some b/derivedFrom b/k46_XY)
             (e/deletion 1 h/HumanChromosomeX)
             (e/addition 4 h/HumanChromosomeY))))
 
@@ -3128,7 +3130,7 @@ deletion, and also the breakpoints are unknown.'"
   :label "The 46,XX,inv(2)(p21q31) karyotype"
   :comment "ISCN2009 pg 42"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/inversion 1
                h/HumanChromosome2Bandp21
                h/HumanChromosome2Bandq31))
@@ -3137,7 +3139,7 @@ deletion, and also the breakpoints are unknown.'"
   :label "The 46,XX,inv(2)(p13p23) karyotype"
   :comment "ISCN2009 pg 42"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/inversion 1
                h/HumanChromosome2Bandp13
                h/HumanChromosome2Bandp23))
@@ -3146,7 +3148,7 @@ deletion, and also the breakpoints are unknown.'"
   :label "The 46,XY,t(12;16)(q13;p11.1) karyotype"
   :comment "ISCN2009 pg 43"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosome12Bandq13]
                    [h/HumanChromosome16Bandp11.1]))
@@ -3155,7 +3157,7 @@ deletion, and also the breakpoints are unknown.'"
   :label "The 46,X,t(X;18)(p11.1;q11.1) karyotype"
   :comment "ISCN2009 pg 43"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XN)
+  (owl-some b/derivedFrom b/k46_XN)
   (e/translocation 1
                    [h/HumanChromosomeXBandp11.1]
                    [h/HumanChromosome18Bandq11.1]))
@@ -3164,7 +3166,7 @@ deletion, and also the breakpoints are unknown.'"
   :label "The 46,X,ins(5;X)(p14;q21q25) karyotype"
   :comment "ISCN2009 pg 43"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/direct-insertion 1
                       h/HumanChromosome5Bandp14
                       h/HumanChromosomeXBandq21
@@ -3176,7 +3178,7 @@ deletion, and also the breakpoints are unknown.'"
   segment between bands 2p13 and 2p23 into the long arm at band
   2q13.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/direct-insertion 1
                       h/HumanChromosome2Bandq13
                       h/HumanChromosome2Bandp13
@@ -3189,7 +3191,7 @@ deletion, and also the breakpoints are unknown.'"
   2q13. Because the insertion is inverted, band 2p23 is now proximal
   and band 2p13 distal to the centromere.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/inverse-insertion 1
                        h/HumanChromosome2Bandq13
                        h/HumanChromosome2Bandp23
@@ -3203,7 +3205,7 @@ deletion, and also the breakpoints are unknown.'"
   onto chromosome 17 at 17q22, and the segment of chromosome 17 distal
   has been translocated onto chromosome 9 at 9q34.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosome9Bandq34]
                    [h/HumanChromosome22Bandq11.2]
@@ -3217,7 +3219,7 @@ deletion, and also the breakpoints are unknown.'"
   onto chromosome 18 at 18q11.1, and the segment of chromosome 18
   distal to 18q11.2 has been translocated to Xp11.1.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosomeXBandp11.1]
                    [h/HumanChromosome15Bandp11.1]
@@ -3233,7 +3235,7 @@ deletion, and also the breakpoints are unknown.'"
   chromsome 21 distal to 21q21 has been translocated onto chromosome 3
   3p13.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosome3Bandp13]
                    [h/HumanChromosome9Bandq34]
@@ -3247,7 +3249,7 @@ deletion, and also the breakpoints are unknown.'"
   chromosome 5 and between 6q15 and 6q23 of choromosome 6 have been
   exchanged.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23]
                    [h/HumanChromosome6Bandq15 h/HumanChromosome6Bandq23]))
@@ -3268,7 +3270,7 @@ deletion, and also the breakpoints are unknown.'"
   may be useful in text but should not be used in karyotype
   nomenclature.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 1 h/HumanChromosome1Bandq))
 
 ;; pg 49
@@ -3282,7 +3284,7 @@ deletion, and also the breakpoints are unknown.'"
   chromosome number order, irrespective of whether the aberrations are
   numerical or structural.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosomeXBandq27]
                    [h/HumanChromosome13Bandq12])
@@ -3296,7 +3298,7 @@ deletion, and also the breakpoints are unknown.'"
   :comment "ISCN2009 pg 52 -> 'The same karyotype as in the previous
   example in a male.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XY)
+  (owl-some b/derivedFrom b/k46_XY)
   (e/translocation 1
                    [h/HumanChromosomeXBandq27]
                    [h/HumanChromosome13Bandq12])
@@ -3311,7 +3313,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   :comment "ISCN2009 pg 52 -> 'The abnormality involving the X
 ;;   chromosome is listed before that of the Y chromosome.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   (e/translocation 1 2 h/HumanChromosomeXBandp11.1 h/HumanChromosome18Bandq11.2)
 ;;   (e/translocation 1 2 h/HumanChromosomeYBandq11.2 h/HumanChromosome1Bandp13)
 ;;   )
@@ -3325,7 +3327,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   chromosome is presented first, followed by all autosomal
 ;;   abnormalities in strict chromosome number order.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XY)
+;;   (owl-some b/derivedFrom b/k46_XY)
 ;;   (e/translocation 1 2 h/HumanChromosomeYBandq11.2 h/HumanChromosome12Bandp12)
 ;;   (e/deletion 1 h/HumanChromosome6Bandq11)
 ;;   (e/addition 1 h/HumanChromosome8)
@@ -3344,7 +3346,7 @@ deletion, and also the breakpoints are unknown.'"
   inversion of chromosome 3 and the monosomy 20 before the deletion of
   chromosome 20.'"
   :subclass ISCNExampleKaryotype
-  (owl-some n/derivedFrom n/k46_XX)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/inversion 1
                h/HumanChromosomeXBandp21
                h/HumanChromosomeXBandq26)
@@ -3369,7 +3371,7 @@ deletion, and also the breakpoints are unknown.'"
 ;;   is presented first, followed by the structural aberrations listed
 ;;   in alphabetical order: del, dup, inv.'"
 ;;   :subclass ISCNExampleKaryotype
-;;   (owl-some n/derivedFrom n/k46_XX)
+;;   (owl-some b/derivedFrom b/k46_XX)
 ;;   (e/addition 3 h/HumanChromosome1)
 ;;   (e/deletion 1 h/HumanChromosome1Bandp13)
 ;;   (e/direct-duplication 1 h/HumanChromosome1Bandq21 h/HumanChromosome1Bandq32)
