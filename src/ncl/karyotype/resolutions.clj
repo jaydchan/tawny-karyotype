@@ -17,7 +17,8 @@
 
 (ns ncl.karyotype.resolutions
   (:use [tawny.owl])
-  (:require [ncl.karyotype [human :as h]]
+  (:require [ncl.karyotype [karyotype :as k]]
+            [ncl.karyotype [human :as h]]
             [clojure.java.io :as io]))
 
 (defontology resolutions
@@ -40,16 +41,11 @@
 ;; TODO - define object properties
 (defoproperty seenAtResolution)
 
-;; function to read a file
+;; Auxiliary functions
 (defn get-lines [file-name]
+  "Reads in file-name"
   (with-open [r (io/reader file-name)]
     (doall (line-seq r))))
-
-;; reads in data
-(def string-results (get-lines "resolutions.txt"))
-(def results
-  (for [r string-results]
-    (read-string r)))
 
 (defn get-band [string]
   (let [string-band
@@ -65,20 +61,54 @@
         (str "r" value "-band")]
     (owl-class string-resolution)))
 
+;; resolution pattern
 (defn resolution [band & resolutions]
   (refine (owl-class h/human band)
           :subclass
           (some-only seenAtResolution resolutions)))
 
+;; MAIN
+;; reads in data
+(def string-results (get-lines "resources/resolutions.txt"))
+(def results
+  (for [r string-results]
+    (read-string r)))
+
+;; creates resolution restrictions
 (doseq [r results]
   (resolution (get-band (first r))
               (for [res (rest r)]
                 (get-resolution res))))
 
-;; missing 300-bands
-;; 4p12 & 4p13 -> 4p12p13p14
-;; Xq12 -> Xq12q13
+;; tests
+(defclass is-300-band
+  :equivalent
+  (owl-and h/HumanChromosomeBand
+             (owl-some seenAtResolution r300-band)))
 
-;; ACTUAL sixe of 300-bands is 307
+(defclass is-400-band
+  :equivalent
+  (owl-and h/HumanChromosomeBand
+             (owl-some seenAtResolution r400-band)))
 
-;; CHECK 400,550,700,850
+(defclass is-550-band
+  :equivalent
+  (owl-and h/HumanChromosomeBand
+             (owl-some seenAtResolution r550-band)))
+
+(defclass is-700-band
+  :equivalent
+  (owl-and h/HumanChromosomeBand
+             (owl-some seenAtResolution r700-band)))
+
+(defclass is-850-band
+  :equivalent
+  (owl-and h/HumanChromosomeBand
+             (owl-some seenAtResolution r850-band)))
+
+(defclass centromere-and-telomere
+  :equivalent
+  (owl-and h/HumanChromosomeBand
+           (owl-or
+            (owl-some k/isBandOf h/HumanCentromere)
+            (owl-some k/isBandOf h/HumanTelomere))))
