@@ -18,7 +18,7 @@
 (ns ncl.karyotype.human
   (:use [tawny.owl])
   (:require [tawny.read]
-            [clojure.set]
+            [tawny [reasoner :as rea]]
             [ncl.karyotype [karyotype :as k]]))
 
 (defontology human
@@ -28,22 +28,22 @@
 (owl-import k/karyotype)
 
 ;; AUXILLARY FUNCTIONS
-(defn pband?
+(defn str-pband?
   "Determine if the given band is a p band"
   [band]
   (re-find #"p" band))
 
-(defn qband?
+(defn str-qband?
   "Determine if the given band is a q band"
   [band]
   (re-find #"q" band))
 
-(defn ter?
+(defn str-ter?
   "Determine if the given band is a telomere"
   [band]
   (re-find #"Ter" band))
 
-(defn cen?
+(defn str-cen?
   "Determine if the given band is a centromere"
   [band]
   (re-find #"0" band))
@@ -58,9 +58,9 @@
   "Given a band return the appropriate bandgroup"
   [bandgroup band]
   (cond
-   (pband? band)
+   (str-pband? band)
    (str bandgroup "p")
-   (qband? band)
+   (str-qband? band)
    (str bandgroup "q")
    :default
    (throw (IllegalArgumentException.
@@ -210,21 +210,21 @@ PARENT, which is either p or q band."
               ;; else we have a single band
               ;; if the band is the centromere, generate associated
               ;; centromere bands
-              (cen? band)
+              (str-cen? band)
               (create-class-with-superclasses
                 (str bandgroup band)
                 (fgroup band)
                 (owl-some k/isBandOf (str group "Centromere")))
               ;; if the band is a terminal, generate associated telomere
               ;; bands
-              (ter? band)
+              (str-ter? band)
               (create-class-with-superclasses
                 (str bandgroup band)
                 (fgroup band)
                 (owl-some k/isBandOf (str group "Telomere")))
               ;; if the band is a p or q band, generate the band
-              (or (pband? band)
-                  (qband? band))
+              (or (str-pband? band)
+                  (str-qband? band))
               (create-class-with-superclasses
                 (str bandgroup band)
                 (fgroup band))
@@ -965,19 +965,53 @@ PARENT, which is either p or q band."
  "q12"
  "qTer")
 
-;; TOFIX NEW AUXILLARY FUNCTIONS - for other classes?
-(defn ter?-new
-  "Determine if the given band is a telomere - using ontology"
-  [band]
-  (superclass? ncl.karyotype.human/human band
-                  (owl-and
-                   HumanChromosomeBand
-                   (owl-some k/isBandOf HumanTelomere))))
 
-(defn cen?-new
-  "Determine if the given band is a telomere - using ontology"
-  [band]
-  (superclass? ncl.karyotype.human/human band
-               (owl-and
-                HumanChromosomeBand
-                (owl-some k/isBandOf HumanCentromere))))
+;; CLASSES
+(defclass is-centromere
+  :equivalent
+  (owl-and HumanChromosomeBand
+           (owl-some k/isBandOf HumanCentromere)))
+
+(defclass is-telomere
+  :equivalent
+  (owl-and HumanChromosomeBand
+           (owl-some k/isBandOf HumanTelomere)))
+
+(defclass is-pband
+  :equivalent
+  (owl-and HumanChromosomeBand
+           (owl-or
+            (map #(owl-class
+                   (str "HumanChromosome" % "Bandp"))
+                 (conj (range 1 23) "X" "Y")))))
+
+(defclass is-qband
+  :equivalent
+  (owl-and HumanChromosomeBand
+           (owl-or
+            (map #(owl-class
+                   (str "HumanChromosome" % "Bandq"))
+                 (conj (range 1 23) "X" "Y")))))
+
+
+;; FUNCTIONS
+(rea/reasoner-factory :hermit)
+(binding [rea/*reasoner-progress-monitor*
+          (atom
+           rea/reasoner-progress-monitor-silent)]
+
+  (defn ter? [band]
+    "Determine if the given band is a telomere - using ontology"
+    (rea/isuperclass? band is-telomere))
+
+  (defn cen? [band]
+    "Determine if the given band is a centromere - using ontology"
+    (rea/isuperclass? band is-centromere))
+
+  (defn pband? [band]
+    "Determine if the given band is a pband - using ontology"
+    (rea/isuperclass? band is-pband))
+
+  (defn qband? [band]
+    "Determine if the given band is a qband - using ontology"
+    (rea/isuperclass? band is-qband)))
