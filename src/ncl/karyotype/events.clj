@@ -91,7 +91,7 @@
 
 ;; TODO Update methodology st making use of the ontology instead of
 ;; string manipulation.
-(defn- get-telomere
+(defn get-telomere
   [band]
     (let [s1 (second (clojure.string/split (str band) #"human#"))
           s2 (first (clojure.string/split s1 #"Band|Telomere|Centromere"))
@@ -99,9 +99,9 @@
       (owl-class
        ncl.karyotype.human/human
        (cond
-        (h/pband? s1)
+        (h/str-pband? s1)
         (str s2 "BandpTer")
-        (h/qband? s1)
+        (h/str-qband? s1)
         (str s2 "BandqTer")
         (re-find #"[\d]+" s1)
         (str s2 "Telomere")
@@ -146,6 +146,16 @@
 ;; FUNCTIONS
 ;; TODO - Precondition for each function?
 
+;; Addition patterns
+(defn addition-chromosome [n chromosome]
+  (exactly n hasEvent
+           (owl-and Addition chromosome)))
+
+(defn addition-band [n band]
+  (exactly n hasEvent
+           (owl-and Addition
+                    (owl-some hasBreakPoint band))))
+
 ;; Chromosomal Addition OR Chromosomal Band Addition
 (defn addition
   "Returns an addition retriction.
@@ -161,21 +171,28 @@ chrom_band is either of type HumanChromosome or HumanChromosomeBand."
      (or
       (= h/HumanChromosome chrom_band)
       (superclass? chrom_band h/HumanChromosome))
-     (exactly n hasEvent
-              (owl-and Addition chrom_band))
+     (addition-chromosome n chrom_band)
      ;; If chrom_band is of type HumanChromosomeBand then
      ;; restriction represents a chromosomal band addition.
      (or
       (= h/HumanChromosomeBand chrom_band)
       (superclass? chrom_band h/HumanChromosomeBand))
-     (exactly n hasEvent
-              (owl-and Addition
-                      (owl-some hasBreakPoint chrom_band)))
+     (addition-band n chrom_band)
      :default
      (throw
       (IllegalArgumentException.
        (str "Addition expects a Chromosome or ChromosomeBand. Got:"
             chrom_band))))))
+
+;; Deletion patterns
+(defn deletion-chromosome [n chromosome]
+  (exactly n hasEvent
+           (owl-and Deletion chromosome)))
+
+(defn deletion-band [n band1 band2]
+  (exactly n hasEvent
+           (owl-and Deletion
+                    (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Deletion OR Chromosomal Band Deletion : includes
 ;; Terminal deletion with a break AND Interstitial deletion with
@@ -196,15 +213,14 @@ band, band1, band2 are of type HumanChromosomeBand."
         (or
          (= h/HumanChromosome chrom_band)
          (superclass? chrom_band h/HumanChromosome))
-        (exactly n hasEvent
-                 (owl-and Deletion chrom_band))
+        (deletion-chromosome n chrom_band)
         ;; If chrom_band is of type HumanChromosomeBand then
         ;; restriction represents a terminal band deletion with a break
         ;; (:).
         (or
          (= h/HumanChromosomeBand chrom_band)
          (superclass? chrom_band h/HumanChromosomeBand))
-        (deletion n chrom_band (get-telomere chrom_band))
+        (deletion-band n chrom_band (get-telomere chrom_band))
         :default
         (throw
          (IllegalArgumentException.
@@ -213,9 +229,7 @@ band, band1, band2 are of type HumanChromosomeBand."
   ([n band1 band2]
      ;; This represents Interstitial band deletion with breakage and
      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
-     (exactly n hasEvent
-              (owl-and Deletion
-                      (owl-some hasBreakPoint band1 band2)))))
+     (deletion-band n band1 band2)))
 
 (as-disjoint-subclasses
  Deletion
