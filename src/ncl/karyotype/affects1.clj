@@ -27,50 +27,58 @@
   :iri "http://ncl.ac.uk/karyotype/affects1"
   :prefix "af1:")
 
+;; import human ontology axioms
+(owl-import h/human)
+
 (defclass AffectsKaryotype
   :subclass k/Karyotype)
 
-;; import all ncl.karyotype axioms
 (defoproperty affects)
 
-;; missing chromo 2-22,X,Y bands
-(def bands-300 [1
-  ["pTer" "p36.3" "p36.3" "p36.2" "p36.1" "p35" "p34" "p33" "p32" "p31" "p22"
-   "p21" "p13" "p12" "p11" "p10" "q10" "q11" "q12" "q21" "q22q23q24" "q25"
-   "q31" "q32" "q41" "q42" "q43q44" "qTer"]])
-
+;; AUXILIARY FUNCTIONS
 (defn get-band [chromosome band]
   (owl-class h/human (str "HumanChromosome" chromosome "Band" band)))
 
+;; missing chromo 2-22,X,Y bands and other resolutions
+(def bands-300 (map #(get-band 1 %)
+                    ["pTer" "p36.3" "p36.3" "p36.2" "p36.1" "p35" "p34"
+                     "p33" "p32" "p31" "p22" "p21" "p13" "p12" "p11" "p10"
+                     "q10" "q11" "q12" "q21" "q22q23q24" "q25" "q31" "q32"
+                     "q41" "q42" "q43q44" "qTer"]))
+
+(defn not-breakpoint? [breakpoint band]
+  (not (= breakpoint band)))
+
 (defn subset [start finish]
-    (take-while #(not (= finish %)) (drop-while #(not (= start %)))))
+  (conj
+   (into []
+         (take-while (partial not-breakpoint? finish)
+                     (drop-while (partial not-breakpoint? start)
+                                 bands-300)))
+   finish))
 
 (defn band-range [start finish]
-  (get-band
-   (if (nil? finish)
-     (subset start (e/get-terminal start))
-     (subset start finish))
+  (if (< (.indexOf bands-300 finish) (.indexOf bands-300 start))
+    (subset finish start)
+    (subset start finish)))
 
-(defn affect [start finish]
+;; PATTERNS
+(defn affects-band [start finish]
   (some-only affects (band-range start finish)))
 
-(defn addition-chromosome [chromosome]
-  (exactly n hasEvent
-           (owl-and Addition chromosome)))
+;; DRIVERS
+(defn addition-band-driver [n band]
+  (list (e/addition-band n band)
+        (affects-band band band)))
 
-(defn addition-band [band]
-  (exactly n hasEvent
-           (owl-and Addition
-                    (owl-some hasBreakPoint band))))
-
-(defn addition-band-driver [band]
-  (list (addition-band band)
-        (affects band (e/get-telomere band))))
+(defn deletion-band-driver [n band1 band2]
+  (list (e/deletion-band n band1 band2)
+        (affects-band band1 band2)))
 
 (defn addition
   "Returns an addition retriction.
 n is the number of addition restrictions. chrom_band is either of type
-HumanChromosome or HumanChromosomeBand." [chrom_band]
+HumanChromosome or HumanChromosomeBand." [n chrom_band]
 ;; In order for superclass? to work, need to use the human ontology.
 (with-ontology h/human
   (cond
@@ -79,20 +87,56 @@ HumanChromosome or HumanChromosomeBand." [chrom_band]
    (or
     (= h/HumanChromosome chrom_band)
     (superclass? chrom_band h/HumanChromosome))
-   (addition-chromosome chrom_band)
+   (e/addition-chromosome 1 chrom_band)
    ;; If chrom_band is of type HumanChromosomeBand then
    ;; restriction represents a chromosomal band addition.
    (or
     (= h/HumanChromosomeBand chrom_band)
     (superclass? chrom_band h/HumanChromosomeBand))
-   (addition-band chrom_band)
+   (addition-band-driver 1 chrom_band)
    :default
    (throw
     (IllegalArgumentException.
      (str "Addition expects a Chromosome or ChromosomeBand. Got:"
           chrom_band))))))
 
-;; tests
+(defn deletion
+  "Returns a deletion retriction.
+n is the number of deletion restrictions.
+chrom_band is either of type HumanChromosome or HumanChromosomeBand.
+band, band1, band2 are of type HumanChromosomeBand."
+  ([n chrom_band]
+     ;; In order for superclass? to work, need to use the human ontology.
+     (with-ontology
+       ncl.karyotype.human/human
+       (cond
+        ;; If chrom_band is of type HumanChromosome then restriction
+        ;; represents a chromosomal loss.
+        (or
+         (= h/HumanChromosome chrom_band)
+         (superclass? chrom_band h/HumanChromosome))
+        (e/deletion-chromosome n chrom_band)
+        ;; If chrom_band is of type HumanChromosomeBand then
+        ;; restriction represents a terminal band deletion with a break
+        ;; (:).
+        (or
+         (= h/HumanChromosomeBand chrom_band)
+         (superclass? chrom_band h/HumanChromosomeBand))
+        (deletion-band-driver n chrom_band (e/get-telomere chrom_band))
+        :default
+        (throw
+         (IllegalArgumentException.
+          (str "Deletion expects a HumanChromosome or
+               HumanChromosomeBand. Got:" chrom_band))))))
+  ([n band1 band2]
+     ;; This represents Interstitial band deletion with breakage and
+     ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
+     (deletion-band-driver n band1 band2)))
+
+
+;; TESTS
+
+;; addition
 (defclass test-addition-chromosome
   :label "The 47,XX,+21 karyotype"
   :comment "ISCN2009 pg 57 -> 'A karyotype with trisomy 21.'"
@@ -100,25 +144,33 @@ HumanChromosome or HumanChromosomeBand." [chrom_band]
   (owl-some b/derivedFrom b/k46_XX)
   (addition 1 h/HumanChromosome21))
 
-;; (defclass test-addition-chromosome-exactly
-;;   :label "The 47,XX,+21 karyotype"
-;;   :comment "ISCN2009 pg 57 -> 'A karyotype with trisomy 21.'"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (addition [exactly 1] h/HumanChromosome21))
-
-;; (defclass test-addition-chromosome-some
-;;   :label "The 47,XX,+21 karyotype"
-;;   :comment "ISCN2009 pg 57 -> 'A karyotype with trisomy 21.'"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (addition [some] h/HumanChromosome21))
-
 (defclass test-addition-band
-  :label "The 46,XX,add(19)(p13.3) karyotype"
-  :comment "ISCN2009 pg 60 -> 'Additional material attached to band
-  19p13.3, but neither the origin of the extra segment nor the type of
-  arrangement is known.' 46,XX,add(19)(?::p13.3->qter)"
+  :label "The 46,XX,add(1)(p13) karyotype"
   :subclass AffectsKaryotype
   (owl-some b/derivedFrom b/k46_XX)
-  (addition 1 h/HumanChromosome19Bandp13.3))
+  (addition 1 h/HumanChromosome1Bandp13))
+
+;; deletion
+(defclass test-deletion-chromosome
+  :label "The 47,XX,-21 karyotype"
+  :subclass AffectsKaryotype
+  (owl-some b/derivedFrom b/k46_XX)
+  (deletion 1 h/HumanChromosome21))
+
+(defclass test-deletion-band-terimal
+  :label "The 46,XX,del(1)(p13) karyotype"
+  :subclass AffectsKaryotype
+  (owl-some b/derivedFrom b/k46_XX)
+  (deletion 1 h/HumanChromosome1Bandp13))
+
+(defclass test-deletion-two-bands
+  :label "The 46,XX,del(1)(p13p11) karyotype"
+  :subclass AffectsKaryotype
+  (owl-some b/derivedFrom b/k46_XX)
+  (deletion 1 h/HumanChromosome1Bandp13 h/HumanChromosome1Bandp11))
+
+(defclass test-deletion-one-band
+  :label "The 46,XX,del(1)(p13p13) karyotype"
+  :subclass AffectsKaryotype
+  (owl-some b/derivedFrom b/k46_XX)
+  (deletion 1 h/HumanChromosome1Bandp13 h/HumanChromosome1Bandp13))
