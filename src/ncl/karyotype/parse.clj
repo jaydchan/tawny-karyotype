@@ -127,13 +127,13 @@ s id of type String."
     (cond
      (or (= "?" band1) (= "?" band2))
      "Unknown"
-     (and (h/pband? band1) (h/qband? band2))
+     (and (h/str-pband? band1) (h/str-qband? band2))
      "Direct"
-     (and (h/qband? band1) (h/pband? band2))
+     (and (h/str-qband? band1) (h/str-pband? band2))
      "Inverse"
      (or
-      (and (h/pband? band1) (h/pband? band2))
-      (and (h/qband? band1) (h/qband? band2)))
+      (and (h/str-pband? band1) (h/str-pband? band2))
+      (and (h/str-qband? band1) (h/str-qband? band2)))
      (let [digit1 (re-find #"[\d\.]+" band1)
            digit2 (if (nil? band2) nil (re-find #"[\d\.]+" band2))]
        (cond
