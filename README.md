@@ -1,5 +1,3 @@
-Karyotype
-=========
-:author: Phillip Lord
-
-
+tawny-karyotype
+===============
+:author: Jennifer Warrender
