@@ -138,15 +138,15 @@
       (owl-some k/isComponentOf chromosome))))
 
 ;; add disjoint axiom for the children of HumanCentromere
-(disjoint-classes-list
+(disjoint-classes
  (into () (direct-subclasses HumanCentromere)))
 
 ;; add disjoint axiom for the children of HumanChromosomeBand
-(disjoint-classes-list
+(disjoint-classes
  (into () (direct-subclasses HumanChromosomeBand)))
 
 ;; add disjoint axiom for the children of HumanTelomere
-(disjoint-classes-list
+(disjoint-classes
  (into () (direct-subclasses HumanTelomere)))
 
 ;; private functions
