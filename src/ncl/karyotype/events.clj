@@ -67,8 +67,7 @@
 
  (defoproperty isBreakPointOf
    :range k/Karyotype
-   :domain k/ChromosomeComponent)
- )
+   :domain k/ChromosomeComponent))
 
 (as-inverse
  (defoproperty hasReceivingBreakPoint
