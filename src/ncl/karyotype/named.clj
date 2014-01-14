@@ -67,8 +67,7 @@
   :equivalent
   (owl-and
    (owl-some b/derivedFrom b/k46_XY)
-   (owl-some e/hasEvent
-            (owl-and e/Addition h/HumanChromosomeX))))
+   (e/some-event (e/addition-chromosome h/HumanChromosomeX))))
 
 ;; #TODO An individual with no X chromosome
 ;; (defclass Lethal
@@ -247,7 +246,10 @@
 (defclass NumericalAbnormalKaryotypeAutosomalGain
   :equivalent
   (owl-some e/hasEvent
-           (owl-and e/Addition h/HumanAutosome)))
+            (e/addition-chromosome h/HumanAutosome)))
+
+  ;; DOES WORK HOWEVER IN THIS CASE WE WANT HASEVENT NOT HASDIRECTEVENT
+  ;; (e/event nil h/HumanAutosome))
 
 (defclass NumericalAbnormalKaryotypeAutosomalLoss
   :equivalent
