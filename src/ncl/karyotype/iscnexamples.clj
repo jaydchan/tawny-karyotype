@@ -15,7 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.iscnexamples
+(ns ^{:doc "Defining example karyotypes from the ISCN2013."
+      :author "Jennifer Warrender"}
+  ncl.karyotype.iscnexamples
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
@@ -26,7 +28,9 @@
 
 (defontology iscnexamples
   :iri "http://ncl.ac.uk/karyotype/iscnexamples"
-  :prefix "iex:")
+  :prefix "iex:"
+  :comment "ISCN Example Karyotypes ontology for Human Karyotype
+  Ontology, written using the tawny-owl library.")
 
 ;; import all ncl.karyotype axioms
 (owl-import k/karyotype)
@@ -418,7 +422,7 @@
   (owl-some f/hasFeature
            (owl-and f/DerivativeChromosome
                    (owl-some f/isRearrangedChromosomeOf h/HumanChromosome1)
-                   (owl-some e/hasEvent
+                   (owl-some e/hasDirectEvent
                             (owl-and
                              e/Translocation
                              (owl-and
@@ -2568,7 +2572,7 @@ deletion, and also the breakpoints are unknown.'"
   ;;                  [h/HumanChromosome5Bandq13 h/HumanChromosome5Bandq23]
   ;;                  [h/HumanChromosome14Bandq24 h/HumanChromosome14Bandq21]
   ;;                  [h/HumanChromosome9Bandp12 h/HumanChromosome9Bandp23]))
-  (exactly 1 e/hasEvent
+  (exactly 1 e/hasDirectEvent
            (owl-and e/Translocation
                    (owl-and
                     (owl-some e/hasProvidingBreakPoint
