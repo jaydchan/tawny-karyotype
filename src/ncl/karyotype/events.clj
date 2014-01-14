@@ -15,14 +15,18 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.events
+(ns ^{:doc "Defining event information for human karyotypes."
+      :author "Jennifer Warrender"}
+ncl.karyotype.events
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]))
 
 (defontology events
   :iri "http://ncl.ac.uk/karyotype/events"
-  :prefix "evn:")
+  :prefix "evn:"
+  :comment "Event ontology for Human Karyotype Ontology, written using
+  the tawny-owl library.")
 
 (defclass Event)
 
@@ -32,15 +36,11 @@
  (defoproperty hasEvent
    :range Event
    :domain k/Karyotype)
-
- (defoproperty isEventOf
-   :range k/Karyotype
-   :domain Event))
+ (defoproperty isEventOf))
 
 (as-inverse
  (defoproperty hasDirectEvent
    :subproperty hasEvent)
-
  (defoproperty isDirectEventOf
    :subproperty isEventOf))
 
@@ -48,38 +48,26 @@
 ;; in named-clj
 (as-inverse
  (defoproperty hasDerivedEvent
-   :range Event
-   :domain k/Karyotype
-   ;;:subproperty hasEvent
-   )
-
+   :subproperty hasEvent)
  (defoproperty isDerivedEventOf
-   :range k/Karyotype
-   :domain Event
-   ;;:subproperty isEventOf
-))
+   :subproperty isEventOf))
 
 ;; breakpoint object properties
 (as-inverse
  (defoproperty hasBreakPoint
    :range k/ChromosomeComponent
    :domain k/Karyotype)
-
- (defoproperty isBreakPointOf
-   :range k/Karyotype
-   :domain k/ChromosomeComponent))
+ (defoproperty isBreakPointOf))
 
 (as-inverse
  (defoproperty hasReceivingBreakPoint
    :subproperty hasBreakPoint)
-
  (defoproperty isReceivingBreakPointOf
    :subproperty isBreakPointOf))
 
 (as-inverse
  (defoproperty hasProvidingBreakPoint
    :subproperty hasBreakPoint)
-
  (defoproperty isProvidingBreakPointOf
    :subproperty isBreakPointOf))
 
@@ -90,8 +78,8 @@
 
 ;; TODO Update methodology st making use of the ontology instead of
 ;; string manipulation.
-(defn get-telomere
-  [band]
+(defn get-telomere [band]
+  "Returns associated telomere of given band."
     (let [s1 (second (clojure.string/split (str band) #"human#"))
           s2 (first (clojure.string/split s1 #"Band|Telomere|Centromere"))
           s3 (first (clojure.string/split s1 #"Chromosome"))]
@@ -112,6 +100,17 @@
         (throw (IllegalArgumentException.
                 (str "Band not recognized:" band)))))))
 
+;; Auxiliary function
+(defn some-event [axiom]
+  (owl-some hasDirectEvent axiom))
+
+(defn exactly-event [n axiom]
+  (exactly n hasDirectEvent axiom))
+
+(defn event [n axiom]
+  (if (nil? n)
+    (owl-some hasDirectEvent axiom)
+    (exactly n hasDirectEvent axiom)))
 
 ;; OWL CLASSES - EVENTS
 (as-disjoint-subclasses
@@ -146,22 +145,22 @@
 ;; TODO - Precondition for each function?
 
 ;; Addition patterns
-(defn addition-chromosome [n chromosome]
-  (exactly n hasEvent
-           (owl-and Addition chromosome)))
+(defn addition-chromosome [chromosome]
+  "Pattern - returns part of chromosomal addition axiom."
+  (owl-and Addition chromosome))
 
 (defn addition-band [n band]
-  (exactly n hasEvent
-           (owl-and Addition
-                    (owl-some hasBreakPoint band))))
+  "Pattern - returns part of chromosomal band addition axiom."
+  (owl-and Addition
+           (owl-some hasBreakPoint band)))
 
 ;; Chromosomal Addition OR Chromosomal Band Addition
-(defn addition
+;; Invovles only 1 chromosome
+(defn addition [n chrom_band]
   "Returns an addition retriction.
 n is the number of addition restrictions.
 chrom_band is either of type HumanChromosome or HumanChromosomeBand."
-  [n chrom_band]
-     ;; In order for superclass? to work, need to use the human ontology.
+  ;; In order for superclass? to work, need to use the human ontology.
   (with-ontology
     ncl.karyotype.human/human
     (cond
@@ -170,13 +169,13 @@ chrom_band is either of type HumanChromosome or HumanChromosomeBand."
      (or
       (= h/HumanChromosome chrom_band)
       (superclass? chrom_band h/HumanChromosome))
-     (addition-chromosome n chrom_band)
+     (event n (addition-chromosome chrom_band))
      ;; If chrom_band is of type HumanChromosomeBand then
      ;; restriction represents a chromosomal band addition.
      (or
       (= h/HumanChromosomeBand chrom_band)
       (superclass? chrom_band h/HumanChromosomeBand))
-     (addition-band n chrom_band)
+     (event n (addition-band n chrom_band))
      :default
      (throw
       (IllegalArgumentException.
@@ -185,11 +184,13 @@ chrom_band is either of type HumanChromosome or HumanChromosomeBand."
 
 ;; Deletion patterns
 (defn deletion-chromosome [n chromosome]
-  (exactly n hasEvent
+  "Pattern - returns chromosomal deletion axiom."
+  (exactly n hasDirectEvent
            (owl-and Deletion chromosome)))
 
 (defn deletion-band [n band1 band2]
-  (exactly n hasEvent
+  "Pattern - return chromosomal band deletion axiom."
+  (exactly n hasDirectEvent
            (owl-and Deletion
                     (owl-some hasBreakPoint band1 band2))))
 
@@ -235,6 +236,17 @@ band, band1, band2 are of type HumanChromosomeBand."
  (defclass DeletionTerminal)
  (defclass DeletionInterstitial))
 
+(defn terminal-pattern [n band]
+  (exactly n hasDirectEvent
+           (owl-and DeletionTerminal
+                    (owl-some hasBreakPoint band
+                              (get-telomere band)))))
+
+(defn interstitial-pattern [n band1 band2]
+  (exactly n hasDirectEvent
+           (owl-and DeletionInterstitial
+                    (owl-some hasBreakPoint band1 band2))))
+
 (defn deletion-new
   "Returns a deletion retriction.
 n is the number of deletion restrictions.
@@ -250,18 +262,14 @@ band, band1, band2 are of type HumanChromosomeBand."
         (or
          (= h/HumanChromosome chrom_band)
          (superclass? chrom_band h/HumanChromosome))
-        (exactly n hasEvent
-                 (owl-and Deletion chrom_band))
+        (deletion-chromosome n chrom_band)
         ;; If chrom_band is of type HumanChromosomeBand then
         ;; restriction represents a terminal band deletion with a break
         ;; (:).
         (or
          (= h/HumanChromosomeBand chrom_band)
          (superclass? chrom_band h/HumanChromosomeBand))
-        (exactly n hasEvent
-                 (owl-and DeletionTerminal
-                         (owl-some hasBreakPoint chrom_band
-                                  (get-telomere chrom_band))))
+        (terminal-pattern n chrom_band)
         :default
         (throw
          (IllegalArgumentException.
@@ -270,54 +278,48 @@ band, band1, band2 are of type HumanChromosomeBand."
   ([n band1 band2]
      ;; This represents Interstitial band deletion with breakage and
      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
-     (exactly n hasEvent
-              (owl-and DeletionInterstitial
-                      (owl-some hasBreakPoint band1 band2)))))
+     (interstitial-pattern n band1 band2)))
 
 
 ;; Chromosomal Band Duplication
 ;; Can be preceeded by the triplets dir or inv to indicate direct or
 ;; inverted direction
 ;; Invovles only 1 chromosome
-(defn duplication
+(defn duplication [n band1 band2]
   "Returns a duplication retriction.
 n is the number of duplication restrictions.
 band1, band2 are of type HumanChromosomeBand."
-  [n band1 band2]
-  (exactly n hasEvent
+  (exactly n hasDirectEvent
            (owl-and Duplication
                    (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Band DirectDuplication
 ;; Invovles only 1 chromosome
-(defn direct-duplication
+(defn direct-duplication [n band1 band2]
   "Returns a direct-duplication retriction.
 n is the number of direct-duplication restrictions.
 band1, band2 are of type HumanChromosomeBand."
-  [n band1 band2]
-  (exactly n hasEvent
+  (exactly n hasDirectEvent
            (owl-and DirectDuplication
                    (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Band InverseDuplication
 ;; Invovles only 1 chromosome
-(defn inverse-duplication
+(defn inverse-duplication [n band1 band2]
   "Returns an inverse-duplication retriction.
 n is the number of inverse-duplication restrictions.
 band1, band2 are of type HumanChromosomeBand."
-  [n band1 band2]
-  (exactly n hasEvent
+  (exactly n hasDirectEvent
            (owl-and InverseDuplication
                    (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Band Fission AKA Centric fission - break in the centromere
 ;; Involves only 1 chromosome
-(defn fission
+(defn fission [n band]
   "Returns a fission retriction.
 n is the number of fission restrictions.
 band is of type HumanChromosomeBand."
-  [n band]
-  (exactly n hasEvent
+  (exactly n hasDirectEvent
            (owl-and Fission
                    (owl-some hasBreakPoint band
                             (get-telomere band)))))
@@ -326,24 +328,22 @@ band is of type HumanChromosomeBand."
 ;; Can be preceeded by the triplets dir or inv to indicate direct or
 ;; inverted direction
 ;; Involves at most 2 chromosomes
-(defn insertion
+(defn insertion [n band1 band2 band3]
   "Returns an insertion retriction.
 n is the number of insertion restrictions.
 band1, band2, band3 is of type HumanChromosomeBand."
-  [n band1 band2 band3]
-  (exactly n hasEvent
+  (exactly n hasDirectEvent
            (owl-and Insertion
                    (owl-some hasReceivingBreakPoint band1)
                    (owl-some hasProvidingBreakPoint band2 band3))))
 
 ;; Choromosomal Band DirectInsertion
 ;; Involves at most 2 chromosomes
-(defn direct-insertion
+(defn direct-insertion [n band1 band2 band3]
   "Returns a direct-insertion retriction.
 n is the number of direct-insertion restrictions.
 band1, band2, band3 is of type HumanChromosomeBand."
-  [n band1 band2 band3]
-  (exactly n hasEvent
+  (exactly n hasDirectEvent
            (owl-and DirectInsertion
                    (owl-some hasReceivingBreakPoint band1)
                    (owl-some hasProvidingBreakPoint band2 band3))))
@@ -360,14 +360,14 @@ band1, band2, band3 is of type HumanChromosomeBand."
 n is the number of direct-insertion restrictions.
 band1, band2, band3 is of type HumanChromosomeBand."
   ([n chrom1] {:pre (= 3 (count chrom1))}
-     (exactly n hasEvent
+     (exactly n hasDirectEvent
               (owl-and DirectInsertionOneChromosome
                       (owl-some hasReceivingBreakPoint (first chrom1))
                       (owl-some hasProvidingBreakPoint
                                (second chrom1)
                                (second (rest chrom1))))))
   ([n chrom1 chrom2] {:pre [(and (= 1 (count chrom1)) (= 2 (count chrom2)))]}
-     (exactly n hasEvent
+     (exactly n hasDirectEvent
               (owl-and DirectInsertionTwoChromosome
                       (owl-some hasReceivingBreakPoint (first chrom1))
                       (owl-some hasProvidingBreakPoint
@@ -376,12 +376,11 @@ band1, band2, band3 is of type HumanChromosomeBand."
 
 ;; Choromosomal Band InverseInsertion
 ;; Involves at most 2 chromosomes
-(defn inverse-insertion
+(defn inverse-insertion [n band1 band2 band3]
   "Returns an inverse-insertion retriction.
 n is the number of inverse-insertion restrictions.
 band1, band2, band3 is of type HumanChromosomeBand."
-  [n band1 band2 band3]
-  (exactly n hasEvent
+  (exactly n hasDirectEvent
            (owl-and InverseInsertion
                    (owl-some hasReceivingBreakPoint band1)
                    (owl-some hasProvidingBreakPoint band2 band3))))
@@ -398,14 +397,14 @@ band1, band2, band3 is of type HumanChromosomeBand."
 n is the number of direct-insertion restrictions.
 chrom1, chrom2 are vectors that contain HumanChromosomeBand."
   ([n chrom1] {:pre (= 3 (count chrom1))}
-     (exactly n hasEvent
+     (exactly n hasDirectEvent
               (owl-and InverseInsertionOneChromosome
                       (owl-some hasReceivingBreakPoint (first chrom1))
                       (owl-some hasProvidingBreakPoint
                                (second chrom1)
                                (second (rest chrom1))))))
   ([n chrom1 chrom2] {:pre [(and (= 1 (count chrom1)) (= 2 (count chrom2)))]}
-     (exactly n hasEvent
+     (exactly n hasDirectEvent
               (owl-and InverseInsertionTwoChromosome
                       (owl-some hasReceivingBreakPoint (first chrom1))
                       (owl-some hasProvidingBreakPoint
@@ -421,7 +420,7 @@ chrom1, chrom2 are vectors that contain HumanChromosomeBand."
 n is the number of inversion restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
-  (exactly n hasEvent
+  (exactly n hasDirectEvent
            (owl-and Inversion
                    (owl-some hasBreakPoint band1 band2))))
 
@@ -433,7 +432,7 @@ band1, band2 is of type HumanChromosomeBand."
 n is the number of quadruplication restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
-  (exactly n hasEvent
+  (exactly n hasDirectEvent
            (owl-and Quadruplication
                    (owl-some hasBreakPoint band1 band2))))
 
@@ -468,7 +467,7 @@ bands is a list of vectors - each vector contains 1 or 2
 HumanChromosomeBand"
   [n & bands] {:pre (> 1 (count bands))}
   (let [sorted-bands (adjust-bands bands)]
-    (exactly n hasEvent
+    (exactly n hasDirectEvent
              (owl-and Translocation
                      (for [x (range (count sorted-bands))]
                        (let [curr-band (get sorted-bands x)]
@@ -497,7 +496,7 @@ HumanChromosomeBand"
 n is the number of triplication restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
-  (exactly 1 hasEvent
+  (exactly 1 hasDirectEvent
            (owl-and Triplication
                    (owl-some hasBreakPoint band1 band2))))
 
@@ -508,7 +507,7 @@ band1, band2 is of type HumanChromosomeBand."
 n is the number of triplication restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
-  (exactly 1 hasEvent
+  (exactly 1 hasDirectEvent
            (owl-and DirectTriplication
                    (owl-some hasBreakPoint band1 band2))))
 
@@ -519,6 +518,6 @@ band1, band2 is of type HumanChromosomeBand."
 n is the number of inverse-triplication restrictions.
 band1, band2 is of type HumanChromosomeBand."
   [n band1 band2]
-  (exactly 1 hasEvent
+  (exactly 1 hasDirectEvent
            (owl-and InverseTriplication
                    (owl-some hasBreakPoint band1 band2))))
