@@ -15,7 +15,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.affects1
+(ns ^{:doc "Redefining chromosomal band addition and deletion event
+definitions to include affects object property."
+      :author "Jennifer Warrender"}
+  ncl.karyotype.affects1
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
@@ -25,31 +28,37 @@
 
 (defontology affects1
   :iri "http://ncl.ac.uk/karyotype/affects1"
-  :prefix "af1:")
-
-;; import human ontology axioms
-(owl-import h/human)
+  :prefix "af1:"
+  :comment "Affects (take 1) ontology for Human Karyotype Ontology,
+  written using the tawny-owl library.")
 
 (defclass AffectsKaryotype
   :subclass k/Karyotype)
 
-(defoproperty affects)
+(defoproperty affects
+  :domain k/Karyotype
+  :range h/HumanChromosomeBand)
 
 ;; AUXILIARY FUNCTIONS
 (defn get-band [chromosome band]
+  "Returns (finds) human chromosome band."
   (owl-class h/human (str "HumanChromosome" chromosome "Band" band)))
 
 ;; missing chromo 2-22,X,Y bands and other resolutions
-(def bands-300 (map #(get-band 1 %)
-                    ["pTer" "p36.3" "p36.3" "p36.2" "p36.1" "p35" "p34"
-                     "p33" "p32" "p31" "p22" "p21" "p13" "p12" "p11" "p10"
-                     "q10" "q11" "q12" "q21" "q22q23q24" "q25" "q31" "q32"
-                     "q41" "q42" "q43q44" "qTer"]))
+(def ^{:doc "An array of 300-band resolution bands for chromosome 1
+  only."}
+  bands-300 (map #(get-band 1 %)
+  ["pTer" "p36.3" "p36.3" "p36.2" "p36.1" "p35" "p34"
+                  "p33" "p32" "p31" "p22" "p21" "p13" "p12" "p11" "p10"
+                  "q10" "q11" "q12" "q21" "q22q23q24" "q25" "q31" "q32"
+                  "q41" "q42" "q43q44" "qTer"]))
 
 (defn not-breakpoint? [breakpoint band]
+  "Determines if BAND is equal to BREAKPOINT."
   (not (= breakpoint band)))
 
 (defn subset [start finish]
+  "Creates a subset of bands that affects "
   (conj
    (into []
          (take-while (partial not-breakpoint? finish)
@@ -58,83 +67,89 @@
    finish))
 
 (defn band-range [start finish]
+  ""
   (if (< (.indexOf bands-300 finish) (.indexOf bands-300 start))
     (subset finish start)
     (subset start finish)))
 
 ;; PATTERNS
 (defn affects-band [start finish]
+  "Pattern - returns some-only axiom using affects oproperty."
   (some-only affects (band-range start finish)))
 
+;; WRONG!!! Should redefine definitions and utilise already defined
+;; functions, rather than override functions
 ;; DRIVERS
-(defn addition-band-driver [n band]
-  (list (e/addition-band n band)
-        (affects-band band band)))
+;; (defn addition-band-driver [n band]
+;;   (list (e/addition-band n band)
+;;         (affects-band band band)))
 
-(defn deletion-band-driver [n band1 band2]
-  (list (e/deletion-band n band1 band2)
-        (affects-band band1 band2)))
+;; (defn deletion-band-driver [n band1 band2]
+;;   (list (e/deletion-band n band1 band2)
+;;         (affects-band band1 band2)))
 
-(defn addition
-  "Returns an addition retriction.
-n is the number of addition restrictions. chrom_band is either of type
-HumanChromosome or HumanChromosomeBand." [n chrom_band]
-;; In order for superclass? to work, need to use the human ontology.
-(with-ontology h/human
-  (cond
-   ;; If chrom_band is of type HumanChromosome then restriction
-   ;; represents a chromosomal gain.
-   (or
-    (= h/HumanChromosome chrom_band)
-    (superclass? chrom_band h/HumanChromosome))
-   (e/addition-chromosome 1 chrom_band)
-   ;; If chrom_band is of type HumanChromosomeBand then
-   ;; restriction represents a chromosomal band addition.
-   (or
-    (= h/HumanChromosomeBand chrom_band)
-    (superclass? chrom_band h/HumanChromosomeBand))
-   (addition-band-driver 1 chrom_band)
-   :default
-   (throw
-    (IllegalArgumentException.
-     (str "Addition expects a Chromosome or ChromosomeBand. Got:"
-          chrom_band))))))
+;; (defn addition
+;;   "Returns an addition retriction.
+;; n is the number of addition restrictions. chrom_band is either of type
+;; HumanChromosome or HumanChromosomeBand." [n chrom_band]
+;; ;; In order for superclass? to work, need to use the human ontology.
+;; (with-ontology h/human
+;;   (cond
+;;    ;; If chrom_band is of type HumanChromosome then restriction
+;;    ;; represents a chromosomal gain.
+;;    (or
+;;     (= h/HumanChromosome chrom_band)
+;;     (superclass? chrom_band h/HumanChromosome))
+;;    (e/addition-chromosome 1 chrom_band)
+;;    ;; If chrom_band is of type HumanChromosomeBand then
+;;    ;; restriction represents a chromosomal band addition.
+;;    (or
+;;     (= h/HumanChromosomeBand chrom_band)
+;;     (superclass? chrom_band h/HumanChromosomeBand))
+;;    (addition-band-driver 1 chrom_band)
+;;    :default
+;;    (throw
+;;     (IllegalArgumentException.
+;;      (str "Addition expects a Chromosome or ChromosomeBand. Got:"
+;;           chrom_band))))))
 
-(defn deletion
-  "Returns a deletion retriction.
-n is the number of deletion restrictions.
-chrom_band is either of type HumanChromosome or HumanChromosomeBand.
-band, band1, band2 are of type HumanChromosomeBand."
-  ([n chrom_band]
-     ;; In order for superclass? to work, need to use the human ontology.
-     (with-ontology
-       ncl.karyotype.human/human
-       (cond
-        ;; If chrom_band is of type HumanChromosome then restriction
-        ;; represents a chromosomal loss.
-        (or
-         (= h/HumanChromosome chrom_band)
-         (superclass? chrom_band h/HumanChromosome))
-        (e/deletion-chromosome n chrom_band)
-        ;; If chrom_band is of type HumanChromosomeBand then
-        ;; restriction represents a terminal band deletion with a break
-        ;; (:).
-        (or
-         (= h/HumanChromosomeBand chrom_band)
-         (superclass? chrom_band h/HumanChromosomeBand))
-        (deletion-band-driver n chrom_band (e/get-telomere chrom_band))
-        :default
-        (throw
-         (IllegalArgumentException.
-          (str "Deletion expects a HumanChromosome or
-               HumanChromosomeBand. Got:" chrom_band))))))
-  ([n band1 band2]
-     ;; This represents Interstitial band deletion with breakage and
-     ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
-     (deletion-band-driver n band1 band2)))
+;; (defn deletion
+;;   "Returns a deletion retriction.
+;; n is the number of deletion restrictions.
+;; chrom_band is either of type HumanChromosome or HumanChromosomeBand.
+;; band, band1, band2 are of type HumanChromosomeBand."
+;;   ([n chrom_band]
+;;      ;; In order for superclass? to work, need to use the human ontology.
+;;      (with-ontology
+;;        ncl.karyotype.human/human
+;;        (cond
+;;         ;; If chrom_band is of type HumanChromosome then restriction
+;;         ;; represents a chromosomal loss.
+;;         (or
+;;          (= h/HumanChromosome chrom_band)
+;;          (superclass? chrom_band h/HumanChromosome))
+;;         (e/deletion-chromosome n chrom_band)
+;;         ;; If chrom_band is of type HumanChromosomeBand then
+;;         ;; restriction represents a terminal band deletion with a break
+;;         ;; (:).
+;;         (or
+;;          (= h/HumanChromosomeBand chrom_band)
+;;          (superclass? chrom_band h/HumanChromosomeBand))
+;;         (deletion-band-driver n chrom_band (e/get-telomere chrom_band))
+;;         :default
+;;         (throw
+;;          (IllegalArgumentException.
+;;           (str "Deletion expects a HumanChromosome or
+;;                HumanChromosomeBand. Got:" chrom_band))))))
+;;   ([n band1 band2]
+;;      ;; This represents Interstitial band deletion with breakage and
+;;      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
+;;      (deletion-band-driver n band1 band2)))
 
 
 ;; TESTS
+;; import human ontology axioms
+(owl-import h/human)
 
 ;; addition
 (defclass test-addition-chromosome
