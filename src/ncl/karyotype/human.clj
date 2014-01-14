@@ -15,7 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.human
+(ns ^{:doc "Creating human chromosomal information."
+      :author "Jennifer Warrender"}
+  ncl.karyotype.human
   (:use [tawny.owl])
   (:require [tawny.read]
             [tawny [reasoner :as rea]]
@@ -23,40 +25,34 @@
 
 (defontology human
   :iri "http://ncl.ac.uk/karyotype/human"
-  :prefix "hum:")
-
-(owl-import k/karyotype)
+  :prefix "hum:"
+  :comment "Human Chromosome ontology for Human Karyotype Ontology,
+  written using the tawny-owl library.")
 
 ;; AUXILLARY FUNCTIONS
-(defn str-pband?
+(defn str-pband? [band]
   "Determine if the given band is a p band"
-  [band]
   (re-find #"p" band))
 
-(defn str-qband?
+(defn str-qband? [band]
   "Determine if the given band is a q band"
-  [band]
   (re-find #"q" band))
 
-(defn str-ter?
+(defn str-ter? [band]
   "Determine if the given band is a telomere"
-  [band]
   (re-find #"Ter" band))
 
-(defn str-cen?
+(defn str-cen? [band]
   "Determine if the given band is a centromere"
-  [band]
   (re-find #"0" band))
 
-(defn create-class-with-superclasses
-  "Creates a class with given name and superclasses"
-  [name & parents]
+(defn create-class-with-superclasses [name & parents]
+  "Generic pattern - creates a class with given name and superclasses"
   (tawny.read/intern-entity
    (owl-class name :subclass parents)))
 
-(defn group-for-band
+(defn group-for-band [bandgroup band]
   "Given a band return the appropriate bandgroup"
-  [bandgroup band]
   (cond
    (str-pband? band)
    (str bandgroup "p")
@@ -150,18 +146,16 @@
  (into () (direct-subclasses HumanTelomere)))
 
 ;; private functions
-(defn- human-sub-band
+(defn- human-sub-band [parent name band]
   "Adds NAME as a sub-band of BAND and a kind of
 PARENT, which is either p or q band."
-  [parent name band]
   (create-class-with-superclasses
     name parent
     (owl-some k/isSubBandOf band)))
 
-(defn- humanbands0
+(defn- humanbands0 [chromosome parent container bands firstlevel]
   "Recursive auxiliary function for humanbands - used to create
  subbands of the human chromosome bands"
-  [chromosome parent container bands firstlevel]
   (let [bandgroup (str
                    (.getFragment
                     (.getIRI
@@ -187,9 +181,8 @@ PARENT, which is either p or q band."
       (human-sub-band parent (str bandgroup container)
                       (str bandgroup firstlevel)))))
 
-(defn- humanbands
+(defn- humanbands [chromosome & bands]
   "Function to generate human chromosome bands for a chromosome"
-  [chromosome & bands]
   (let [group (str
                (.getFragment
                 (.getIRI
@@ -965,8 +958,7 @@ PARENT, which is either p or q band."
  "q12"
  "qTer")
 
-
-;; CLASSES
+;; equivalency classes
 (defclass is-centromere
   :equivalent
   (owl-and HumanChromosomeBand
