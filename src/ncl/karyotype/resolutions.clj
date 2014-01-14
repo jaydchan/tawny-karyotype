@@ -15,7 +15,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.resolutions
+(ns ^{:doc "Translating resolution information for human chromosomal
+bands."
+      :author "Jennifer Warrender"}
+  ncl.karyotype.resolutions
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
@@ -23,10 +26,9 @@
 
 (defontology resolutions
   :iri "http://ncl.ac.uk/karyotype/resolutions"
-  :prefix "res:")
-
-;; import all ncl.karyotype axioms
-(owl-import h/human)
+  :prefix "res:"
+  :comment "Resolution ontology for Human Karyotype Ontology,
+  written using the tawny-owl library")
 
 (defclass Resolution)
 
@@ -39,15 +41,18 @@
  (defclass r850-band))
 
 ;; TODO - define object properties
-(defoproperty seenAtResolution)
+(defoproperty seenAtResolution
+  :domain h/HumanChromosomeBand
+  :range Resolution)
 
 ;; Auxiliary functions
 (defn get-lines [file-name]
-  "Reads in file-name"
+  "Reads in file-name line by line. Returns a java.lang.Cons"
   (with-open [r (io/reader file-name)]
     (doall (line-seq r))))
 
 (defn get-band [string]
+  "Returns (finds) human chromosome band."
   (let [string-band
         (str "HumanChromosome"
              (re-find #"\d+|X|Y" string)
@@ -57,30 +62,35 @@
     (owl-class h/human string-band)))
 
 (defn get-resolution [value]
+  "Returns (creates) resolution class."
   (let [string-resolution
         (str "r" value "-band")]
     (owl-class string-resolution)))
 
-;; resolution pattern
 (defn resolution [band & resolutions]
+  "Resolution pattern - redefines human band class with addditional
+resolution information."
   (refine (owl-class h/human band)
           :subclass
           (some-only seenAtResolution resolutions)))
 
 ;; MAIN
-;; reads in data
-(def string-results (get-lines "resources/resolutions.txt"))
-(def results
-  (for [r string-results]
-    (read-string r)))
+(def ^{:doc "The resolution information read in from resources text
+  file as java.lang.Cons."}
+  string-results (get-lines (.getFile (io/resource "resolutions.txt"))))
 
-;; creates resolution restrictions
+(def ^{:doc "The resolution information read in from resources text
+  file as LazySeq."}
+  results (for [r string-results]
+            (read-string r)))
+
+;; creates resolution restrictions using resolution pattern
 (doseq [r results]
   (resolution (get-band (first r))
               (for [res (rest r)]
                 (get-resolution res))))
 
-;; tests
+;; equivalency classes - useful for tests
 (defclass is-300-band
   :equivalent
   (owl-and h/HumanChromosomeBand
@@ -106,6 +116,8 @@
   (owl-and h/HumanChromosomeBand
              (owl-some seenAtResolution r850-band)))
 
+;; TODO Should be somewhere else? - owl-import not required if placed correctly
+(owl-import h/human)
 (defclass centromere-and-telomere
   :equivalent
   (owl-and h/HumanChromosomeBand
