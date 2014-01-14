@@ -15,7 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.base
+(ns ^{:doc "Base karyotype information for human karyotypes."
+      :author "Jennifer Warrender"}
+  ncl.karyotype.base
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [events :as e]]
@@ -23,12 +25,9 @@
 
 (defontology base
   :iri "http://ncl.ac.uk/karyotype/base"
-  :prefix "base:")
-
-;; import all ncl.karyotype axioms
-(owl-import k/karyotype)
-(owl-import e/events)
-(owl-import f/features)
+  :prefix "base:"
+  :comment "Base (karyotype) ontology for Human Karyotype Ontology,
+  written using the tawny-owl library.")
 
 (defclass BaseKaryotype
   :subclass k/Karyotype)
@@ -48,8 +47,8 @@
 ;; due to build dependancy, the subproperty chain axiom for
 ;; hasDerivedEvent and isDerivedEventOf is defined here i.e. after
 ;; derivedFrom and derivedTo have been defined.
-(add-subpropertychain e/hasDerivedEvent (list derivedFrom e/hasEvent))
-(add-subpropertychain e/isDerivedEventOf (list e/isEventOf derivedTo))
+(add-subpropertychain e/hasDerivedEvent (list derivedFrom e/hasDirectEvent))
+(add-subpropertychain e/isDerivedEventOf (list e/isDirectEventOf derivedTo))
 
 ;; define all the baseKaryotypes
 ;; we have to pass these in as strings because they start with
