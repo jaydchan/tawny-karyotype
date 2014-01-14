@@ -15,7 +15,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.affects2
+(ns ^{:doc "Redefining chromosomal band addition and deletion event
+definitions to include affects data property."
+      :author "Jennifer Warrender"}
+ncl.karyotype.affects2
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
@@ -25,10 +28,9 @@
 
 (defontology affects2
   :iri "http://ncl.ac.uk/karyotype/affects2"
-  :prefix "af2:")
-
-;; import human ontology axioms
-(owl-import h/human)
+  :prefix "af2:"
+  :comment "Affects (take 2) ontology for Human Karyotype Ontology,
+  written using the tawny-owl library.")
 
 (defclass AffectsKaryotype
   :subclass k/Karyotype)
@@ -162,6 +164,8 @@ band, band1, band2 are of type HumanChromosomeBand."
 
 
 ;; TESTS
+;; import human ontology axioms
+(owl-import h/human)
 
 ;; addition
 (defclass test-addition-chromosome
