@@ -21,13 +21,10 @@
    [ncl.karyotype.random :as ran]
    [ncl.karyotype.base :as b]
    [ncl.karyotype.events :as e]
-
    [ncl.karyotype.human :as h]
-   [ncl.karyotype.karyotype :as k]
-
+   [tawny.render :as ren] ;;to delete after testing complete
    [tawny.owl :as o]
-   [tawny.reasoner :as r]
-   [tawny.render :as ren]))
+   [tawny.reasoner :as r]))
 
 (defn ontology-reasoner-fixture [tests]
   (r/reasoner-factory :hermit)
@@ -41,8 +38,6 @@
 
 ;; to run: M-x 'lein' 'test'
 
-;; TODO equivalency for owl classes
-
 (deftest Basic
   (is (r/consistent?))
   (is (r/coherent?)))
@@ -54,17 +49,50 @@
     (is (every? test_sex ran/sex))
 
     ;; testing random-sex function
+    (is (instance? org.semanticweb.owlapi.model.OWLClassExpression random))
+    ;; TODO equivalency for owl classes
     (is (some #(= (o/iri-for-name random)
                   (o/iri-for-name %)) test_sex))
     (is (o/superclass? b/base random b/k46_XN))))
 
+(deftest Karyotype-Class
+  (let [size (.size (.getClassesInSignature ran/random))]
+
+    ;; classes added are r1, Deletion, pTer, p36.3 and 46,XX (or 46,XY)
+    (is
+     (= (+ size 5)
+        (o/with-probe-entities ran/random
+          [clazz (ran/karyotype-class
+               1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
+          (-> ran/random
+              (.getClassesInSignature)
+              (.size)))))
+    (is
+     (instance? org.semanticweb.owlapi.model.OWLClassExpression
+                (o/with-probe-entities ran/random
+                  [clazz (ran/karyotype-class
+                       1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
+                  (-> clazz))))
+    ;; TODO How do I do this?
+    ;; (is
+    ;;  (o/superclass? (o/with-probe-entities ran/random
+    ;;                   [clazz (ran/karyotype-class
+    ;;                           1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
+    ;;                   (-> ran/random))
+    ;;                 "r1" ran/RandomKaryotype))
+    ;; OLD VERSION
+    ;;    (is (o/superclass? ran/random "r1" ran/RandomKaryotype))
+))
+
+(deftest Get-Band
+  (let [band (ran/get-band 1 "p36.3")]
+    (is (instance? org.semanticweb.owlapi.model.OWLClassExpression band))
+    (is (= (o/iri-for-name h/HumanChromosome1Bandp36.3)
+           (o/iri-for-name band)))))
+
 (deftest Random-Band
   (let [random (ran/random-band)]
-    ;; testing get-band function
-    (is (= (o/iri-for-name h/HumanChromosome1Bandp36.3)
-           (o/iri-for-name (ran/get-band 1 "p36.3"))))
-
-    ;; testing random-band function
+    (is (instance? org.semanticweb.owlapi.model.OWLClassExpression random))
     (is (r/isuperclass? h/human random h/HumanChromosome1Band))))
 
 (deftest Random-Chromosome
@@ -77,26 +105,157 @@
     (is (every? test_chrom ran/chromosomes))
 
     ;; testing random-chromosome function
+    (is (instance? org.semanticweb.owlapi.model.OWLClassExpression random))
     (is (some #(= (o/iri-for-name random)
                   (o/iri-for-name %)) test_chrom))
     (is (r/isuperclass? h/human random h/HumanChromosome))))
 
-;; TODO COMPLETE!!!
-(deftest Random-Deletions
-  (let [r-terminal (ren/form (ran/random-terminal-deletion))
-        r-inter (ren/form (ran/random-interstitial-deletion))
-        r-band (ren/form (ran/random-band-deletion-driver))
-        r-chromosome (ran/random-chromosome-deletion)]
+(deftest Random-Terminal-Deletion
+  (let [random (ran/random-terminal-deletion)
+        strings (re-seq #"HumanChromosome[\dXY]+Band[pqTer\d.]+" (str random))
+        bands (map #(o/owl-class h/human %) strings)]
 
-    ;; terminal
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
+                   random))
+    (is (= (count strings) 2))
+    (is (re-find #"Deletion" (str random)))
+    ;; assuming there are only two bands, one should be a telomere
+    (is (distinct? (map #(r/isuperclass? h/human % h/is-telomere) bands)))
+    (is (= random (o/exactly 1 e/hasDirectEvent
+                             (o/owl-and e/Deletion
+                                        (o/owl-some e/hasBreakPoint
+                                                    (first bands)
+                                                    (second bands))))))
+    (doseq [band bands]
+      (is (r/isuperclass? h/human band h/HumanChromosomeBand)))))
 
-    ;; chromosomal deletion
-    (let [chrom (re-find #"HumanChromosome[\dXY]+" (str r-chromosome))]
-      (println r-chromosome)
-      (println chrom)
+(deftest Random-Interstitial-Deletion
+  (let [random (ran/random-interstitial-deletion)
+        strings (re-seq #"HumanChromosome[\dXY]+Band[pqTer\d.]+" (str random))
+        bands (map #(o/owl-class h/human %) strings)]
 
-      (is (re-find #"Deletion" (str r-chromosome)))
-      (is (= r-chromosome
-              (o/exactly 1 e/hasDirectEvent
-                         (o/owl-and e/Deletion (o/owl-class h/human chrom))))))))
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
+                   random))
+    ;; del(q15q15) is ontologically (some hasBreakPoint q15) and not
+    ;; (some hasBreakPoint q15 q15) therefore (count strings) can be
+    ;; 1 OR 2.
+    (is (re-find #"Deletion" (str random)))
+    (is (some #(= (count strings) %) [1 2]))
+    ;; there should be not telomere bands
+    ;; if 2 strings were identified
+    (if (= 2 (count strings))
+      (is (= random (o/exactly 1 e/hasDirectEvent
+                               (o/owl-and e/Deletion
+                                          (o/owl-some e/hasBreakPoint
+                                                      (first bands)
+                                                      (second bands))))))
+      (is (= random (o/exactly 1 e/hasDirectEvent
+                               (o/owl-and e/Deletion
+                                          (o/owl-some e/hasBreakPoint
+                                                      (first bands)))))))
+    (doseq [band bands]
+      (is (r/isuperclass? h/human band h/HumanChromosomeBand))
+      (is (not (r/isuperclass? h/human band h/HumanTelomere))))))
 
+(deftest Random-Band-Deletion
+  (let [random (ran/random-band-deletion)
+        strings (re-seq #"HumanChromosome[\dXY]+Band[pqTer\d.]+" (str random))
+        bands (map #(o/owl-class h/human %) strings)]
+
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
+                   random))
+    (is (some #(= (count strings) %) [1 2]))
+    (is (re-find #"Deletion" (str random)))
+    (if (= 2 (count strings))
+      (is (= random (o/exactly 1 e/hasDirectEvent
+                               (o/owl-and e/Deletion
+                                          (o/owl-some e/hasBreakPoint
+                                                      (first bands)
+                                                      (second bands))))))
+      (is (= random (o/exactly 1 e/hasDirectEvent
+                               (o/owl-and e/Deletion
+                                          (o/owl-some e/hasBreakPoint
+                                                      (first bands)))))))
+    (doseq [band bands]
+      (is (r/isuperclass? h/human band h/HumanChromosomeBand)))))
+
+(deftest Random-Chromosome-Deletion
+  (let [random (ran/random-chromosome-deletion)
+        string (re-find #"HumanChromosome[\dXY]+" (str random))
+        chrom (o/owl-class h/human string)]
+
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
+                   random))
+    (is (r/isuperclass? h/human chrom h/HumanChromosome))
+    (is (re-find #"Deletion" (str random)))
+    (is (= random (o/exactly 1 e/hasDirectEvent
+                             (o/owl-and e/Deletion chrom))))))
+
+(deftest Random-Band-Addition
+  (let [random (ran/random-band-addition)
+        string (re-find #"HumanChromosome[\dXY]+Band[pq\d.]+" (str random))
+        band (o/owl-class h/human string)]
+
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
+                   random))
+    (is (r/isuperclass? h/human band h/HumanChromosomeBand))
+    (is (re-find #"Addition" (str random)))
+    (is (= random (o/exactly 1 e/hasDirectEvent
+                             (o/owl-and e/Addition
+                                        (o/owl-some e/hasBreakPoint
+                                                    band)))))))
+
+(deftest Random-Chromosome-Addition
+  (let [random (ran/random-chromosome-addition)
+        string (re-find #"HumanChromosome[\dXY]+" (str random))
+        chrom (o/owl-class h/human string)]
+
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
+                   random))
+    (is (r/isuperclass? h/human chrom h/HumanChromosome))
+    (is (re-find #"Addition" (str random)))
+    (is (= random (o/exactly 1 e/hasDirectEvent
+                             (o/owl-and e/Addition chrom))))))
+
+(deftest Random-Abnormality
+  (let [random (ran/random-abnormality)]
+
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
+                   random))
+    (is (re-find #"Addition|Deletion" (str random)))))
+
+(deftest Random-Abnormality-Driver
+  (let [max 3
+        randoms (ran/random-abnormality-driver max)]
+
+    (is (<= (count randoms) max))
+    (doseq [random randoms]
+      (is (re-find #"Addition|Deletion" (str random)))
+      (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
+                     random)))))
+
+;; USE with-probe-entities method!
+;; TOFIX - refine-label gives error (46,XX nil)
+;; (deftest Refine-Label
+;;   (let [clazz (ran/karyotype-class
+;;                1 (e/addition 1 h/HumanChromosome1Bandp36.3))
+;;         axioms (.getAnnotations clazz ran/random)
+;;         sex (re-find #"XX|XY" (str (ren/as-form clazz)))
+;;         parse (str "46," sex ",add(1p36.3)")
+;;         string (str "The " parse " Karyotype")]
+;;     (println clazz)
+;;     (println (ren/as-form clazz))
+;;     (ran/refine-label clazz)
+;;     (println (ren/as-form clazz))
+;;     (println sex)))
+
+;; TOFIX - Refine label problem
+;; TODO - Check number of axioms for clazz <= 3
+;; (deftest Random-Karyotype
+;;   (let [random (ran/random-karyotype 2 3)]
+;;     (is (instance? org.semanticweb.owlapi.model.OWLClassExpression random))
+;;     (is (o/superclass? ran/random "r2" ran/RandomKaryotype)))
+;; )
+
+;; TODO - Check the number of karyotypes added to ontology
+;; (deftest Random-Karyotype-Driver)
