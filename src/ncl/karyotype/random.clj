@@ -91,7 +91,7 @@ FRAMES. Returns an OWL class as described."
 
 (def ^{:doc "An array of available deletion auxiliary functions."}
   deletions [random-terminal-deletion random-interstitial-deletion])
-(defn random-band-deletion-driver []
+(defn random-band-deletion []
   "Returns a deletion event restriction."
   (let [r (rand-int (count deletions))]
     ((get deletions r))))
@@ -110,7 +110,7 @@ FRAMES. Returns an OWL class as described."
 
 (def ^{:doc "An array of available addition and deletion functions."}
   abnormalities [random-chromosome-deletion
-  random-band-deletion-driver random-chromosome-addition
+  random-band-deletion random-chromosome-addition
   random-band-addition])
 (defn random-abnormality []
   "Returns an event restriction."
