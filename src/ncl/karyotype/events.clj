@@ -100,17 +100,37 @@ ncl.karyotype.events
         (throw (IllegalArgumentException.
                 (str "Band not recognized:" band)))))))
 
-;; Auxiliary function
+;; hasEvent auxiliary functions
 (defn some-event [axiom]
-  (owl-some hasDirectEvent axiom))
+  "Returns a LazySeq of SomeValuesFrom hasEvent restrictions."
+  (owl-some hasEvent axiom))
 
 (defn exactly-event [n axiom]
-  (exactly n hasDirectEvent axiom))
+  "Returns a (single) ExactCardinality hasEvent restriction."
+  (exactly n hasEvent axiom))
 
 (defn event [n axiom]
+  "(Either) Returns a LazySeq SomeValuesFrom or one ExactCardinality
+hasEvent restrictions."
   (if (nil? n)
-    (owl-some hasDirectEvent axiom)
-    (exactly n hasDirectEvent axiom)))
+    (some-event axiom)
+    (exactly-event n axiom)))
+
+;; hasDirectEvent auxiliary functions
+(defn some-direct-event [axiom]
+  "Returns a LazySeq of SomeValuesFrom hasDirectEvent restrictions"
+  (owl-some hasDirectEvent axiom))
+
+(defn exactly-direct-event [n axiom]
+  "Returns a (single) ExactCardinality hasDirectEvent restriction."
+  (exactly n hasDirectEvent axiom))
+
+(defn direct-event [n axiom]
+  "(Either) Returns a LazySeq SomeValuesFrom or one ExactCardinality
+hasDirectEvent restrictions."
+  (if (nil? n)
+    (some-direct-event axiom)
+    (exactly-direct-event n axiom)))
 
 ;; OWL CLASSES - EVENTS
 (as-disjoint-subclasses
@@ -157,9 +177,9 @@ ncl.karyotype.events
 ;; Chromosomal Addition OR Chromosomal Band Addition
 ;; Invovles only 1 chromosome
 (defn addition [n chrom_band]
-  "Returns an addition retriction.
-n is the number of addition restrictions.
-chrom_band is either of type HumanChromosome or HumanChromosomeBand."
+  "Returns an addition retriction. N is the number of addition
+restrictions. CHROM_BAND is either of type HumanChromosome or
+HumanChromosomeBand."
   ;; In order for superclass? to work, need to use the human ontology.
   (with-ontology
     ncl.karyotype.human/human
@@ -169,13 +189,13 @@ chrom_band is either of type HumanChromosome or HumanChromosomeBand."
      (or
       (= h/HumanChromosome chrom_band)
       (superclass? chrom_band h/HumanChromosome))
-     (event n (addition-chromosome chrom_band))
+     (direct-event n (addition-chromosome chrom_band))
      ;; If chrom_band is of type HumanChromosomeBand then
      ;; restriction represents a chromosomal band addition.
      (or
       (= h/HumanChromosomeBand chrom_band)
       (superclass? chrom_band h/HumanChromosomeBand))
-     (event n (addition-band n chrom_band))
+     (direct-event n (addition-band n chrom_band))
      :default
      (throw
       (IllegalArgumentException.
@@ -415,11 +435,9 @@ chrom1, chrom2 are vectors that contain HumanChromosomeBand."
 ;; Chromosomal Band Inversion : includes both paracentric (involves
 ;; only 1 arm) and pericentric (involves both arms) inversion.
 ;; Involves only 1 chromosome
-(defn inversion
-  "Returns an inversion retriction.
-n is the number of inversion restrictions.
-band1, band2 is of type HumanChromosomeBand."
-  [n band1 band2]
+(defn inversion [n band1 band2]
+  "Returns an inversion retriction. N is the number of inversion
+restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
   (exactly n hasDirectEvent
            (owl-and Inversion
                    (owl-some hasBreakPoint band1 band2))))
@@ -427,21 +445,18 @@ band1, band2 is of type HumanChromosomeBand."
 ;; Chromosomal Band Quadruplication
 ;; Note: It is not possible to indicate the orientations of the
 ;; segments with the short system!
-(defn quadruplication
-  "Returns a quadruplication retriction.
-n is the number of quadruplication restrictions.
-band1, band2 is of type HumanChromosomeBand."
-  [n band1 band2]
+(defn quadruplication [n band1 band2]
+  "Returns a quadruplication retriction. N is the number of
+quadruplication restrictions. BAND1, BAND2 is of type
+HumanChromosomeBand."
   (exactly n hasDirectEvent
            (owl-and Quadruplication
                    (owl-some hasBreakPoint band1 band2))))
 
 ;; Auxilary function for translocation function.
-(defn- adjust-bands
-  "Returns a vector of vectors - each vector contains 2 bands.
-bands is a list of vectors - each vector contains 1 or 2
-HumanChromosome."
-  [bands]
+(defn- adjust-bands [bands]
+  "Returns a vector of vectors - each vector contains 2 bands. BANDS
+is a list of vectors - each vector contains 1 or 2 HumanChromosome."
   (into []
         (for [band bands]
           (cond
@@ -460,12 +475,10 @@ HumanChromosome."
 
 ;; Chromosomal Band Translocation
 ;; Must involve more than one chromosome/band
-(defn translocation
-  "Returns a translocation restriction.
-n is the number of translocation restrictions.
-bands is a list of vectors - each vector contains 1 or 2
-HumanChromosomeBand"
-  [n & bands] {:pre (> 1 (count bands))}
+(defn translocation [n & bands] {:pre (> 1 (count bands))}
+  "Returns a translocation restriction. N is the number of
+translocation restrictions.BANDS is a list of vectors - each vector
+contains 1 or 2 HumanChromosomeBand"
   (let [sorted-bands (adjust-bands bands)]
     (exactly n hasDirectEvent
              (owl-and Translocation
@@ -491,33 +504,29 @@ HumanChromosomeBand"
 ;; of the segments with the short system" however the example shown
 ;; seem to show the orientations fine. What other detailed systems
 ;; occur for the first example?  Similar to Duplication
-(defn triplication
-  "Returns a triplication retriction.
-n is the number of triplication restrictions.
-band1, band2 is of type HumanChromosomeBand."
-  [n band1 band2]
+(defn triplication [n band1 band2]
+  "Returns a triplication retriction. N is the number of triplication
+restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
   (exactly 1 hasDirectEvent
            (owl-and Triplication
                    (owl-some hasBreakPoint band1 band2))))
 
 ;; Choromosomal Band DirectTriplication
 ;; Invovles only 1 chromosome
-(defn direct-triplication
-  "Returns a direct-triplication retriction.
-n is the number of triplication restrictions.
-band1, band2 is of type HumanChromosomeBand."
-  [n band1 band2]
+(defn direct-triplication [n band1 band2]
+  "Returns a direct-triplication retriction. N is the number of
+triplication restrictions. BAND1, BAND2 is of type
+HumanChromosomeBand."
   (exactly 1 hasDirectEvent
            (owl-and DirectTriplication
                    (owl-some hasBreakPoint band1 band2))))
 
 ;; Choromosomal Band InverseTriplication
 ;; Invovles only 1 chromosome
-(defn inverse-triplication
-  "Returns an inverse-triplication retriction.
-n is the number of inverse-triplication restrictions.
-band1, band2 is of type HumanChromosomeBand."
-  [n band1 band2]
+(defn inverse-triplication [n band1 band2]
+  "Returns an inverse-triplication retriction. N is the number of
+  inverse-triplication restrictions. BAND1, BAND2 is of type
+  HumanChromosomeBand."
   (exactly 1 hasDirectEvent
            (owl-and InverseTriplication
                    (owl-some hasBreakPoint band1 band2))))
