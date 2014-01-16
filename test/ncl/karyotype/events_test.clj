@@ -33,24 +33,29 @@
 
 (use-fixtures :once ontology-reasoner-fixture)
 
+;; (o/defontology to
+;;   :iri "http://ncl.ac.uk/karyotype/test"
+;;   :prefix "test:"
+;;   :comment "Test ontology for Human Karyotype Ontology, written using
+;;   the tawny-owl library.")
+
 (deftest Basic
   (is (r/consistent?))
   (is (r/coherent?)))
 
-(deftest get-telomere
+;; TODO
+;; (deftest Parentband?)
 
+;; REFRESH
+(deftest Get-Telomere
   (is (= h/HumanChromosome1BandpTer
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanChromosome1Bandp10)))
-
+         (e/get-telomere h/HumanChromosome1Bandp10)))
   (is (= h/HumanChromosome1BandqTer
          (#'ncl.karyotype.events/get-telomere
           h/HumanChromosome1Bandq10)))
-
   (is (= h/HumanChromosome1Telomere
          (#'ncl.karyotype.events/get-telomere
           h/HumanChromosome1Band)))
-
   (is (= h/HumanTelomere
          (#'ncl.karyotype.events/get-telomere
           h/HumanChromosomeBand)))
@@ -84,7 +89,73 @@
 
 )
 
-(deftest addition
+;; unlike exactly, owl-some returns a lazyseq of hasEvent restrictions
+(deftest Some-Event
+  (let [events (e/some-event
+                (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
+    (doseq [event events]
+      (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
+      (is (re-find #"hasEvent" (str event)))
+      (is (not (re-find #"hasDirectEvent" (str event)))))))
+
+(deftest Exactly-Event
+  (let [event (e/exactly-event 1 (o/owl-and e/Addition h/HumanChromosome1))]
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality event))
+    (is (re-find #"hasEvent" (str event)))
+    (is (not (re-find #"hasDirectEvent" (str event))))))
+
+(deftest Event
+  (let [exact (e/event 1 (o/owl-and e/Addition h/HumanChromosome1))
+        some (e/event nil (o/owl-and e/Addition
+                                     h/HumanChromosome1 h/HumanChromosome12))
+        events (flatten [exact some])]
+
+    (doseq [event events]
+      (is (instance? org.semanticweb.owlapi.model.OWLRestriction event))
+      ;; TOFIX
+      ;; (is (some #(instance? % event)
+      ;;           [org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom
+      ;;            org.semanticweb.owlapi.model.OWLObjectExactCardinality]))
+      (is (re-find #"hasEvent" (str event)))
+      (is (not (re-find #"hasDirectEvent" (str event)))))))
+
+(deftest Some-Direct-Event
+  (let [events (e/some-direct-event
+                (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
+    (doseq [event events]
+      (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
+      (is (re-find #"hasDirectEvent" (str event)))
+      (is (not (re-find #"hasEvent" (str event)))))))
+
+(deftest Exactly-Direct-Event
+  (let [event (e/exactly-direct-event
+               1 (o/owl-and e/Addition h/HumanChromosome1))]
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality event))
+    (is (re-find #"hasDirectEvent" (str event)))
+    (is (not (re-find #"hasEvent" (str event))))))
+
+(deftest Direct-Event
+  (let [exact (e/direct-event 1 (o/owl-and e/Addition h/HumanChromosome1))
+        some (e/direct-event nil (o/owl-and e/Addition
+                                     h/HumanChromosome1 h/HumanChromosome12))
+        events (flatten [exact some])]
+
+    (doseq [event events]
+      (is (instance? org.semanticweb.owlapi.model.OWLRestriction event))
+      ;; TOFIX
+      ;; (is (some #(instance? % event)
+      ;;           [org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom
+      ;;            org.semanticweb.owlapi.model.OWLObjectExactCardinality]))
+      (is (re-find #"hasDirectEvent" (str event)))
+      (is (not (re-find #"hasEvent" (str event)))))))
+
+
+;; TODO
+;; (deftest Addition-Chromosome)
+;; (deftest Addition-Band)
+
+;; REFRESH
+(deftest Addition
   (is (= (o/exactly 1 e/hasDirectEvent
                     (o/owl-and e/Addition h/HumanChromosome1))
          (e/addition 1 h/HumanChromosome1)))
@@ -112,33 +183,4 @@
          (e/addition 1 h/HumanChromosome1Band)))
 )
 
-;; (deftest deletion
-;;   (is (= (o/exactly 1 e/hasDirectEvent
-;;                     (o/owl-and e/Deletion h/HumanChromosome1))
-;;          (e/addition 1 h/HumanChromosome1)))
-
-;;   (is (= (o/exactly 1 e/hasDirectEvent
-;;                     (o/owl-and e/Deletion h/HumanChromosome))
-;;          (e/addition 1 h/HumanChromosome)))
-
-  ;; (is (= (o/exactly 1 e/hasDirectEvent
-  ;;                   (o/owl-and e/Deletion
-  ;;                             (o/owl-some e/hasBreakPoint
-  ;;                                        h/HumanChromosome1Bandp11
-  ;;                                        h/HumanChromosome1BandpTer)))
-  ;;        (e/addition 1 h/HumanChromosome1Bandp11)))
-
-  ;; (is (= (o/exactly 1 e/hasDirectEvent
-  ;;                   (o/owl-and e/Deletion
-  ;;                             (o/owl-some e/hasBreakPoint
-  ;;                                        h/HumanChromosome1Bandp
-  ;;                                        h/HumanChromosome1BandpTer)))
-  ;;        (e/addition 1 h/HumanChromosome1Bandp)))
-
-  ;; (is (= (o/exactly 1 e/hasDirectEvent
-  ;;                   (o/owl-and e/Deletion
-  ;;                             (o/owl-some e/hasBreakPoint
-  ;;                                        h/HumanChromosome1Band
-  ;;                                        h/HumanChromosome1Telomere)))
-  ;;        (e/addition 1 h/HumanChromosome1Band)))
-;;)
+;; TODO
