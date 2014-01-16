@@ -15,7 +15,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.parse
+(ns ^{:doc "Translation of OWL karyotype classes to string and vice
+versa. Limitation - only available for addition and deletion events."
+      :author "Jennifer Warrender"}
+  ncl.karyotype.parse
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
@@ -26,20 +29,14 @@
 
 (defontology parse
   :iri "http://ncl.ac.uk/karyotype/parse"
-  :prefix "par:")
-
-;; import all ncl.karyotype axioms
-(owl-import k/karyotype)
-(owl-import h/human)
-(owl-import e/events)
-(owl-import f/features)
-(owl-import b/base)
+  :prefix "par:"
+  :comment "'Parse' ontology for Human Karyotype Ontology, written
+  using the tawny-owl library")
 
 ;; FUNCTIONS
-(defn- make-safe
+(defn- make-safe [karyotype]
   "Returns a 'safe' string name for the OWL class.
 karyotype is of type String."
-  [karyotype]
   (str "k"
        (clojure.string/replace
         (clojure.string/replace
@@ -47,17 +44,15 @@ karyotype is of type String."
          #"[;,\+ \?]" "_")
         (re-pattern "[\\(\\)]") "_")))
 
-(defn- get-no-of-Y
+(defn- get-no-of-Y [s]
   "Determines how many Y chromosomes exist in karyotype.
 s id of type String."
-  [s]
   (- (count (re-seq #"Y" s))
      (count (re-seq #"\+[a-zA-Z0-Z(;]*Y" s))))
 
 ;; assume that you are unable to have +Y when youre a female
-(defn- get-derived-from
+(defn- get-derived-from [karyotype]
   "Obtains the derivedFrom subclass"
-  [karyotype]
   (let [value (read-string (first (clojure.string/split karyotype #",")))]
     (cond
      ;; If karyotype is near-haploid
@@ -96,14 +91,12 @@ s id of type String."
      (throw (IllegalArgumentException.
              (str "Karyotype syntax not recognised: " karyotype))))))
 
-(defn- split-bands
+(defn- split-bands [bandinfo]
   "Splits bandinfo from one string to a vector of bands"
-  [bandinfo]
   (into [] (re-seq #"[pq][\d\.]+|[pq]\?|\?" bandinfo)))
 
-(defn- get-bands
+(defn- get-bands [chrominfo bandinfo]
   "Get the band entities inferred in bandinfo"
-  [chrominfo bandinfo]
   (for [band (split-bands bandinfo)]
     (owl-class
      ncl.karyotype.human/human
@@ -119,9 +112,8 @@ s id of type String."
       (re-find #"[pq][\d\.]+" band)
       (str "HumanChromosome" chrominfo "Band" band)))))
 
-(defn- get-direction
+(defn- get-direction [bandinfo]
   "Determines the direction of the band range as either direct or inverse"
-  [bandinfo]
   (let [band1 (get (split-bands bandinfo) 0)
         band2 (get (split-bands bandinfo) 1)]
     (cond
@@ -144,9 +136,8 @@ s id of type String."
         (> (read-string digit1) (read-string digit2))
         "Inverse")))))
 
-(defn- get-insertion-function
-  "TODO"
-  [bandinfo]
+(defn- get-insertion-function [bandinfo]
+  "Returns "
   (cond
    (= (get-direction bandinfo) "Unknown")
    e/insertion
@@ -155,9 +146,8 @@ s id of type String."
    (= (get-direction bandinfo) "Inverse")
    e/inverse-insertion))
 
-(defn- define-event
-  "TODO"
-  [event]
+(defn- define-event [event]
+  "Returns "
   (with-ontology
     ncl.karyotype.human/human
      (let [info (clojure.string/split event (re-pattern "[\\(\\)]"))]
@@ -234,23 +224,29 @@ s id of type String."
         (throw (IllegalArgumentException.
                 (str "Event syntax not recognised: " event)))))))
 
-(defn- get-subclasses
+(defn- get-subclasses [class karyotype]
   "Obtains the other associated subclass"
-  [class karyotype]
   (doseq [subclass (rest (rest (clojure.string/split karyotype #",")))]
     (add-subclass class (define-event subclass))))
 
-(defn- parse-karyotype-string
+(defn- parse-karyotype-string [karyotype]
   "Creates OWL entity equivalent of ISCN String"
-  [karyotype]
   (let [name (make-safe karyotype)]
-   (tawny.read/intern-entity
-    (owl-class name
-               :label (str "The " karyotype " karyotype")
-               :subclass i/ISCNExampleKaryotype
-               (if-not (re-find #"c" karyotype)
-                 (owl-some b/derivedFrom (get-derived-from karyotype)))))
+    (tawny.read/intern-entity
+     (owl-class name
+                :label (str "The " karyotype " karyotype")
+                :subclass i/ISCNExampleKaryotype
+                (if-not (re-find #"c" karyotype)
+                  (owl-some b/derivedFrom (get-derived-from karyotype)))))
     (get-subclasses (owl-class name) karyotype)))
+
+;; TESTING
+;; import all ncl.karyotype axioms
+(owl-import k/karyotype)
+(owl-import h/human)
+(owl-import e/events)
+(owl-import f/features)
+(owl-import b/base)
 
 ;; define karyotypes
 (parse-karyotype-string "26,X,+4,+6,+21")
@@ -298,20 +294,18 @@ s id of type String."
 
 ;; CREATE KARYOTYPE STRING FUNCTIONS
 ;; TOFIX - Not true!
-(defn- get-start
-  "Returns the prefix of the karyotype.
-axiom is of type derivedFrom."
-  [axiom]
+(defn- get-start [axiom]
+  "Returns the prefix of the karyotype. AXIOM is of type derivedFrom."
   (let [base (re-find #"k[\d_XY]+" axiom)]
     (clojure.string/replace (subs base 1) #"_" ",")))
 
 (defn- get-superclasses [clazz]
+  "Returns "
   (into [] (direct-superclasses clazz)))
 
-(defn- get-event-string
+(defn- get-event-string [axiom]
   "Returns the String representation of the event restriction.
 axiom is of type hasEvent."
-  [axiom]
   (cond
    ;; "If axiom is an addition event"
    (re-find #"Addition" axiom)
@@ -360,13 +354,13 @@ axiom is of type hasEvent."
 ))
 
 (defn subclass-karyotype? [o entity]
+  "Returns "
   (let [c (into [] (direct-subclasses o k/Karyotype))]
     (some (partial = entity) c)))
 
-(defn- get-axiom-string
+(defn- get-axiom-string [o entity]
   "Returns the string representation of the restriction.
 axiom is of type OWL Object Property."
-  [o entity]
   (let [e (str entity)]
     (cond
      (re-find #"derivedFrom" e)
@@ -374,13 +368,14 @@ axiom is of type OWL Object Property."
      (re-find #"hasEvent" e)
      (get-event-string e)
      (subclass-karyotype? o entity)
-     "IGNORE-ME"
-     )))
+     "IGNORE-ME")))
 
 (defn find-chromosome [s]
+  "Returns "
   (re-find #"\d+,X[XY]|\d+|X|Y" s))
 
 (defn chromosome-compare [arg1 arg2]
+  "Returns "
   (let [c1 (find-chromosome arg1)
         c2 (find-chromosome arg2)]
     (cond
@@ -391,39 +386,40 @@ axiom is of type OWL Object Property."
      (= (type c1) (type c2))
      (compare c1 c2))))
 
-(defn sort-by-chromosome [c]
-  "TOFIX Returns a sorted vector of restrictions - i.e. hasDerived
+;; TOFIX
+(defn sort-by-chromosome [clazz]
+  "Returns a sorted vector of restrictions - i.e. hasDerived
   restriction, and other restrictions which are sorted by chromosome
-  value (X,Y,1-22).
-class is of type ISCNExampleKaryotype."
+  value (X,Y,1-22). CLAZZ is of type ISCNExampleKaryotype."
   (try
-    (sort chromosome-compare c)
-  (catch Exception e (println "Error " c))))
+    (sort chromosome-compare clazz)
+    (catch Exception e (println "Error " clazz))))
 
 (defn parse-karyotype-class
   "Returns the ISCN String of an OWL Karyotype Class.
 Class is of type ISCNExampleKaryotype."
   [o clazz]
   (let [strings (for [superclass (get-superclasses clazz)
-                           :let [axiom (get-axiom-string o superclass)]]
+                      :let [axiom (get-axiom-string o superclass)]]
                   axiom)
         s (apply str (sort-by-chromosome (remove #{"IGNORE-ME"} strings)))]
     s))
 
-(defn- create-karyotype-string0
+(defn- create-karyotype-string0 [o detail name]
   "Prints details of the string input - used for testing purposes.
-detail is of type boolean.
-name is of type String."
-  [o detail name]
+detail is of type boolean. NAME is of type String."
   (let [clazz (owl-class (make-safe name))]
     ;; If true, print the name, owl class, and resulting string.
     (if (true? detail)
       [(println (str "NAME: " name))
-      (println (str "CLASS: " class))
-      (println (str "STRING: " (parse-karyotype-class o clazz)))])))
+       (println (str "CLASS: " class))
+       (println (str "STRING: " (parse-karyotype-class o clazz)))])))
 
+;; TESTING
 ;; get ISCN String
-(def create-karyotype-string (partial create-karyotype-string0 parse false))
+(def ^{:doc "Partial function for creating a karyotype string. FALSE
+  mean that the output is elided."} create-karyotype-string
+  (partial create-karyotype-string0 parse false))
 (create-karyotype-string "26,X,+4,+6,+21")
 (create-karyotype-string "71,XXX,+8,+10")
 (create-karyotype-string "89,XXYY,-1,-3,-5,+8,-21")
@@ -436,5 +432,7 @@ name is of type String."
 (create-karyotype-string "46,XX,del(5)(q13q33)")
 (create-karyotype-string "46,XX,del(5)(q13q13)")
 
-(def create-karyotype-string (partial create-karyotype-string0 parse true))
+(def ^{:doc "Partial function for creating a karyotype string. TRUE
+  mean that the output is shown."} create-karyotype-string
+  (partial create-karyotype-string0 parse true))
 ;; (create-karyotype-string "26,X,+4,+6,+21")
