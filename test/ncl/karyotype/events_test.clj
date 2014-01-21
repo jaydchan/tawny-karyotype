@@ -51,35 +51,23 @@
   (is (= h/HumanChromosome1BandpTer
          (e/get-telomere h/HumanChromosome1Bandp10)))
   (is (= h/HumanChromosome1BandqTer
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanChromosome1Bandq10)))
+         (e/get-telomere h/HumanChromosome1Bandq10)))
   (is (= h/HumanChromosome1Telomere
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanChromosome1Band)))
+         (e/get-telomere h/HumanChromosome1Band)))
   (is (= h/HumanTelomere
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanChromosomeBand)))
+         (e/get-telomere h/HumanChromosomeBand)))
 
   ;;CORRECT?
   (is (= h/HumanChromosome1BandqTer
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanChromosome1BandqTer)))
-
+         (e/get-telomere h/HumanChromosome1BandqTer)))
   (is (= h/HumanChromosome1Telomere
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanChromosome1Telomere)))
-
+         (e/get-telomere h/HumanChromosome1Telomere)))
   (is (= h/HumanChromosome1Telomere
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanChromosome1Centromere)))
-
+         (e/get-telomere h/HumanChromosome1Centromere)))
   (is (= h/HumanTelomere
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanTelomere)))
-
+         (e/get-telomere h/HumanTelomere)))
   (is (= h/HumanTelomere
-         (#'ncl.karyotype.events/get-telomere
-          h/HumanCentromere)))
+         (e/get-telomere h/HumanCentromere)))
 
 ;;   (is (thrown?
 ;;        IllegalArgumentException
@@ -94,15 +82,19 @@
   (let [events (e/some-event
                 (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
     (doseq [event events]
-      (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
-      (is (re-find #"hasEvent" (str event)))
-      (is (not (re-find #"hasDirectEvent" (str event)))))))
+      (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom
+                     event))
+      (is (.isObjectRestriction event))
+      (is (= (.getProperty event) e/hasEvent))
+      (is (not (= (.getProperty event) e/hasDirectEvent))))))
 
 (deftest Exactly-Event
   (let [event (e/exactly-event 1 (o/owl-and e/Addition h/HumanChromosome1))]
-    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality event))
-    (is (re-find #"hasEvent" (str event)))
-    (is (not (re-find #"hasDirectEvent" (str event))))))
+    (is (instance?
+         org.semanticweb.owlapi.model.OWLObjectExactCardinality event))
+    (is (.isObjectRestriction event))
+    (is (= (.getProperty event) e/hasEvent))
+    (is (not (= (.getProperty event) e/hasDirectEvent)))))
 
 (deftest Event
   (let [exact (e/event 1 (o/owl-and e/Addition h/HumanChromosome1))
@@ -112,27 +104,33 @@
 
     (doseq [event events]
       (is (instance? org.semanticweb.owlapi.model.OWLRestriction event))
-      ;; TOFIX
-      ;; (is (some #(instance? % event)
-      ;;           [org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom
-      ;;            org.semanticweb.owlapi.model.OWLObjectExactCardinality]))
-      (is (re-find #"hasEvent" (str event)))
-      (is (not (re-find #"hasDirectEvent" (str event)))))))
+      (is (or
+           (instance?
+            org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event)
+           (instance?
+            org.semanticweb.owlapi.model.OWLObjectExactCardinality event)))
+      (is (.isObjectRestriction event))
+      (is (= (.getProperty event) e/hasEvent))
+      (is (not (= (.getProperty event) e/hasDirectEvent))))))
 
 (deftest Some-Direct-Event
   (let [events (e/some-direct-event
                 (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
     (doseq [event events]
-      (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
-      (is (re-find #"hasDirectEvent" (str event)))
-      (is (not (re-find #"hasEvent" (str event)))))))
+      (is (instance?
+           org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
+      (is (.isObjectRestriction event))
+      (is (= (.getProperty event) e/hasDirectEvent))
+      (is (not (= (.getProperty event) e/hasEvent))))))
 
 (deftest Exactly-Direct-Event
   (let [event (e/exactly-direct-event
                1 (o/owl-and e/Addition h/HumanChromosome1))]
-    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality event))
-    (is (re-find #"hasDirectEvent" (str event)))
-    (is (not (re-find #"hasEvent" (str event))))))
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
+                   event))
+    (is (.isObjectRestriction event))
+    (is (= (.getProperty event) e/hasDirectEvent))
+    (is (not (= (.getProperty event) e/hasEvent)))))
 
 (deftest Direct-Event
   (let [exact (e/direct-event 1 (o/owl-and e/Addition h/HumanChromosome1))
@@ -142,45 +140,185 @@
 
     (doseq [event events]
       (is (instance? org.semanticweb.owlapi.model.OWLRestriction event))
-      ;; TOFIX
-      ;; (is (some #(instance? % event)
-      ;;           [org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom
-      ;;            org.semanticweb.owlapi.model.OWLObjectExactCardinality]))
-      (is (re-find #"hasDirectEvent" (str event)))
-      (is (not (re-find #"hasEvent" (str event)))))))
+      (is (or
+           (instance?
+            org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event)
+           (instance?
+            org.semanticweb.owlapi.model.OWLObjectExactCardinality event)))
+      (is (.isObjectRestriction event))
+      (is (= (.getProperty event) e/hasDirectEvent))
+      (is (not (= (.getProperty event) e/hasEvent))))))
 
+(deftest Addition-Chromosome
+  ;; valid inputs
+  (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
+        events (into [] (map e/addition-chromosome inputs))]
+    (doseq [i (range (count inputs))]
+      (let [event (get events i)]
+        (is (instance?
+             uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl
+             event))
+        (is (.containsConjunct event e/Addition))
+        (is (.containsConjunct event (get inputs i))))))
+  ;; invalid input(s)
+  ;; TOFIX
+  ;; (is (thrown? AssertionError (e/addition-chromosome h/HumanChromosomeBand)))
+)
 
-;; TODO
-;; (deftest Addition-Chromosome)
-;; (deftest Addition-Band)
+(deftest Addition-Band
+  ;; valid inputs
+  (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp36.3
+                h/HumanChromosome1Bandp10 h/HumanChromosome1BandpTer
+                h/HumanChromosome1Bandq11]
+        events (into [] (map e/addition-band inputs))]
+    (doseq [i (range (count inputs))]
+      (let [event (get events i)]
+        (is (instance?
+             uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl
+             event))
+        (is (.containsConjunct event e/Addition))
+        (doseq [conjunct (.asConjunctSet event)]
+          (if (instance?
+               uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl
+               conjunct)
+            (let [property conjunct]
+              (is (.isObjectRestriction property))
+              (is (= (.getProperty property) e/hasBreakPoint))
+              (is (= (.getFiller property) (get inputs i)))))))))
+  ;; invalid input(s)
+  ;; TOFIX
+  ;; (is (thrown? AssertionError (e/addition-chromosome h/HumanChromosome)))
+)
 
-;; REFRESH
 (deftest Addition
-  (is (= (o/exactly 1 e/hasDirectEvent
-                    (o/owl-and e/Addition h/HumanChromosome1))
-         (e/addition 1 h/HumanChromosome1)))
+  ;; valid inputs - chromosomes
+  ;; Is HumanAutosome necessary?
+  (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
+        expected (into []
+                       (map #(o/exactly 1 e/hasDirectEvent
+                                        (o/owl-and e/Addition %)) inputs))
+        actual (into [] (map #(e/addition 1 %) inputs))]
 
-  (is (= (o/exactly 1 e/hasDirectEvent
-                    (o/owl-and e/Addition h/HumanChromosome))
-         (e/addition 1 h/HumanChromosome)))
+    (doseq [i (range (count inputs))]
+      (is (= (get expected i) (get actual i)))))
 
-  (is (= (o/exactly 1 e/hasDirectEvent
-                    (o/owl-and e/Addition
-                              (o/owl-some e/hasBreakPoint
-                                         h/HumanChromosome1Bandp11)))
-         (e/addition 1 h/HumanChromosome1Bandp11)))
+  ;; valid inputs - bands
+  (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp36.3
+                h/HumanChromosome1Bandp10 h/HumanChromosome1BandpTer
+                h/HumanChromosome1Bandq11]
+        expected (into []
+                       (map #(o/exactly 1 e/hasDirectEvent
+                                        (o/owl-and e/Addition
+                                                   (o/owl-some e/hasBreakPoint
+                                                               %))) inputs))
+        actual (into [] (map #(e/addition 1 %) inputs))]
 
-  (is (= (o/exactly 1 e/hasDirectEvent
-                    (o/owl-and e/Addition
-                              (o/owl-some e/hasBreakPoint
-                                         h/HumanChromosome1Bandp)))
-         (e/addition 1 h/HumanChromosome1Bandp)))
+    (doseq [i (range (count inputs))]
+      (is (= (get expected i) (get actual i)))))
 
-  (is (= (o/exactly 1 e/hasDirectEvent
-                    (o/owl-and e/Addition
-                              (o/owl-some e/hasBreakPoint
-                                         h/HumanChromosome1Band)))
-         (e/addition 1 h/HumanChromosome1Band)))
+  ;; invalid input
+  ;; is this true?
+  (is (thrown?
+       IllegalArgumentException
+       "HumanChromosome1Centromere"
+       (e/addition 1 h/HumanChromosome1Centromere)))
+)
+
+(deftest Deletion-Chromosome
+  ;; valid inputs
+  (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
+        events (into [] (map e/deletion-chromosome inputs))]
+    (doseq [i (range (count inputs))]
+      (let [event (get events i)]
+        (is (instance?
+             uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl
+             event))
+        (is (.containsConjunct event e/Deletion))
+        (is (.containsConjunct event (get inputs i))))))
+  ;; invalid input(s)
+  ;; TOFIX
+  ;; (is (thrown? AssertionError (e/deletion-chromosome h/HumanChromosomeBand)))
+)
+
+(deftest Deletion-Band
+  ;; valid inputs
+  (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp36.3
+                h/HumanChromosome1Bandp10 h/HumanChromosome1BandpTer
+                h/HumanChromosome1Bandq11]
+        events (into [] (map #(e/deletion-band %1 %2) inputs (reverse inputs)))]
+    (doseq [i (range (count inputs))]
+      (let [event (get events i)
+            properties
+            (filter
+             #(instance?
+               uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl %)
+             (.asConjunctSet event))]
+        (is (instance?
+             uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl event))
+        (is (.containsConjunct event e/Deletion))
+        (is (some #(= (count properties) %) [1 2]))
+        (doseq [property properties]
+          (is (.isObjectRestriction property))
+          (is (= (.getProperty property) e/hasBreakPoint))
+          (is (or (= (.getFiller property) (get inputs i))
+                  (= (.getFiller property)
+                     (get (into [] (reverse inputs)) i))))))))
+  ;; invalid input(s)
+  ;; TOFIX
+  ;; (is (thrown? AssertionError
+  ;;              (e/deletion-band h/HumanChromosome h/HumanChromosome1Band)))
+  ;; (is (thrown? AssertionError
+  ;;              (e/deletion-band h/HumanChromosome1Band h/HumanChromosome)))
+  ;; (is (thrown? AssertionError
+  ;;              (e/deletion-band h/HumanChromosome h/HumanChromosome)))
+)
+
+(deftest Deletion
+  ;; valid inputs - chromosomes
+  ;; Is HumanAutosome necessary?
+  (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
+        expected (into []
+                       (map #(o/exactly 1 e/hasDirectEvent
+                                        (o/owl-and e/Deletion %)) inputs))
+        actual (into [] (map #(e/deletion 1 %) inputs))]
+
+    (doseq [i (range (count inputs))]
+      (is (= (get expected i) (get actual i)))))
+
+  ;; valid inputs - bands
+  (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp36.3
+                h/HumanChromosome1Bandp10 h/HumanChromosome1BandpTer
+                h/HumanChromosome1Bandq11]
+        interstitial_expected
+        (into []
+              (map #(o/exactly 1 e/hasDirectEvent
+                               (o/owl-and e/Deletion
+                                          (o/owl-some e/hasBreakPoint %1 %2)))
+                   inputs (reverse inputs)))
+        interstitial_actual
+        (into [] (map #(e/deletion 1 %1 %2) inputs (reverse inputs)))
+        terminal_expected
+        (into []
+              (map #(o/exactly 1 e/hasDirectEvent
+                               (o/owl-and e/Deletion
+                                          (o/owl-some e/hasBreakPoint %
+                                                      (e/get-telomere %))))
+                               inputs))
+        terminal_actual (into [] (map #(e/deletion 1 %) inputs))]
+
+    ;; interstitial deletion
+    (doseq [i (range (count inputs))]
+      (is (= (get interstitial_expected i) (get interstitial_actual i))))
+    ;; terminal deletion
+    (doseq [i (range (count inputs))]
+      (is (= (get terminal_expected i) (get terminal_actual i)))))
+
+  ;; invalid input
+  ;; is this true?
+  (is (thrown?
+       IllegalArgumentException
+       "HumanChromosome1Centromere"
+       (e/addition 1 h/HumanChromosome1Centromere)))
 )
 
 ;; TODO
