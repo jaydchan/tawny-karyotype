@@ -20,8 +20,7 @@
 ncl.karyotype.events
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]
-            [tawny [reasoner :as rea]]))
+            [ncl.karyotype [human :as h]]))
 
 (defontology events
   :iri "http://ncl.ac.uk/karyotype/events"
