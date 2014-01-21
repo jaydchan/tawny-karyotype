@@ -992,6 +992,16 @@ PARENT, which is either p or q band."
           (atom
            rea/reasoner-progress-monitor-silent)]
 
+  (defn chromosome? [x]
+    "Determine if X is a chromosome - using ontology"
+    (or (rea/isuperclass? x HumanChromosome)
+        (= x HumanChromosome)))
+
+  (defn band? [x]
+    "Determine if X is a band - using ontology"
+    (or (rea/isuperclass? x HumanChromosomeBand)
+        (= x HumanChromosomeBand)))
+
   (defn ter? [band]
     "Determine if the given band is a telomere - using ontology"
     (rea/isuperclass? band is-telomere))
