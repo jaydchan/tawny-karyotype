@@ -106,6 +106,7 @@ ncl.karyotype.events
   (owl-some hasEvent axiom))
 
 (defn exactly-event [n axiom]
+  {:pre (number? n)}
   "Returns a (single) ExactCardinality hasEvent restriction."
   (exactly n hasEvent axiom))
 
@@ -122,6 +123,7 @@ hasEvent restrictions."
   (owl-some hasDirectEvent axiom))
 
 (defn exactly-direct-event [n axiom]
+  {:pre (number? n)}
   "Returns a (single) ExactCardinality hasDirectEvent restriction."
   (exactly n hasDirectEvent axiom))
 
@@ -166,12 +168,12 @@ hasDirectEvent restrictions."
 
 ;; Addition patterns
 (defn addition-chromosome [chromosome]
-  ;; TOFIX {:pre (true? (h/chromosome? chromosome))}
+  {:pre (true? (h/chromosome? chromosome))}
   "Pattern - returns part of chromosomal addition axiom."
   (owl-and Addition chromosome))
 
 (defn addition-band [band]
-  ;; TOFIX {:pre (true? (h/band? band))}
+  {:pre (true? (h/band? band))}
   "Pattern - returns part of chromosomal band addition axiom."
   (owl-and Addition
            (owl-some hasBreakPoint band)))
@@ -206,12 +208,12 @@ HumanChromosomeBand."
 
 ;; Deletion patterns
 (defn deletion-chromosome [chromosome]
-  ;; TOFIX {:pre (true? (h/band? band))}
+  {:pre (true? (h/chromosome? chromosome))}
   "Pattern - returns chromosomal deletion axiom."
   (owl-and Deletion chromosome))
 
 (defn deletion-band [band1 band2]
-  ;; TOFIX {:pre (and (true? (h/band? band1) (true? (h/band? band2))))}
+  {:pre [(true? (h/band? band1)) (true? (h/band? band2))]}
   "Pattern - return chromosomal band deletion axiom."
   (owl-and Deletion
            (owl-some hasBreakPoint band1 band2)))
@@ -253,6 +255,7 @@ band, band1, band2 are of type HumanChromosomeBand."
      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
      (direct-event n (deletion-band band1 band2))))
 
+;; TODO DO I need to differentiate between terminal and interstitial?
 (as-disjoint-subclasses
  Deletion
  (defclass DeletionTerminal)
@@ -302,6 +305,11 @@ band, band1, band2 are of type HumanChromosomeBand."
      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
      (interstitial-pattern n band1 band2)))
 
+;; TODO Necessary?
+;; (defn chromosome-event [event chromosome]
+;;   (owl-and event chromosome))
+;; (defn band-event [event & bands]
+;;   (owl-and event (owl-some hasBreakPoint bands)))
 
 ;; Chromosomal Band Duplication
 ;; Can be preceeded by the triplets dir or inv to indicate direct or
@@ -311,9 +319,8 @@ band, band1, band2 are of type HumanChromosomeBand."
   "Returns a duplication retriction.
 n is the number of duplication restrictions.
 band1, band2 are of type HumanChromosomeBand."
-  (exactly n hasDirectEvent
-           (owl-and Duplication
-                   (owl-some hasBreakPoint band1 band2))))
+  (direct-event n (owl-and Duplication
+                           (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Band DirectDuplication
 ;; Invovles only 1 chromosome
@@ -321,9 +328,8 @@ band1, band2 are of type HumanChromosomeBand."
   "Returns a direct-duplication retriction.
 n is the number of direct-duplication restrictions.
 band1, band2 are of type HumanChromosomeBand."
-  (exactly n hasDirectEvent
-           (owl-and DirectDuplication
-                   (owl-some hasBreakPoint band1 band2))))
+  (direct-event n (owl-and DirectDuplication
+                           (owl-some hasBreakPoint band1 band2))))
 
 ;; Chromosomal Band InverseDuplication
 ;; Invovles only 1 chromosome
