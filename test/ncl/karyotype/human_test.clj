@@ -161,3 +161,17 @@
   (is (not (h/cen? h/HumanChromosome1Band)))
   (is (not (h/cen? h/HumanChromosomeBand)))
   (is (not (h/cen? h/HumanChromosome))))
+
+(deftest chromosome?
+  (is (true? (h/chromosome? h/HumanChromosome1)))
+  (is (true? (h/chromosome? h/HumanAutosome)))
+  (is (true? (h/chromosome? h/HumanChromosome)))
+  (is (false? (h/chromosome? h/HumanChromosomeBand))))
+
+(deftest band?
+  (is (true? (h/band? h/HumanChromosome1Bandp36.31)))
+  (is (true? (h/band? h/HumanChromosome1Bandp36.3)))
+  (is (true? (h/band? h/HumanChromosome1Bandp10)))
+  (is (true? (h/band? h/HumanChromosome1BandpTer)))
+  (is (true? (h/band? h/HumanChromosome1Bandq11)))
+  (is (false? (h/band? h/HumanChromosome))))
