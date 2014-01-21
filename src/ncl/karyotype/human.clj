@@ -994,26 +994,26 @@ PARENT, which is either p or q band."
 
   (defn chromosome? [x]
     "Determine if X is a chromosome - using ontology"
-    (or (rea/isuperclass? x HumanChromosome)
+    (or (rea/isuperclass? human x HumanChromosome)
         (= x HumanChromosome)))
 
   (defn band? [x]
     "Determine if X is a band - using ontology"
-    (or (rea/isuperclass? x HumanChromosomeBand)
+    (or (rea/isuperclass? human x HumanChromosomeBand)
         (= x HumanChromosomeBand)))
 
   (defn ter? [band]
     "Determine if the given band is a telomere - using ontology"
-    (rea/isuperclass? band is-telomere))
+    (rea/isuperclass? human band is-telomere))
 
   (defn cen? [band]
     "Determine if the given band is a centromere - using ontology"
-    (rea/isuperclass? band is-centromere))
+    (rea/isuperclass? human band is-centromere))
 
   (defn pband? [band]
     "Determine if the given band is a pband - using ontology"
-    (rea/isuperclass? band is-pband))
+    (rea/isuperclass? human band is-pband))
 
   (defn qband? [band]
     "Determine if the given band is a qband - using ontology"
-    (rea/isuperclass? band is-qband)))
+    (rea/isuperclass? human band is-qband)))
