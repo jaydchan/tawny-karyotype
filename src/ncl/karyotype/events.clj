@@ -20,7 +20,8 @@
 ncl.karyotype.events
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]))
+            [ncl.karyotype [human :as h]]
+            [tawny [reasoner :as rea]]))
 
 (defontology events
   :iri "http://ncl.ac.uk/karyotype/events"
@@ -166,10 +167,12 @@ hasDirectEvent restrictions."
 
 ;; Addition patterns
 (defn addition-chromosome [chromosome]
+  ;; TOFIX {:pre (true? (h/chromosome? chromosome))}
   "Pattern - returns part of chromosomal addition axiom."
   (owl-and Addition chromosome))
 
-(defn addition-band [n band]
+(defn addition-band [band]
+  ;; TOFIX {:pre (true? (h/band? band))}
   "Pattern - returns part of chromosomal band addition axiom."
   (owl-and Addition
            (owl-some hasBreakPoint band)))
@@ -195,7 +198,7 @@ HumanChromosomeBand."
      (or
       (= h/HumanChromosomeBand chrom_band)
       (superclass? chrom_band h/HumanChromosomeBand))
-     (direct-event n (addition-band n chrom_band))
+     (direct-event n (addition-band chrom_band))
      :default
      (throw
       (IllegalArgumentException.
@@ -203,16 +206,16 @@ HumanChromosomeBand."
             chrom_band))))))
 
 ;; Deletion patterns
-(defn deletion-chromosome [n chromosome]
+(defn deletion-chromosome [chromosome]
+  ;; TOFIX {:pre (true? (h/band? band))}
   "Pattern - returns chromosomal deletion axiom."
-  (exactly n hasDirectEvent
-           (owl-and Deletion chromosome)))
+  (owl-and Deletion chromosome))
 
-(defn deletion-band [n band1 band2]
+(defn deletion-band [band1 band2]
+  ;; TOFIX {:pre (and (true? (h/band? band1) (true? (h/band? band2))))}
   "Pattern - return chromosomal band deletion axiom."
-  (exactly n hasDirectEvent
-           (owl-and Deletion
-                    (owl-some hasBreakPoint band1 band2))))
+  (owl-and Deletion
+           (owl-some hasBreakPoint band1 band2)))
 
 ;; Chromosomal Deletion OR Chromosomal Band Deletion : includes
 ;; Terminal deletion with a break AND Interstitial deletion with
@@ -233,14 +236,14 @@ band, band1, band2 are of type HumanChromosomeBand."
         (or
          (= h/HumanChromosome chrom_band)
          (superclass? chrom_band h/HumanChromosome))
-        (deletion-chromosome n chrom_band)
+        (direct-event n (deletion-chromosome chrom_band))
         ;; If chrom_band is of type HumanChromosomeBand then
         ;; restriction represents a terminal band deletion with a break
         ;; (:).
         (or
          (= h/HumanChromosomeBand chrom_band)
          (superclass? chrom_band h/HumanChromosomeBand))
-        (deletion-band n chrom_band (get-telomere chrom_band))
+        (direct-event n (deletion-band chrom_band (get-telomere chrom_band)))
         :default
         (throw
          (IllegalArgumentException.
@@ -249,7 +252,7 @@ band, band1, band2 are of type HumanChromosomeBand."
   ([n band1 band2]
      ;; This represents Interstitial band deletion with breakage and
      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
-     (deletion-band n band1 band2)))
+     (direct-event n (deletion-band band1 band2))))
 
 (as-disjoint-subclasses
  Deletion
