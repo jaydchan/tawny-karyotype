@@ -20,7 +20,8 @@
 ncl.karyotype.events
   (:use [tawny.owl])
   (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]))
+            [ncl.karyotype [human :as h]]
+            [tawny [reasoner :as rea]]))
 
 (defontology events
   :iri "http://ncl.ac.uk/karyotype/events"
@@ -99,6 +100,66 @@ ncl.karyotype.events
         :default
         (throw (IllegalArgumentException.
                 (str "Band not recognized:" band)))))))
+
+(rea/reasoner-factory :hermit)
+(binding [rea/*reasoner-progress-monitor*
+          (atom
+           rea/reasoner-progress-monitor-silent)]
+
+  (defn- telomere-band [chromosome]
+    (owl-and h/HumanChromosomeBand
+             (owl-some k/isBandOf chromosome)
+             (owl-some k/isBandOf h/HumanTelomere)))
+
+  (defn- telomere-component [chromosome]
+    (owl-and h/HumanTelomere
+             (owl-some k/isComponentOf chromosome)))
+
+  (defn- get-telomere0 [axiom]
+    (with-probe-entities h/human
+      [telomere (owl-class "temp" :equivalent axiom)]
+      (-> (rea/isubclasses h/human telomere))))
+
+  (defn- get-chromosome [clazz]
+    (let [parents (superclasses h/human clazz)]
+      (println parents)
+      (cond
+       (h/band? clazz)
+       h/HumanChromosome1
+       (h/cen? clazz)
+       h/HumanChromosome1
+       :default
+       (throw (IllegalArgumentException.
+               (str "Class not recognized:" clazz))))))
+
+  (defn get-telomere-new [clazz]
+    "Returns associated telomere of given CLAZZ."
+    (cond
+     (or (= h/HumanChromosomeBand clazz)
+         (= h/HumanCentromere clazz)
+         (= h/HumanChromosome clazz)
+         (= h/HumanAutosome clazz)
+         (= h/HumanSexChromosome clazz))
+     h/HumanTelomere
+     (h/ter? clazz)
+     clazz
+     (h/chromosome? clazz)
+     (first (get-telomere0 (telomere-component clazz)))
+     (h/pband? clazz)
+     (first (filter h/pband?
+                    (get-telomere0 (telomere-band (get-chromosome clazz)))))
+     (h/qband? clazz)
+     (first (filter h/qband?
+                    (get-telomere0 (telomere-band (get-chromosome clazz)))))
+     (or (h/band? clazz) (h/cen? clazz))
+     (first (get-telomere0 (telomere-component (get-chromosome clazz))))
+     :default
+     (throw (IllegalArgumentException.
+             (str "Class not recognized:" clazz)))))
+)
+
+(println (get-chromosome h/HumanChromosome1Bandp))
+;; (println (get-telomere-new h/HumanChromosome1Bandp))
 
 ;; hasEvent auxiliary functions
 (defn some-event [axiom]
