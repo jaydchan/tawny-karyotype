@@ -77,6 +77,33 @@
 
 )
 
+(deftest Get-Telomere-New
+  ;; valid inputs
+  (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
+                h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
+                h/HumanChromosome1Bandq h/HumanChromosome1Band
+                h/HumanChromosome1Centromere h/HumanChromosome1Telomere
+                h/HumanChromosome1 h/HumanChromosomeBand
+                h/HumanCentromere h/HumanTelomere h/HumanChromosome]
+        expected (into [] (reverse (flatten (merge
+                                     (repeat 4 h/HumanChromosome1BandpTer)
+                                     h/HumanChromosome1BandqTer
+                                     (repeat 4 h/HumanChromosome1Telomere)
+                                     (repeat 4 h/HumanTelomere)))))
+        actual (into [] (map e/get-telomere-new inputs))]
+
+    (doseq [i (range (count inputs))]
+      (let [telomere (get expected i)]
+        (is (instance?
+             org.semanticweb.owlapi.model.OWLClassExpression
+             telomere)))))
+  ;; invalid input
+  (is (thrown?
+       IllegalArgumentException
+       "Addition"
+       (e/get-telomere-new e/Addition)))
+)
+
 ;; unlike exactly, owl-some returns a lazyseq of hasEvent restrictions
 (deftest Some-Event
   (let [events (e/some-event
