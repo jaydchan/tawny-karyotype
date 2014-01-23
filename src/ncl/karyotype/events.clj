@@ -74,99 +74,128 @@ ncl.karyotype.events
 
 ;; AUXILLARY FUNCTIONS
 (defn- parentband? [band]
-  "Determine if the given band is the parent band"
-  (re-find #"HumanChromosomeBand" band))
+  "Determines if the given BAND is the parent band."
+  (= h/HumanChromosomeBand band))
 
-;; TODO Update methodology st making use of the ontology instead of
-;; string manipulation.
-(defn get-telomere [band]
-  "Returns associated telomere of given band."
-    (let [s1 (second (clojure.string/split (str band) #"human#"))
-          s2 (first (clojure.string/split s1 #"Band|Telomere|Centromere"))
-          s3 (first (clojure.string/split s1 #"Chromosome"))]
-      (owl-class
-       ncl.karyotype.human/human
-       (cond
-        (h/str-pband? s1)
-        (str s2 "BandpTer")
-        (h/str-qband? s1)
-        (str s2 "BandqTer")
-        (re-find #"[\d]+" s1)
-        (str s2 "Telomere")
-        (parentband? s1)
-        (str s3 "Telomere")
-        (re-find #"HumanTelomere|HumanCentromere" s1)
-        (str s2 "Telomere")
-        :default
-        (throw (IllegalArgumentException.
-                (str "Band not recognized:" band)))))))
+(defn- telomere-band [chromosome]
+  {:pre (true? (h/chromosome? chromosome))}
+  "Returns sub-axiom to find associated telomere band using given CHROMOSOME."
+  (owl-and h/HumanChromosomeBand
+           (owl-some k/isBandOf chromosome)
+           (owl-some k/isBandOf h/HumanTelomere)))
+
+(defn- telomere-component [chromosome]
+  {:pre (true? (h/chromosome? chromosome))}
+  "Returns sub-axiom to find associated telomere component using given
+CHROMOSOME."
+  (owl-and h/HumanTelomere
+           (owl-some k/isComponentOf chromosome)))
 
 (rea/reasoner-factory :hermit)
 (binding [rea/*reasoner-progress-monitor*
           (atom
            rea/reasoner-progress-monitor-silent)]
+  (defn query-class [o & frames]
+    "Returns the subclasses of the temp query class."
+    (with-probe-entities o
+      [clazz (apply owl-class
+                     (list* "temp"
+                            frames))]
+      (-> (rea/isubclasses o clazz)))))
 
-  (defn- telomere-band [chromosome]
-    (owl-and h/HumanChromosomeBand
-             (owl-some k/isBandOf chromosome)
-             (owl-some k/isBandOf h/HumanTelomere)))
+(defn filter-parent-axioms [clazz property]
+  "Returns PROPERTY axioms of given CLAZZ."
+  (let [parents (superclasses h/human clazz)
+        axioms (filter #(instance?
+                         org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom %)
+                       parents)]
+    (filter #(= property (.getProperty %)) axioms)))
 
-  (defn- telomere-component [chromosome]
-    (owl-and h/HumanTelomere
-             (owl-some k/isComponentOf chromosome)))
+(defn- get-chromosome0 [axioms]
+  "Returns a chromosome found in the filler of given AXIOMS."
+  (.getFiller (first (filter #(h/chromosome? (.getFiller %)) axioms))))
 
-  (defn- get-telomere0 [axiom]
-    (with-probe-entities h/human
-      [telomere (owl-class "temp" :equivalent axiom)]
-      (-> (rea/isubclasses h/human telomere))))
+(defn get-chromosome [clazz]
+  "Returns associated chromosome of given CLAZZ."
+  (cond
+   (h/chromosome? clazz)
+   clazz
+   (or (= h/HumanChromosomeBand clazz)
+       (= h/HumanCentromere clazz)
+       (= h/HumanTelomere clazz))
+   h/HumanChromosome
+   (h/band? clazz)
+   (get-chromosome0 (filter-parent-axioms clazz k/isBandOf))
+   (or (h/cen? clazz) (h/ter? clazz))
+   (get-chromosome0 (filter-parent-axioms clazz k/isComponentOf))
+   :default
+   (throw (IllegalArgumentException.
+           (str "Class not recognized:" clazz)))))
 
-  (defn- get-chromosome [clazz]
-    (let [parents (superclasses h/human clazz)]
-      (println parents)
-      (cond
-       (h/band? clazz)
-       h/HumanChromosome1
-       (h/cen? clazz)
-       h/HumanChromosome1
-       :default
-       (throw (IllegalArgumentException.
-               (str "Class not recognized:" clazz))))))
+(defn get-telomere-string [clazz]
+  "Returns associated telomere of given CLAZZ."
+  (cond
+   (h/ter? clazz)
+   clazz
+   (or (= h/HumanChromosomeBand clazz)
+       (= h/HumanCentromere clazz)
+       (= h/HumanChromosome clazz)
+       (= h/HumanAutosome clazz)
+       (= h/HumanSexChromosome clazz))
+   h/HumanTelomere
+   (h/pband? clazz)
+   (owl-class h/human
+              (str (re-find #"HumanChromosome[\dXY]+Bandp" (str clazz)) "Ter"))
+   (h/qband? clazz)
+   (owl-class h/human
+              (str (re-find #"HumanChromosome[\dXY]+Bandq" (str clazz)) "Ter"))
+   (or (h/chromosome? clazz) (h/band? clazz) (h/cen? clazz))
+   (owl-class h/human
+              (str (re-find #"HumanChromosome[\dXY]+" (str clazz)) "Telomere"))
+   :default
+   (throw (IllegalArgumentException.
+           (str "Class not recognized:" clazz)))))
 
-  (defn get-telomere-new [clazz]
-    "Returns associated telomere of given CLAZZ."
-    (cond
-     (or (= h/HumanChromosomeBand clazz)
-         (= h/HumanCentromere clazz)
-         (= h/HumanChromosome clazz)
-         (= h/HumanAutosome clazz)
-         (= h/HumanSexChromosome clazz))
-     h/HumanTelomere
-     (h/ter? clazz)
-     clazz
-     (h/chromosome? clazz)
-     (first (get-telomere0 (telomere-component clazz)))
-     (h/pband? clazz)
-     (first (filter h/pband?
-                    (get-telomere0 (telomere-band (get-chromosome clazz)))))
-     (h/qband? clazz)
-     (first (filter h/qband?
-                    (get-telomere0 (telomere-band (get-chromosome clazz)))))
-     (or (h/band? clazz) (h/cen? clazz))
-     (first (get-telomere0 (telomere-component (get-chromosome clazz))))
-     :default
-     (throw (IllegalArgumentException.
-             (str "Class not recognized:" clazz)))))
-)
+(defn get-telomere-ontology [clazz]
+  "Returns associated telomere of given CLAZZ."
+  (cond
+   (h/ter? clazz)
+   clazz
+   (or (= h/HumanChromosomeBand clazz)
+       (= h/HumanCentromere clazz)
+       (= h/HumanChromosome clazz)
+       (= h/HumanAutosome clazz)
+       (= h/HumanSexChromosome clazz))
+   h/HumanTelomere
+   (h/chromosome? clazz)
+   (first (query-class h/human :equivalent (telomere-component clazz)))
+   (h/pband? clazz)
+   (first (filter h/pband?
+                  (query-class h/human
+                               :equivalent (telomere-band
+                                            (get-chromosome clazz)))))
+   (h/qband? clazz)
+   (first (filter h/qband?
+                  (query-class h/human
+                               :equivalent (telomere-band
+                                            (get-chromosome clazz)))))
+   (or (h/band? clazz) (h/cen? clazz))
+   (first (query-class h/human
+                       :equivalent (telomere-component (get-chromosome clazz))))
+   :default
+   (throw (IllegalArgumentException.
+           (str "Class not recognized:" clazz)))))
 
-(println (get-chromosome h/HumanChromosome1Bandp))
-;; (println (get-telomere-new h/HumanChromosome1Bandp))
+;; ontology get-telomere takes awhile
+(defn get-telomere [clazz]
+  (get-telomere-string clazz))
 
 ;; hasEvent auxiliary functions
-(defn some-event [axiom]
+(defn- some-event [axiom]
   "Returns a LazySeq of SomeValuesFrom hasEvent restrictions."
   (owl-some hasEvent axiom))
 
-(defn exactly-event [n axiom]
+(defn- exactly-event [n axiom]
   {:pre (number? n)}
   "Returns a (single) ExactCardinality hasEvent restriction."
   (exactly n hasEvent axiom))
@@ -179,11 +208,11 @@ hasEvent restrictions."
     (exactly-event n axiom)))
 
 ;; hasDirectEvent auxiliary functions
-(defn some-direct-event [axiom]
+(defn- some-direct-event [axiom]
   "Returns a LazySeq of SomeValuesFrom hasDirectEvent restrictions"
   (owl-some hasDirectEvent axiom))
 
-(defn exactly-direct-event [n axiom]
+(defn- exactly-direct-event [n axiom]
   {:pre (number? n)}
   "Returns a (single) ExactCardinality hasDirectEvent restriction."
   (exactly n hasDirectEvent axiom))
@@ -274,7 +303,7 @@ HumanChromosomeBand."
   (owl-and Deletion chromosome))
 
 (defn deletion-band [band1 band2]
-  {:pre [(true? (h/band? band1)) (true? (h/band? band2))]}
+  {:pre [(true? (h/band? band1)) (true? (or (h/ter? band2) (h/band? band2)))]}
   "Pattern - return chromosomal band deletion axiom."
   (owl-and Deletion
            (owl-some hasBreakPoint band1 band2)))
