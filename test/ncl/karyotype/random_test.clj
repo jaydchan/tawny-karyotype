@@ -73,16 +73,10 @@
                   [clazz (ran/karyotype-class
                        1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
                   (-> clazz))))
-    ;; TODO How do I do this?
-    ;; (is
-    ;;  (o/superclass? (o/with-probe-entities ran/random
-    ;;                   [clazz (ran/karyotype-class
-    ;;                           1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
-    ;;                   (-> ran/random))
-    ;;                 "r1" ran/RandomKaryotype))
-    ;; OLD VERSION
-    ;;    (is (o/superclass? ran/random "r1" ran/RandomKaryotype))
-))
+    (is (o/with-probe-entities ran/random
+          [clazz (ran/karyotype-class
+                  1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
+          (-> (o/superclass? ran/random "r1" ran/RandomKaryotype))))))
 
 (deftest Get-Band
   (let [band (ran/get-band 1 "p36.3")]
