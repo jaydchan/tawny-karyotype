@@ -137,6 +137,8 @@
 (deftest ter?
   (is (h/ter? h/HumanChromosome1BandqTer))
   (is (h/ter? h/HumanChromosome1BandpTer))
+  (is (h/ter? h/HumanChromosome1Telomere))
+  (is (h/ter? h/HumanTelomere))
 
   (is (not (h/ter? h/HumanChromosome1Bandp10)))
   (is (not (h/ter? h/HumanChromosome1Bandp11)))
@@ -151,6 +153,8 @@
 (deftest cen?
   (is (h/cen? h/HumanChromosome1Bandq10))
   (is (h/cen? h/HumanChromosome1Bandp10))
+  (is (h/cen? h/HumanChromosome1Centromere))
+  (is (h/cen? h/HumanCentromere))
 
   (is (not (h/cen? h/HumanChromosome1BandpTer)))
   (is (not (h/cen? h/HumanChromosome1Bandp11)))
@@ -162,13 +166,13 @@
   (is (not (h/cen? h/HumanChromosomeBand)))
   (is (not (h/cen? h/HumanChromosome))))
 
-(deftest chromosome?
+(deftest Chromosome?
   (is (true? (h/chromosome? h/HumanChromosome1)))
   (is (true? (h/chromosome? h/HumanAutosome)))
   (is (true? (h/chromosome? h/HumanChromosome)))
   (is (false? (h/chromosome? h/HumanChromosomeBand))))
 
-(deftest band?
+(deftest Band?
   (is (true? (h/band? h/HumanChromosome1Bandp36.31)))
   (is (true? (h/band? h/HumanChromosome1Bandp36.3)))
   (is (true? (h/band? h/HumanChromosome1Bandp10)))
