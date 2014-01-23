@@ -67,7 +67,7 @@
   :equivalent
   (owl-and
    (owl-some b/derivedFrom b/k46_XY)
-   (e/some-event (e/addition-chromosome h/HumanChromosomeX))))
+   (e/event nil (e/addition-chromosome h/HumanChromosomeX))))
 
 ;; #TODO An individual with no X chromosome
 ;; (defclass Lethal
