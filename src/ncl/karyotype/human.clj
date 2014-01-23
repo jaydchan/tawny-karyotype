@@ -961,13 +961,13 @@ PARENT, which is either p or q band."
 ;; equivalency classes
 (defclass is-centromere
   :equivalent
-  (owl-and HumanChromosomeBand
-           (owl-some k/isBandOf HumanCentromere)))
+  (owl-or HumanCentromere
+          (owl-some k/isBandOf HumanCentromere)))
 
 (defclass is-telomere
   :equivalent
-  (owl-and HumanChromosomeBand
-           (owl-some k/isBandOf HumanTelomere)))
+  (owl-or HumanTelomere
+          (owl-some k/isBandOf HumanTelomere)))
 
 (defclass is-pband
   :equivalent
