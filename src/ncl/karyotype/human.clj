@@ -994,12 +994,12 @@ PARENT, which is either p or q band."
 
   (defn chromosome? [x]
     "Determine if X is a chromosome - using ontology"
-    (or (rea/isuperclass? human x HumanChromosome)
+    (or (superclass? human x HumanChromosome)
         (= x HumanChromosome)))
 
   (defn band? [x]
     "Determine if X is a band - using ontology"
-    (or (rea/isuperclass? human x HumanChromosomeBand)
+    (or (superclass? human x HumanChromosomeBand)
         (= x HumanChromosomeBand)))
 
   (defn ter? [band]
