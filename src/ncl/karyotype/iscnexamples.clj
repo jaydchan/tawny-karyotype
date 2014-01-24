@@ -534,16 +534,6 @@
   (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 1 h/HumanChromosome5Bandq13))
 
-(defclass k46_XX_del!5!!q13!-new
-  :label "The 46,XX,del(5)(q13) karyotype"
-  :comment "ISCN2009 pg 61 -> 'Terminal deletion with a break (:) in
-  band 5q13. The remaining chromosome consistes of the entire short
-  arm of chromomsome 5 and the long arm lying between the centromere
-  and band 5q13.' 46,XX,del(5)(pter->q13:)"
-  :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XX)
-  (e/deletion-new 1 h/HumanChromosome5Bandq13))
-
 (defclass k46_XX_del!5!!q13q33!
   :label "The 46,XX,del(5)(q13q33) karyotype"
   :comment "ISCN2009 pg 61 -> 'Interstitial deletion with breakage and
@@ -552,17 +542,6 @@
   :subclass ISCNExampleKaryotype
   (owl-some b/derivedFrom b/k46_XX)
   (e/deletion 1
-              h/HumanChromosome5Bandq13
-              h/HumanChromosome5Bandq33))
-
-(defclass k46_XX_del!5!!q13q33!-new
-  :label "The 46,XX,del(5)(q13q33) karyotype"
-  :comment "ISCN2009 pg 61 -> 'Interstitial deletion with breakage and
-  reunion (::) of bands 5q13 and 5q33. The segment lying between these
-  bands has been deleted.' 46,XX,del(5)(pter->q13::q33->qter)"
-  :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XX)
-  (e/deletion-new 1
               h/HumanChromosome5Bandq13
               h/HumanChromosome5Bandq33))
 
