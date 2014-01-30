@@ -219,29 +219,31 @@
     (is (re-find #"Addition|Deletion" (str random)))))
 
 (deftest Random-Abnormality-Driver
-  (let [max 3
-        randoms (ran/random-abnormality-driver max)]
+  (let [n 3
+        randoms (ran/random-abnormality-driver n)]
 
-    (is (<= (count randoms) max))
+    (is (= (count randoms) n))
     (doseq [random randoms]
       (is (re-find #"Addition|Deletion" (str random)))
       (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
                      random)))))
 
-;; USE with-probe-entities method!
-;; TOFIX - refine-label gives error (46,XX nil)
-;; (deftest Refine-Label
-;;   (let [clazz (ran/karyotype-class
-;;                1 (e/addition 1 h/HumanChromosome1Bandp36.3))
-;;         axioms (.getAnnotations clazz ran/random)
-;;         sex (re-find #"XX|XY" (str (ren/as-form clazz)))
-;;         parse (str "46," sex ",add(1p36.3)")
-;;         string (str "The " parse " Karyotype")]
-;;     (println clazz)
-;;     (println (ren/as-form clazz))
-;;     (ran/refine-label clazz)
-;;     (println (ren/as-form clazz))
-;;     (println sex)))
+;; TODO with-probe-entities method!
+(deftest Refine-Label
+  (let [clazz (ran/karyotype-class
+               1 (e/addition 1 h/HumanChromosome1Bandp36.3))
+        axioms (.getAnnotations clazz ran/random)
+        sex (re-find #"XX|XY" (str (ren/as-form clazz)))
+        parse (str "46," sex ",add(1p36.3)")
+        string (str "The " parse " Karyotype")]
+
+    (println clazz)
+    (println (ren/as-form clazz))
+    (ran/refine-label clazz)
+    (println (ren/as-form clazz))
+    (println sex)
+
+    (o/remove-entity ran/random clazz)))
 
 ;; TOFIX - Refine label problem
 ;; TODO - Check number of axioms for clazz <= 3
