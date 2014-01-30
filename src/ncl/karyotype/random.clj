@@ -117,12 +117,18 @@ FRAMES. Returns an OWL class as described."
   (let [r (rand-int (count abnormalities))]
     ((get abnormalities r))))
 
-;; TODO check that abnormalities are 'unique'
-(defn random-abnormality-driver [max]
-  "Returns a list of at most MAX number of event restrictions."
-  (let [n (rand-int max)]
-    (for [i (range n)]
-      (random-abnormality))))
+(defn random-karyotype0 [old n]
+  "Recursive function - Returns a distinct list of event restrictions."
+  (if (= n 0)
+    old
+    (let [new (conj old (random-abnormality))]
+      (if (> (count new) (count old))
+        (random-karyotype0 new (- n 1))
+        (random-karyotype0 new n)))))
+
+(defn random-abnormality-driver [n]
+  "Returns a list of N number of event restrictions."
+  (into '() (random-karyotype0 #{} n)))
 
 (defn refine-label [clazz]
   "Returns the updated class definition of CLAZZ."
@@ -132,12 +138,12 @@ FRAMES. Returns an OWL class as described."
 
 (defn random-karyotype [name max]
   "Returns a random karyotype class with clojure symbol NAME and has
-at most MAX number of restirctions."
+MAX number of restirctions."
   (refine-label (karyotype-class name
                                  :subclass (random-abnormality-driver max))))
 
 (defn random-karyotype-driver [number max]
-  "Creates NUMBER number of random karyotypes with at most MAX number
+  "Creates NUMBER number of random karyotypes with MAX number
 of event restrictions. Returns nil."
   (doseq [i (range number)]
     (random-karyotype i max)))
