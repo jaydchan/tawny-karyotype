@@ -228,7 +228,6 @@
       (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
                      random)))))
 
-;; TODO with-probe-entities method!
 (deftest Refine-Label
   (let [clazz (ran/karyotype-class
                1 (e/addition 1 h/HumanChromosome1Bandp36.3))
@@ -237,15 +236,14 @@
         parse (str "46," sex ",add(1p36.3)")
         string (str "The " parse " Karyotype")]
 
-    (println clazz)
-    (println (ren/as-form clazz))
-    (ran/refine-label clazz)
-    (println (ren/as-form clazz))
-    (println sex)
+    ;; (println clazz)
+    ;; (println (ren/as-form clazz))
+    ;; (ran/refine-label clazz)
+    ;; (println (ren/as-form clazz))
+    ;; (println sex)
 
     (o/remove-entity ran/random clazz)))
 
-;; TOFIX - Refine label problem
 ;; TODO - Check number of axioms for clazz <= 3
 ;; (deftest Random-Karyotype
 ;;   (let [random (ran/random-karyotype 2 3)]
