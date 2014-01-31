@@ -52,6 +52,7 @@ bands."
     (doall (line-seq r))))
 
 (defn get-band [string]
+  {:post (true? (h/band? %))}
   "Returns (finds) human chromosome band."
   (let [string-band
         (str "HumanChromosome"
@@ -62,10 +63,11 @@ bands."
     (owl-class h/human string-band)))
 
 (defn get-resolution [value]
-  "Returns (creates) resolution class."
+  {:post (true? (subclass? resolutions Resolution %))}
+  "Returns (finds) resolution class."
   (let [string-resolution
         (str "r" value "-band")]
-    (owl-class string-resolution)))
+    (owl-class resolutions string-resolution)))
 
 (defn resolution [band & resolutions]
   "Resolution pattern - redefines human band class with addditional
