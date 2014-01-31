@@ -34,11 +34,87 @@
 
 (use-fixtures :once ontology-reasoner-fixture)
 
-;; to run: M-x 'lein' 'test'
-
 (deftest Basic
   (is (r/consistent?))
   (is (r/coherent?)))
+
+;; (deftest Get-lines)
+
+(deftest Get-Band
+  ;; valid inputs
+  (let [inputs ["1p10" "1q42" "1q42.1" "1q42.11" "2pTer"]
+        expected [h/HumanChromosome1Bandp10 h/HumanChromosome1Bandq42
+                  h/HumanChromosome1Bandq42.1 h/HumanChromosome1Bandq42.11
+                  h/HumanChromosome2BandpTer]
+        actual (into [] (map res/get-band inputs))]
+
+    (doseq [i (range (count inputs))]
+      (let [band (get actual i)]
+        (is (instance?
+             org.semanticweb.owlapi.model.OWLClassExpression
+             band))
+        (is (h/band? band))
+        (is (= band (get expected i))))))
+
+  ;; invalid input
+  (is (thrown?
+       AssertionError
+       "1q1"
+       (res/get-band "1q1"))))
+
+(deftest Get-Resolution
+  ;; valid inputs
+  (let [inputs ["300" "400" "550" "700" "850"]
+        expected [res/r300-band res/r400-band res/r550-band
+                  res/r700-band res/r850-band]
+        actual (into [] (map res/get-resolution inputs))]
+
+    (doseq [i (range (count inputs))]
+      (let [resolution (get actual i)]
+        (is (instance?
+             org.semanticweb.owlapi.model.OWLClassExpression
+             resolution))
+        (is (o/subclass? res/resolutions res/Resolution resolution))
+        (is (= resolution (get expected i))))))
+
+  ;; invalid input
+  (is (thrown?
+       AssertionError
+       "100"
+       (res/get-resolution "100"))))
+
+;; TODO
+;; (deftest Resolution
+;;   ;; valid inputs
+;;   (let [band h/HumanChromosome1Bandp11.1
+;;         resolutions [res/r700-band res/r850-band]]
+
+;;     (println (count (o/superclasses h/human band)))
+;;     (println (o/superclasses h/human band))
+;;     (println (merge resolutions band))
+;;     (println (apply res/resolution (merge resolutions band)))
+;;     (println (count (o/superclasses h/human band)))
+;;     (println (o/sperclasses h/human band))
+
+;;     (o/remove-axiom h/human
+;;                     '((.getOWLSubClassOfAxiom
+;;                        (owl-data-factory
+;;                         band
+;;                         (owl-some res/seenAtResolution (first resolution))))
+;;                       (.getOWLSubClassOfAxiom
+;;                        (owl-data-factory
+;;                         band
+;;                         (owl-some res/seenAtResolution (second resolution))))))
+
+;;     ;; (doseq [i (range (count inputs))]
+;;     ;;   (let [resolution (get actual i)]
+;;     ;;     (is (instance?
+;;     ;;          org.semanticweb.owlapi.model.OWLClassExpression
+;;     ;;          resolution))
+;;     ;;     (is (o/subclass? res/resolutions res/Resolution resolution))
+;;     ;;     (is (= resolution (get expected i))))))
+
+;; ))
 
 (deftest Resolution300-band
   (let [result (clojure.set/difference
