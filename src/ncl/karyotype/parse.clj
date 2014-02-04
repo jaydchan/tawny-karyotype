@@ -342,7 +342,8 @@ given BAND."
       :when (h/band? clazz)]
       clazz)))
 
-(defn- human-filter [axiom]
+;; PUBLIC - used by affects1
+(defn human-filter [axiom]
   "Returns HumanChromosome(s) and HumanChromosomeBand(s) present in
 AXIOM."
   (flatten (merge '() (chrom-filter axiom) (band-filter axiom))))
