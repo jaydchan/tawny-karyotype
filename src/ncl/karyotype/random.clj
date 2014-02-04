@@ -55,6 +55,7 @@ FRAMES. Returns an OWL class as described."
                 (owl-some b/derivedFrom (random-sex))
                 frames)))
 
+;; TODO Use ontology to derive this...i.e. subclasses is300-band
 ;; missing chromo 2-22,X,Y bands
 (def ^{:doc "An array of available 300-band resolution band information for
   chromosome 1 only."}
@@ -65,7 +66,8 @@ FRAMES. Returns an OWL class as described."
   "Returns a 300-band chromosomal band class."
   (owl-class h/human (str "HumanChromosome" chromosome "Band" band)))
 (defn random-band []
-  "Returns a 300-band chromosomal band class."
+  {:post (true? (h/band? %))}
+  "Returns a random 300-band chromosomal band class."
   (let [bands (second bands-300)
         r (rand-int (count bands))]
     (get-band (first bands-300) (get bands r))))
@@ -77,6 +79,7 @@ FRAMES. Returns an OWL class as described."
            (for [type types]
              (into #{} (direct-subclasses h/human type)))))))
 (defn random-chromosome []
+  {:post (true? (h/chromosome? %))}
   "Returns a human chromosome class."
   (let [r (rand-int (count chromosomes))]
     (get chromosomes r)))
