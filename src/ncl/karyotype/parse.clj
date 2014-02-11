@@ -466,10 +466,13 @@ CLAZZ is of type ISCNExampleKaryotype."
         sorted (sort-by first chrom-sort (rest strings))
         add (count (filter #(re-find #"\+" %) (map second sorted)))
         del (count (filter #(re-find #"\-" %) (map second sorted)))
-        base (clojure.string/split (first strings) #",")
+        base-string (first (filter #(re-find #"\d+,\w" %) strings))
+        incase (if (nil? base-string) "46,XX" base-string)
+        base (clojure.string/split incase #",")
         total (- (+ (read-string (get base 0)) add) del)
-        all (flatten (merge '() (map second sorted) (get base 1) total))]
-    (clojure.string/join "," all)))
+        all (flatten (merge '() (map second sorted) (get base 1) total))
+        ]
+    (if (nil? base-string) "ERROR" (clojure.string/join "," all))))
 
 (defn- create-karyotype-string0 [o detail name]
   "Prints details of the string input - used for testing purposes.
