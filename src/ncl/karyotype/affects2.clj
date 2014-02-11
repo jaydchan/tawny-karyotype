@@ -161,5 +161,6 @@ ontology O."
   (e/addition 1 h/HumanChromosome1Bandq21))
 
 ;; MAIN - (may) redefine classes defined above to include affects
-;; oproperty.
-(map #(affects2-driver affects2 %) (subclasses affects2 AffectsKaryotype))
+;; dproperty.
+(doseq [clazz (subclasses affects2 AffectsKaryotype)]
+  (affects2-driver affects2 clazz))
