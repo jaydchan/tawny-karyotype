@@ -24,7 +24,6 @@ definitions to include affects object property and sequence pattern"
             [ncl.karyotype [human :as h]]
             [ncl.karyotype [events :as e]]
             [ncl.karyotype [base :as b]]
-            [ncl.karyotype [parse :as p]]
             [ncl.karyotype [affects1 :as a]]))
 
 (defontology affects3
@@ -35,47 +34,43 @@ definitions to include affects object property and sequence pattern"
 
 (defoproperty affects)
 
-;; should really import sequence.owl.rdf
+;; TODO should really import sequence.owl.rdf
 (defoproperty precedes)
 (defoproperty directlyPrecedes)
 (defoproperty directlyFollows)
 (defoproperty follows)
 
 ;; PATTERNS
-(defn sequence-pattern [clazzes]
+(defn- sequence-pattern [clazzes]
+  "Pattern - encoded sequence ODP."
   {:pre (= 2 (count clazzes))}
   (owl-and (first clazzes)
            (owl-some directlyPrecedes (rest clazzes))))
 
-(defn affects-band [bands]
+(defn- affects-band [bands]
+  "Pattern - returns sequence ODP variant for given BANDS, using
+affects object property"
   (owl-some affects
             (if (vector? bands)
               (sequence-pattern bands)
               bands)))
 
 ;; DRIVERS
-(defn get-affects3 [o clazz]
-  "Returns a list of affected bands for a given CLAZZ in
+(defn- get-affects [o clazz]
+  "Returns a list of affects restrictions for a given CLAZZ in
 ontology O."
-  (let [parents (direct-superclasses o clazz)
-        restrictions (filter #(instance?
-                               org.semanticweb.owlapi.model.OWLRestriction %)
-                             parents)
-        events (filter #(= (.getProperty %) e/hasDirectEvent) restrictions)
-        axioms (into [] (map #(.getFiller %) events))
-        chrom_band (map p/human-filter axioms)
-        bands (into [] (filter #(h/band? (first %)) chrom_band))]
-
     (flatten
-     (for [band bands]
-       (affects-band (a/get-affects band))))))
+     (for [bands (a/get-bands o clazz)]
+       (affects-band bands))))
 
 (defn affects3-driver [o clazz]
   "Returns the updated class definition of CLAZZ in ontology O."
-  (let [bands (get-affects3 o clazz)]
+  (let [bands (get-affects o clazz)]
     (if (= (count bands) 0)
       clazz
-      (refine clazz :subclass bands))))
+      (refine clazz
+              :ontology o
+              :subclass bands))))
 
 ;; TESTS
 ;; import human ontology axioms
