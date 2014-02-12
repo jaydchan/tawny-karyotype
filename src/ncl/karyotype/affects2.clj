@@ -23,11 +23,9 @@ definitions to include affects data property."
   (:require [ncl.karyotype [karyotype :as k]]
             [ncl.karyotype [human :as h]]
             [ncl.karyotype [events :as e]]
-            [ncl.karyotype [parse :as p]]
             [ncl.karyotype [affects1 :as a]]
             ;; Testing purposes only
-            [ncl.karyotype [base :as b]]
-            [tawny [render :as r]]))
+            [ncl.karyotype [base :as b]]))
 
 (defontology affects2
   :iri "http://ncl.ac.uk/karyotype/affects2"
@@ -40,7 +38,7 @@ definitions to include affects data property."
 
 ;; AUXILIARY FUNCTIONS
 
-;; Awful!!!
+;; TODO Awful!!!
 ;; (defn generate-ordinal-number [band]
 ;;   (let [str-band (re-find #"[\dXY]+Band[pq][\d\.]+" (str band))
 ;;         chromosome (re-find #"[\d+XY]" str-band)
@@ -49,7 +47,8 @@ definitions to include affects data property."
 ;;         band-ordinal (int (* (read-string band-name) 10))]
 ;;     (read-string (str "1" chromosome arm band-ordinal))))
 
-(defn get-ordinal [band]
+(defn- get-ordinal [band]
+  "Returns the ordinal number for given band."
   (+ 1 (.indexOf a/bands-300 band)))
 
 ;; Set ordinal value for each chromosome
@@ -57,48 +56,23 @@ definitions to include affects data property."
   (refine clazz
           :subclass (data-has-value hasOrdinalNumber
                                     (literal (get-ordinal clazz)))))
-
 ;; PATTERNS
-(defn affects-band [bands]
+(defn- affects-band [bands]
+  "Pattern - returns data-only axiom for BANDS using affects data
+property."
   (data-only affects
              (apply data-oneof
-                    (map #(literal %) bands))))
+                    (map #(literal (get-ordinal %)) bands))))
 
 ;; DRIVERS
-(defn get-affects [bands]
-  "Returns either one band or a range of bands, determined by BANDS."
-  (cond
-   (= (count bands) 1)
-   (get-ordinal (first bands))
-   (= (count bands) 2)
-   (map get-ordinal (a/band-range (first bands) (second bands)))
-   :default
-   (throw
-    (IllegalArgumentException.
-     (str "Get-affects expects at most two bands. Got:" bands)))))
-
-(defn get-affects2 [o clazz]
-  "Returns a list of affected bands for a given CLAZZ in
-ontology O."
-  (let [parents (direct-superclasses o clazz)
-        restrictions (filter #(instance?
-                               org.semanticweb.owlapi.model.OWLRestriction %)
-                             parents)
-        events (filter #(= (.getProperty %) e/hasDirectEvent) restrictions)
-        axioms (into [] (map #(.getFiller %) events))
-        chrom_band (map p/human-filter axioms)
-        bands (into [] (filter #(h/band? (first %)) chrom_band))]
-
-    (flatten
-     (for [band bands]
-       (get-affects band)))))
-
 (defn affects2-driver [o clazz]
   "Returns the updated class definition of CLAZZ in ontology O."
-  (let [bands (get-affects2 o clazz)]
+  (let [bands (flatten (a/get-bands o clazz))]
     (if (= (count bands) 0)
       clazz
-      (refine clazz :subclass (affects-band bands)))))
+      (refine clazz
+              :ontology o
+              :subclass (affects-band bands)))))
 
 ;; TESTS
 ;; import human ontology axioms
