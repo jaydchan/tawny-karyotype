@@ -37,15 +37,8 @@ definitions to include affects object property."
   :domain k/Karyotype
   :range h/HumanChromosomeBand)
 
-;; PATTERN
-(defn affects-band [bands]
-  {:pre (every? h/band? bands)}
-  "Pattern - returns some-only axiom for BANDS, using affects
-oproperty."
-  (apply some-only affects bands))
-
 ;; AUXILIARY FUNCTIONS
-(defn get-band [chromosome band]
+(defn- get-band [chromosome band]
   {:post (h/band? %)}
   "Returns a 300-band chromosomal band class."
   (owl-class h/human (str "HumanChromosome" chromosome "Band" band)))
@@ -57,12 +50,12 @@ oproperty."
    "p12" "p11" "q11" "q12" "q21" "q22q23q24" "q25" "q31" "q32" "q41" "q42"
    "q43q44" "qTer"]))
 
-(defn not-breakpoint? [breakpoint band]
+(defn- not-breakpoint? [breakpoint band]
   {:pre [(h/band? breakpoint) (h/band? band)]}
   "Determines if BAND is equal to BREAKPOINT."
   (not (= breakpoint band)))
 
-(defn subset [start finish]
+(defn- subset [start finish]
   "Returns a range of 300 resolution bands for given START and FINISH
 bands."
   (conj (into [] (take-while
@@ -71,7 +64,7 @@ bands."
                               bands-300)))
         finish))
 
-(defn band-range [start finish]
+(defn- band-range [start finish]
   "Returns a range of 300 resolution bands for given START and FINISH
 bands. Swaps START and FINISH bands if START band index is greater
 than FINISH band, determined by bands-300 vector."
@@ -79,7 +72,7 @@ than FINISH band, determined by bands-300 vector."
     (subset finish start)
     (subset start finish)))
 
-(defn get-affects [bands]
+(defn- get-band-range [bands]
   "Returns either one band or a range of bands, determined by BANDS."
   (cond
    (= (count bands) 1)
@@ -89,11 +82,11 @@ than FINISH band, determined by bands-300 vector."
    :default
    (throw
     (IllegalArgumentException.
-     (str "Get-affects expects at most two bands. Got:" bands)))))
+     (str "Get-band-range expects one or two bands. Got:" bands)))))
 
-(defn get-affects1 [o clazz]
-  "Returns a list of affected bands for a given CLAZZ in
-ontology O."
+(defn- get-breakpoints [o clazz]
+  "Returns a list of breakpoint bands for a given CLAZZ in ontology
+O."
   (let [parents (direct-superclasses o clazz)
         restrictions (filter #(instance?
                                org.semanticweb.owlapi.model.OWLRestriction %)
@@ -102,14 +95,29 @@ ontology O."
         axioms (into [] (map #(.getFiller %) events))
         chrom_band (map p/human-filter axioms)
         bands (into [] (filter #(h/band? (first %)) chrom_band))]
+    bands))
 
-    (flatten
-     (for [band bands]
-       (get-affects band)))))
+(defn get-bands [o clazz]
+  "Returns a list of affected bands for a given CLAZZ in ontology O."
+  (for [band (get-breakpoints o clazz)]
+    (get-band-range band)))
 
+;; PATTERN
+(defn- affects-band [bands]
+  {:pre (every? h/band? bands)}
+  "Pattern - returns some-only axiom for BANDS, using affects
+object property."
+  (apply some-only affects bands))
+
+;; DRIVERS
 (defn affects1-driver [o clazz]
   "Returns the updated class definition of CLAZZ in ontology O."
-  (refine clazz :subclass (affects-band (get-affects1 o clazz))))
+  (let [bands (flatten (get-bands o clazz))]
+    (if (= (count bands) 0)
+      clazz
+      (refine clazz
+              :ontology o
+              :subclass (affects-band bands)))))
 
 ;; TESTS
 ;; import human ontology axioms
@@ -173,4 +181,5 @@ ontology O."
 
 ;; MAIN - (may) redefine classes defined above to include affects
 ;; oproperty.
-(map #(affects1-driver affects1 %) (subclasses affects1 AffectsKaryotype))
+(doseq [clazz (subclasses affects1 AffectsKaryotype)]
+  (affects1-driver affects1 clazz))
