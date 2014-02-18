@@ -335,12 +335,12 @@ hasDirectEvent restrictions."
 ;; FUNCTIONS
 
 ;; Addition patterns
-(defn- addition-chromosome [chromosome]
+(defn addition-chromosome [chromosome]
   {:pre (true? (h/chromosome? chromosome))}
   "Pattern - returns part of chromosomal addition axiom."
   (owl-and Addition chromosome))
 
-(defn- addition-band [band]
+(defn addition-band [band]
   {:pre (true? (h/band? band))}
   "Pattern - returns part of chromosomal band addition axiom."
   (owl-and Addition
@@ -368,12 +368,12 @@ HumanChromosomeBand."
             chrom_band)))))
 
 ;; Deletion patterns
-(defn- deletion-chromosome [chromosome]
+(defn deletion-chromosome [chromosome]
   {:pre (true? (h/chromosome? chromosome))}
   "Pattern - returns chromosomal deletion axiom."
   (owl-and Deletion chromosome))
 
-(defn- deletion-band [band1 band2]
+(defn deletion-band [band1 band2]
   {:pre [(true? (h/band? band1)) (true? (or (h/ter? band2) (h/band? band2)))]}
   "Pattern - return chromosomal band deletion axiom."
   (owl-and Deletion
@@ -409,13 +409,13 @@ HumanChromosomeBand."
      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
      (direct-event n (deletion-band band1 band2))))
 
-(defn- duplication-pattern [event n band1 band2]
+(defn- duplication-pattern [event band1 band2]
   {:pre (true? (or (superclass? events event Duplication)
                    (= event Duplication)))}
   "Pattern - returns an EVENT duplication restriction using N
 cardinality value and BAND1 and BAND2 bands."
-  (direct-event n (owl-and event
-                           (owl-some hasBreakPoint band1 band2))))
+  (owl-and event
+           (owl-some hasBreakPoint band1 band2)))
 
 ;; Chromosomal Band Duplication
 ;; Can be preceeded by the triplets dir or inv to indicate direct or
@@ -428,11 +428,14 @@ restrictions. BAND1, BAND2 are of type HumanChromosomeBand."
   (let [direction (get-direction band1 band2)]
     (cond
      (= direction "Unknown")
-     (duplication-pattern Duplication n band1 band2)
+     (direct-event n
+                   (duplication-pattern Duplication band1 band2))
      (= direction "Direct")
-     (duplication-pattern DirectDuplication n band1 band2)
+     (direct-event n
+                   (duplication-pattern DirectDuplication band1 band2))
      (= direction "Inverse")
-     (duplication-pattern InverseDuplication n band1 band2))))
+     (direct-event n
+                   (duplication-pattern InverseDuplication band1 band2)))))
 
 ;; Chromosomal Band Fission AKA Centric fission - break in the centromere
 ;; Involves only 1 chromosome
@@ -458,14 +461,14 @@ band is of type HumanChromosomeBand."
 ;; Can be preceeded by the triplets dir or inv to indicate direct or
 ;; inverted direction
 ;; Involves at most 2 chromosomes
-(defn- insertion-pattern [event n band1 band2 band3]
+(defn- insertion-pattern [event band1 band2 band3]
   {:pre (true? (or (superclass? events event Insertion)
             (= event Insertion)))}
   "Pattern - returns an EVENT insertion restriction using N
 cardinality value and BAND1, BAND2 and BAND3 bands."
-  (direct-event n (owl-and event
-                           (owl-some hasReceivingBreakPoint band1)
-                           (owl-some hasProvidingBreakPoint band2 band3))))
+  (owl-and event
+           (owl-some hasReceivingBreakPoint band1)
+           (owl-some hasProvidingBreakPoint band2 band3)))
 
 ;; Choromosomal Band Insertion
 ;; Involves at most 2 chromosomes
@@ -480,14 +483,17 @@ band1, band2, band3 is of type HumanChromosomeBand."
            direction (get-direction band2 band3)]
        (cond
         (= direction "Unknown")
-        (insertion-pattern InsertionOneChromosome
-                           n (first chrom1) band2 band3)
+        (direct-event n
+                      (insertion-pattern InsertionOneChromosome
+                                         (first chrom1) band2 band3))
         (= direction "Direct")
-        (insertion-pattern DirectInsertionOneChromosome
-                           n (first chrom1) band2 band3)
+        (direct-event n
+                      (insertion-pattern DirectInsertionOneChromosome
+                                         (first chrom1) band2 band3))
         (= direction "Inverse")
-        (insertion-pattern InverseInsertionOneChromosome
-                           n (first chrom1) band2 band3))))
+        (direct-event n
+                      (insertion-pattern InverseInsertionOneChromosome
+                                         (first chrom1) band2 band3)))))
   ([n chrom1 chrom2]
      {:pre (true? (and (= 1 (count chrom1)) (= 2 (count chrom2))))}
      (let [band2 (first chrom2)
@@ -495,14 +501,17 @@ band1, band2, band3 is of type HumanChromosomeBand."
            direction (get-direction band2 band3)]
        (cond
         (= direction "Unknown")
-        (insertion-pattern InsertionTwoChromosome
-                           n (first chrom1) band2 band3)
+        (direct-event n
+                      (insertion-pattern InsertionTwoChromosome
+                                         (first chrom1) band2 band3))
         (= direction "Direct")
-        (insertion-pattern DirectInsertionTwoChromosome
-                           n (first chrom1) band2 band3)
+        (direct-event n
+                      (insertion-pattern DirectInsertionTwoChromosome
+                                         (first chrom1) band2 band3))
         (= direction "Inverse")
-        (insertion-pattern InverseInsertionTwoChromosome
-                           n (first chrom1) band2 band3)))))
+        (direct-event n
+                      (insertion-pattern InverseInsertionTwoChromosome
+                                         (first chrom1) band2 band3)))))
 
 ;; Chromosomal Band Inversion : includes both paracentric (involves
 ;; only 1 arm) and pericentric (involves both arms) inversion.
@@ -582,12 +591,12 @@ contains 1 or 2 HumanChromosomeBand"
 ;; of the segments with the short system" however the example shown
 ;; seem to show the orientations fine. What other detailed systems
 ;; occur for the first example?  Similar to Duplication
-(defn- triplication-pattern [event n band1 band2]
+(defn- triplication-pattern [event band1 band2]
   {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
   "Returns a triplication retriction. N is the number of triplication
 restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
-  (direct-event n (owl-and event
-                           (owl-some hasBreakPoint band1 band2))))
+  (owl-and event
+           (owl-some hasBreakPoint band1 band2))))
 
 (defn triplication [n band1 band2]
   "Returns a triplication retriction. N is the number of triplication
@@ -595,8 +604,11 @@ restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
   (let [direction (get-direction band1 band2)]
     (cond
      (= direction "Unknown")
-     (triplication-pattern Triplication n band1 band2)
+     (direct-event n
+                   (triplication-pattern Triplication n band1 band2))
      (= direction "Direct")
-     (triplication-pattern DirectTriplication n band1 band2)
+     (direct-event n
+                   (triplication-pattern DirectTriplication n band1 band2))
      (= direction "Inverse")
-     (triplication-pattern InverseTriplication n band1 band2))))
+     (direct-event n
+                   (triplication-pattern InverseTriplication n band1 band2)))))
