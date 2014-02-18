@@ -133,23 +133,26 @@ FRAMES. Returns an OWL class as described."
   "Returns a list of N number of event restrictions."
   (into '() (random-karyotype0 #{} n)))
 
-(defn refine-label [clazz]
-  "Returns the updated class definition of CLAZZ."
-  (let [k (p/parse-karyotype-class random clazz)]
-    (refine clazz :label
-            (str "The " k " Karyotype"))))
+(defn refine-label [o clazz]
+  "Returns the updated class definition of CLAZZ in ontology O."
+  (refine clazz
+          :label (str "The "
+                      (p/parse-karyotype-class o clazz)
+                      " Karyotype")))
 
-(defn random-karyotype [name max]
+(defn random-karyotype [o name max]
   "Returns a random karyotype class with clojure symbol NAME and has
 MAX number of restirctions."
-  (refine-label (karyotype-class name
+  (refine-label o
+                (karyotype-class name
+                                 :ontology o
                                  :subclass (random-abnormality-driver max))))
 
-(defn random-karyotype-driver [number max]
+(defn random-karyotype-driver [o number max]
   "Creates NUMBER number of random karyotypes with MAX number
-of event restrictions. Returns nil."
+of event restrictions in ontology O. Returns nil."
   (doseq [i (range number)]
-    (random-karyotype i max)))
+    (random-karyotype o i max)))
 
 ;; TESTING
 ;; import all ncl.karyotype axioms
