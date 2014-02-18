@@ -137,16 +137,6 @@ s id of type String."
         (> (read-string digit1) (read-string digit2))
         "Inverse")))))
 
-(defn- get-insertion-function [bandinfo]
-  "Returns "
-  (cond
-   (= (get-direction bandinfo) "Unknown")
-   e/insertion
-   (= (get-direction bandinfo) "Direct")
-   e/direct-insertion
-   (= (get-direction bandinfo) "Inverse")
-   e/inverse-insertion))
-
 (defn- define-event [event]
   "Returns "
   (with-ontology
@@ -161,33 +151,30 @@ s id of type String."
         (apply e/deletion 1 (get-bands (get info 1) (get info 3)))
         ;; If event is a duplication event
         (re-find (re-pattern "dup\\(") event)
-        (cond
-         (= (get-direction (get info 3)) "Unknown")
-         (apply e/duplication 1 (get-bands (get info 1) (get info 3)))
-         (= (get-direction (get info 3)) "Direct")
-         (apply e/direct-duplication 1 (get-bands (get info 1) (get info 3)))
-         (= (get-direction (get info 3)) "Inverse")
-         (apply e/inverse-duplication 1 (get-bands (get info 1) (get info 3))))
+        (apply e/duplication 1 (get-bands (get info 1) (get info 3)))
         ;; If event is a fission event
         (re-find (re-pattern "fis\\(") event)
         (apply e/fission 1 (get-bands (get info 1) (get info 3)))
         ;; If event is an insertion event
         (re-find (re-pattern "ins\\(") event)
-        (let [bands (split-bands (get info 3))
-              band1 (get bands 0)
-              band23 (str (get bands 1) (get bands 2))]
-           (if (re-find #";" (get info 3))
-             (apply (get-insertion-function band23)
-                    1
-                    (flatten
-                     (conj (get-bands (re-find #"\d+$|\?$" (get info 1))
-                                      (if (= "?" band23)
-                                        (str band23 band23)
-                                        band23))
-                           (get-bands (re-find #"^\d+|^\?" (get info 1))
-                                      band1))))
-             (apply (get-insertion-function band23)
-                    1 (get-bands (get info 1) (get info 3)))))
+        (e/insertion 1 [h/HumanChromosomeBand
+                        h/HumanChromosomeBand
+                        h/HumanChromosomeBand])
+        ;; (let [bands (split-bands (get info 3))
+        ;;       band1 (get bands 0)
+        ;;       band23 (str (get bands 1) (get bands 2))]
+        ;;    (if (re-find #";" (get info 3))
+        ;;      (apply (get-insertion-function band23)
+        ;;             1
+        ;;             (flatten
+        ;;              (conj (get-bands (re-find #"\d+$|\?$" (get info 1))
+        ;;                               (if (= "?" band23)
+        ;;                                 (str band23 band23)
+        ;;                                 band23))
+        ;;                    (get-bands (re-find #"^\d+|^\?" (get info 1))
+        ;;                               band1))))
+        ;;      (apply (get-insertion-function band23)
+        ;;             1 (get-bands (get info 1) (get info 3)))))
         ;; If event is an inversion event
         (re-find (re-pattern "inv\\(") event)
         (apply e/inversion 1 (get-bands (get info 1) (get info 3)))
@@ -204,13 +191,7 @@ s id of type String."
                    (into [] (get-bands (get chrominfo i) (get bandinfo i))))))
         ;; If event is a triplication event
         (re-find (re-pattern "trp\\(") event)
-        (cond
-         (= (get-direction (get info 3)) "Unknown")
-         (apply e/triplication 1 (get-bands (get info 1) (get info 3)))
-         (= (get-direction (get info 3)) "Direct")
-         (apply e/direct-triplication 1 (get-bands (get info 1) (get info 3)))
-         (= (get-direction (get info 3)) "Inverse")
-         (apply e/inverse-triplication 1 (get-bands (get info 1) (get info 3))))
+        (apply e/triplication 1 (get-bands (get info 1) (get info 3)))
         ;; If event is a chromosomal addition event
         (re-find #"\+" event)
         (e/addition 1 (owl-class
