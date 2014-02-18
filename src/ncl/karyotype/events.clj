@@ -409,11 +409,11 @@ HumanChromosomeBand."
      ;; reunion (::).  band1, band2 are of type HumanChromosomeBand.
      (direct-event n (deletion-band band1 band2))))
 
-(defn- duplication-pattern [event band1 band2]
+(defn duplication-pattern [event band1 band2]
   {:pre (true? (or (superclass? events event Duplication)
                    (= event Duplication)))}
-  "Pattern - returns an EVENT duplication restriction using N
-cardinality value and BAND1 and BAND2 bands."
+  "Pattern - returns an EVENT duplication restriction using BAND1 and
+BAND2 bands."
   (owl-and event
            (owl-some hasBreakPoint band1 band2)))
 
@@ -461,11 +461,11 @@ band is of type HumanChromosomeBand."
 ;; Can be preceeded by the triplets dir or inv to indicate direct or
 ;; inverted direction
 ;; Involves at most 2 chromosomes
-(defn- insertion-pattern [event band1 band2 band3]
+(defn insertion-pattern [event band1 band2 band3]
   {:pre (true? (or (superclass? events event Insertion)
             (= event Insertion)))}
-  "Pattern - returns an EVENT insertion restriction using N
-cardinality value and BAND1, BAND2 and BAND3 bands."
+  "Pattern - returns an EVENT insertion restriction using BAND1, BAND2
+and BAND3 bands."
   (owl-and event
            (owl-some hasReceivingBreakPoint band1)
            (owl-some hasProvidingBreakPoint band2 band3)))
@@ -511,7 +511,7 @@ band1, band2, band3 is of type HumanChromosomeBand."
         (= direction "Inverse")
         (direct-event n
                       (insertion-pattern InverseInsertionTwoChromosome
-                                         (first chrom1) band2 band3)))))
+                                         (first chrom1) band2 band3))))))
 
 ;; Chromosomal Band Inversion : includes both paracentric (involves
 ;; only 1 arm) and pericentric (involves both arms) inversion.
@@ -591,12 +591,12 @@ contains 1 or 2 HumanChromosomeBand"
 ;; of the segments with the short system" however the example shown
 ;; seem to show the orientations fine. What other detailed systems
 ;; occur for the first example?  Similar to Duplication
-(defn- triplication-pattern [event band1 band2]
+(defn triplication-pattern [event band1 band2]
   {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
   "Returns a triplication retriction. N is the number of triplication
 restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
   (owl-and event
-           (owl-some hasBreakPoint band1 band2))))
+           (owl-some hasBreakPoint band1 band2)))
 
 (defn triplication [n band1 band2]
   "Returns a triplication retriction. N is the number of triplication
@@ -605,10 +605,10 @@ restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
     (cond
      (= direction "Unknown")
      (direct-event n
-                   (triplication-pattern Triplication n band1 band2))
+                   (triplication-pattern Triplication band1 band2))
      (= direction "Direct")
      (direct-event n
-                   (triplication-pattern DirectTriplication n band1 band2))
+                   (triplication-pattern DirectTriplication band1 band2))
      (= direction "Inverse")
      (direct-event n
-                   (triplication-pattern InverseTriplication n band1 band2)))))
+                   (triplication-pattern InverseTriplication band1 band2)))))
