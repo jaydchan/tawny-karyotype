@@ -104,6 +104,11 @@ O."
         bands (into [] (filter #(h/band? (first %)) chrom_band))]
     bands))
 
+(defn get-bands [o clazz]
+  "Returns a list of affected bands for a given CLAZZ in ontology O."
+  (for [band (get-breakpoints o clazz)]
+    (get-band-range band)))
+
 ;; PATTERN
 (defn- affects-band [bands]
   {:pre (every? h/band? bands)}
