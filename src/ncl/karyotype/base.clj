@@ -50,6 +50,11 @@
 (add-subpropertychain e/hasDerivedEvent (list derivedFrom e/hasDirectEvent))
 (add-subpropertychain e/isDerivedEventOf (list e/isDirectEventOf derivedTo))
 
+;; hasDerivedFeature and isDerivedFeatureOf is defined here i.e. after
+;; derivedFrom and derivedTo have been defined.
+(add-subpropertychain f/hasDerivedFeature (list derivedFrom f/hasDirectFeature))
+(add-subpropertychain f/isDerivedFeatureOf (list f/isDirectFeatureOf derivedTo))
+
 ;; define all the baseKaryotypes
 ;; we have to pass these in as strings because they start with
 ;; integers which brings up an NumberFormatException therefore we
