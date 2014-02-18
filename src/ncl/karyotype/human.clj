@@ -987,33 +987,57 @@ PARENT, which is either p or q band."
 
 
 ;; FUNCTIONS
-(rea/reasoner-factory :hermit)
-(binding [rea/*reasoner-progress-monitor*
-          (atom
-           rea/reasoner-progress-monitor-silent)]
+(defn chromosome? [x]
+  "Determine if X is a chromosome - using ontology"
+  (or (= x HumanChromosome)
+      (superclass? human x HumanChromosome)))
 
-  (defn chromosome? [x]
-    "Determine if X is a chromosome - using ontology"
-    (or (superclass? human x HumanChromosome)
-        (= x HumanChromosome)))
+(defn band? [x]
+  "Determine if X is a band - using ontology"
+  (or (= x HumanChromosomeBand)
+      (superclass? human x HumanChromosomeBand)))
 
-  (defn band? [x]
-    "Determine if X is a band - using ontology"
-    (or (superclass? human x HumanChromosomeBand)
-        (= x HumanChromosomeBand)))
+;; (rea/reasoner-factory :hermit)
+;; (binding [rea/*reasoner-progress-monitor*
+;;           (atom
+;;            rea/reasoner-progress-monitor-silent)]
 
-  (defn ter? [band]
-    "Determine if the given band is a telomere - using ontology"
-    (rea/isuperclass? human band is-telomere))
+;;   (defn ter? [band]
+;;     "Determine if the given band is a telomere - using ontology and
+;; reasoner"
+;;     (rea/isuperclass? human band is-telomere))
 
-  (defn cen? [band]
-    "Determine if the given band is a centromere - using ontology"
-    (rea/isuperclass? human band is-centromere))
+;;   (defn cen? [band]
+;;     "Determine if the given band is a centromere - using ontology and
+;; reasoner"
+;;     (rea/isuperclass? human band is-centromere))
 
-  (defn pband? [band]
-    "Determine if the given band is a pband - using ontology"
-    (rea/isuperclass? human band is-pband))
+;;   (defn pband? [band]
+;;     "Determine if the given band is a pband - using ontology and
+;; reasoner"
+;;     (rea/isuperclass? human band is-pband))
 
-  (defn qband? [band]
-    "Determine if the given band is a qband - using ontology"
-    (rea/isuperclass? human band is-qband)))
+;;   (defn qband? [band]
+;;     "Determine if the given band is a qband - using ontology and
+;; reasoner"
+;;     (rea/isuperclass? human band is-qband)))
+
+(defn ter? [band]
+  "Determine if the given band is a telomere - not using reasoner"
+  (or (= band HumanTelomere)
+      (superclass? human band HumanTelomere)
+      (not (nil? (re-find #"Band[pq]Ter" (str band))))))
+
+(defn cen? [band]
+  "Determine if the given band is a centromere - not using reasoner"
+  (or (= band HumanCentromere)
+      (superclass? human band HumanCentromere)
+      (not (nil? (re-find #"Band[pq]10" (str band))))))
+
+(defn pband? [band]
+  "Determine if the given band is a pband - not using reasoner"
+  (not (nil? (re-find #"Bandp" (str band)))))
+
+(defn qband? [band]
+  "Determine if the given band is a qband - not using reasoner"
+  (not (nil? (re-find #"Bandq" (str band)))))
