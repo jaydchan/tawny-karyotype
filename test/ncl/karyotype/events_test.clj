@@ -113,8 +113,8 @@
 (deftest Get-Telomere
   ;; tests each get-telmere function
   (let [functions
-        [e/get-telomere #'ncl.karyotype.events/get-telomere-string
-         #'ncl.karyotype.events/get-telomere-ontology]]
+        [e/get-telomere #'ncl.karyotype.events/get-telomere-string]]
+         ;; #'ncl.karyotype.events/get-telomere-ontology]]
     (doseq [function functions]
 
       ;; valid inputs
@@ -253,7 +253,8 @@
 (deftest Addition-Chromosome
   ;; valid inputs
   (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
-        events (into [] (map e/addition-chromosome inputs))]
+        events (into [] (map #'ncl.karyotype.events/addition-chromosome
+                             inputs))]
     (doseq [i (range (count inputs))]
       (let [event (get events i)]
         (is (instance?
@@ -264,7 +265,8 @@
   ;; invalid input
   (is (thrown? AssertionError
                "HumanChromosomeBand"
-               (e/addition-chromosome h/HumanChromosomeBand))))
+               (#'ncl.karyotype.events/addition-chromosome
+                h/HumanChromosomeBand))))
 
 (deftest Addition-Band
   ;; valid inputs
@@ -272,7 +274,7 @@
                 h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
                 h/HumanChromosome1Bandq h/HumanChromosome1Band
                 h/HumanChromosomeBand]
-        events (into [] (map e/addition-band inputs))]
+        events (into [] (map #'ncl.karyotype.events/addition-band inputs))]
     (doseq [i (range (count inputs))]
       (let [event (get events i)]
         (is (instance?
@@ -290,7 +292,7 @@
   ;; invalid input
   (is (thrown? AssertionError
                "HumanChromosome"
-               (e/addition-band h/HumanChromosome))))
+               (#'ncl.karyotype.events/addition-band h/HumanChromosome))))
 
 (deftest Addition
   ;; valid inputs - chromosomes
@@ -326,7 +328,8 @@
 (deftest Deletion-Chromosome
   ;; valid inputs
   (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
-        events (into [] (map e/deletion-chromosome inputs))]
+        events (into [] (map #'ncl.karyotype.events/deletion-chromosome
+                             inputs))]
     (doseq [i (range (count inputs))]
       (let [event (get events i)]
         (is (instance?
@@ -337,7 +340,8 @@
   ;; invalid inputs
   (is (thrown? AssertionError
                "HumanChromosomeBand"
-               (e/deletion-chromosome h/HumanChromosomeBand))))
+               (#'ncl.karyotype.events/deletion-chromosome
+                h/HumanChromosomeBand))))
 
 (deftest Deletion-Band
   ;; valid inputs
@@ -345,7 +349,8 @@
                 h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
                 h/HumanChromosome1Bandq h/HumanChromosome1Band
                 h/HumanChromosomeBand]
-        events (into [] (map #(e/deletion-band %1 %2) inputs (reverse inputs)))]
+        events (into [] (map #(#'ncl.karyotype.events/deletion-band %1 %2)
+                             inputs (reverse inputs)))]
     (doseq [i (range (count inputs))]
       (let [event (get events i)
             properties
@@ -366,13 +371,16 @@
   ;; invalid inputs
   (is (thrown? AssertionError
                "HumanChromosome and HumanChromosome1Band"
-               (e/deletion-band h/HumanChromosome h/HumanChromosome1Band)))
+               (#'ncl.karyotype.events/deletion-band h/HumanChromosome
+                                                     h/HumanChromosome1Band)))
   (is (thrown? AssertionError
                "HumanChromosome1Band and HumanChromosome"
-               (e/deletion-band h/HumanChromosome1Band h/HumanChromosome)))
+               (#'ncl.karyotype.events/deletion-band h/HumanChromosome1Band
+                                                     h/HumanChromosome)))
   (is (thrown? AssertionError
                "HumanChromosome and HumanChromosome"
-               (e/deletion-band h/HumanChromosome h/HumanChromosome))))
+               (#'ncl.karyotype.events/deletion-band h/HumanChromosome
+                                                     h/HumanChromosome))))
 
 (deftest Deletion
   ;; valid inputs - chromosomes
@@ -487,8 +495,7 @@
        "HumanChromosome1Centromere"
        (e/fission 1 h/HumanChromosome1Centromere))))
 
-;; TODO Needs work first
-(deftest Insertion)
+;; (deftest Insertion)
 
 (deftest Inversion
   ;; valid input
