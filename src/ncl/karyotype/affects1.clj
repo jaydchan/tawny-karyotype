@@ -108,8 +108,13 @@ ontology O."
        (get-affects band)))))
 
 (defn affects1-driver [o clazz]
-  "Returns the updated class definition of CLAZZ in ontology O."
-  (refine clazz :subclass (affects-band (get-affects1 o clazz))))
+  "Returns the (updated) class definition of CLAZZ in ontology O."
+  (let [bands (get-affects1 o clazz)]
+    (if (= 0 (count bands))
+      clazz
+      (refine clazz
+              :ontology o
+              :subclass (affects-band (get-affects1 o clazz))))))
 
 ;; TESTS
 ;; import human ontology axioms
@@ -173,4 +178,5 @@ ontology O."
 
 ;; MAIN - (may) redefine classes defined above to include affects
 ;; oproperty.
-(map #(affects1-driver affects1 %) (subclasses affects1 AffectsKaryotype))
+(doseq [clazz (subclasses affects1 AffectsKaryotype)]
+  (affects1-driver affects1 clazz))
