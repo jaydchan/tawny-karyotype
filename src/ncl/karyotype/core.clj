@@ -18,7 +18,7 @@
 (ns ncl.karyotype.core
   (:use [tawny.owl])
   (:require [ncl.karyotype karyotype human resolutions events features
-             base named iscnexamples parse random affects1 affects2])
+             base named iscnexamples parse random affects1 affects2 affects3])
   (:gen-class))
 
 ;; to run:

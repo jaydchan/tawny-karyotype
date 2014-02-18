@@ -39,7 +39,7 @@
 
 ;; REPEAT? Should also check 300-bands vector
 (deftest Get-Band
-  (let [band (a/get-band 1 "p36.3")]
+  (let [band (#'ncl.karyotype.affects1/get-band 1 "p36.3")]
     (is (instance? org.semanticweb.owlapi.model.OWLClassExpression band))
     (is (= (o/iri-for-name h/HumanChromosome1Bandp36.3)
            (o/iri-for-name band)))))
@@ -56,8 +56,8 @@
            org.semanticweb.owlapi.model.OWLClassExpression
            input))
       (is (h/band? input))
-      (is (false? (a/not-breakpoint? input input))))
-    (is (every? true? (map #(a/not-breakpoint? %1 %2)
+      (is (false? (#'ncl.karyotype.affects1/not-breakpoint? input input))))
+    (is (every? true? (map #(#'ncl.karyotype.affects1/not-breakpoint? %1 %2)
                            inputs
                            (replace
                             {h/HumanChromosome1Bandp h/HumanChromosome1Bandq}
@@ -66,10 +66,14 @@
   (is (thrown?
        AssertionError
        "HumanChromosome"
-       (a/not-breakpoint? h/HumanChromosomeBand h/HumanChromosome))))
+       (#'ncl.karyotype.affects1/not-breakpoint?
+        h/HumanChromosomeBand
+        h/HumanChromosome))))
 
 ;; (deftest Subset)
 ;; (deftest Band-Range)
-;; (deftest Get-Affects)
-;; (deftest Get-Affects1)
+;; (deftest Get-Band-Range)
+;; (deftest Get-Breakpoints)
+;; (deftest Get-Bands)
+;; (deftest Affects-Band)
 ;; (deftest Affects1-Driver)
