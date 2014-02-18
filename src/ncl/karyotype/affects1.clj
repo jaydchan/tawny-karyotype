@@ -79,7 +79,7 @@ than FINISH band, determined by bands-300 vector."
     (subset finish start)
     (subset start finish)))
 
-(defn get-affects [bands]
+(defn- get-band-range [bands]
   "Returns either one band or a range of bands, determined by BANDS."
   (cond
    (= (count bands) 1)
@@ -89,11 +89,11 @@ than FINISH band, determined by bands-300 vector."
    :default
    (throw
     (IllegalArgumentException.
-     (str "Get-affects expects at most two bands. Got:" bands)))))
+     (str "Get-band-range expects one or two bands. Got:" bands)))))
 
-(defn get-affects1 [o clazz]
-  "Returns a list of affected bands for a given CLAZZ in
-ontology O."
+(defn- get-breakpoints [o clazz]
+  "Returns a list of breakpoint bands for a given CLAZZ in ontology
+O."
   (let [parents (direct-superclasses o clazz)
         restrictions (filter #(instance?
                                org.semanticweb.owlapi.model.OWLRestriction %)
@@ -102,19 +102,24 @@ ontology O."
         axioms (into [] (map #(.getFiller %) events))
         chrom_band (map p/human-filter axioms)
         bands (into [] (filter #(h/band? (first %)) chrom_band))]
+    bands))
 
-    (flatten
-     (for [band bands]
-       (get-affects band)))))
+;; PATTERN
+(defn- affects-band [bands]
+  {:pre (every? h/band? bands)}
+  "Pattern - returns some-only axiom for BANDS, using affects
+object property."
+  (apply some-only affects bands))
 
+;; DRIVERS
 (defn affects1-driver [o clazz]
-  "Returns the (updated) class definition of CLAZZ in ontology O."
-  (let [bands (get-affects1 o clazz)]
-    (if (= 0 (count bands))
+  "Returns the updated class definition of CLAZZ in ontology O."
+  (let [bands (flatten (get-bands o clazz))]
+    (if (= (count bands) 0)
       clazz
       (refine clazz
               :ontology o
-              :subclass (affects-band (get-affects1 o clazz))))))
+              :subclass (affects-band bands)))))
 
 ;; TESTS
 ;; import human ontology axioms
