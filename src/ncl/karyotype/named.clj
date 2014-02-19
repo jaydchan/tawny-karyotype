@@ -35,170 +35,6 @@
 (defclass NamedKaryotype
   :subclass k/Karyotype)
 
-;; Define the namedKaryotypes
-
-;; Named Karyotypes that are caused by numerical abnormalities
-;; Allosomal abnormalites
-
-;; An (female) individual with only one sex chromosome = X ;;aka 45,X
-;; or 45,X0 ;; aka abnormal female
-(defclass TurnerSyndrome
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XN)
-   (e/deletion 1 h/HumanSexChromosome)))
-
-;; An (male) individual with an extra X chromosome ;; aka 47,XXY ;;
-;; aka abnormal male
-(defclass KlinefelterSyndromeMostCommonVariation
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XY)
-   (e/addition 1 h/HumanChromosomeX)
-   (owl-not
-    (e/event nil (e/addition-chromosome h/HumanChromosomeY)))))
-
-;; An (male) individual with extra X chromosomes ;;aka abnormal male
-(defclass KlinefelterSyndromeAllVariations
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XY)
-   (e/event nil (e/addition-chromosome h/HumanChromosomeX))))
-
-;; #TODO An individual with no X chromosome
-;; (defclass Lethal
-;;   :subclass NamedKaryotype)
-
-;; Autsomal abnormalities
-
-;; An individual with three copies of chromosome 8 ;;aka Trisomy8
-(defclass Warkany2Syndrome
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XN)
-   (e/event 1 (e/addition-chromosome h/HumanChromosome8))))
-
-;; An individual with three copies of chromosome 9
-(defclass Trisomy9
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XN)
-   (e/event 1 (e/addition-chromosome h/HumanChromosome9))))
-
-;; An individual with three copies of chromosome 13 ;;aka Trisomy13
-(defclass PatauSyndrome
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XN)
-   (e/event 1 (e/addition-chromosome h/HumanChromosome13))))
-
-;; An individual with three copies of chromosome 16
-(defclass Trisomy16
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XN)
-   (e/event 1 (e/addition-chromosome h/HumanChromosome16))))
-
-;; An individual with three copies of chromosome 18 ;;aka Trisomy18
-(defclass EdwardsSyndrome
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XN)
-   (e/event 1 (e/addition-chromosome h/HumanChromosome18))))
-
-;; An individual with three copies of chromosome 21 ;;aka Trisomy21
-(defclass DownSyndrome
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XN)
-   (e/event 1 (e/addition-chromosome h/HumanChromosome21))))
-
-;; An individual with three copies of chromosome 22
-(defclass Trisomy22
-  :subclass NamedKaryotype
-  :equivalent
-  (owl-and
-   (owl-some b/derivedFrom b/k46_XN)
-   (e/event 1 (e/addition-chromosome h/HumanChromosome22))))
-
-;; Named Karyotypes that are caused by structural abnormalities
-
-;; An individual with loss of part of the short arm of chromosome 1
-;; (defclass DeletionSyndrome1p36
-;;   :subclass NamedKaryotype
-;;   :equivalent
-;;   (owl-and
-;;    (owl-some b/derivedFrom b/k46_XN)
-;;    (owl-some e/hasEvent
-;;             (owl-and e/Deletion
-;;                     (owl-some e/hasBreakPoint h/HumanChromosome1Bandp)))))
-
-;; ;; An individual with the partial deletion of chromosomal material of
-;; ;; the short arm of chromosome 4 ;;aka del(4p16.3) ;;WHS, Chromosome
-;; ;; Deletion Dillian 4p Syndrome, Pitt-Rogers-Danks Syndrome, PRDS,
-;; ;; Pitt Syndrome
-;; (defclass WolfHirschhornSydrome
-;;   :subclass NamedKaryotype
-;;   :equivalent
-;;   (owl-and
-;;    (owl-some b/derivedFrom b/k46_XN)
-;;    (owl-some e/hasEvent
-;;             (owl-and e/Deletion
-;;                     (owl-some e/hasBreakPoint h/HumanChromosome4Bandp)))))
-
-;; ;; TODO An individual with a truncated short arm on chromosome 5 ;;aka cry of the cat
-;; (defclass CriDuChat
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with ... chromosome 5
-;; (defclass DeletionSyndrome5q
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with ... chromosome 7
-;; (defclass WilliamsSyndrome
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with ... chromosome 11
-;; (defclass JacobsenSyndrome
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with a segment of the long arm of chromosome 15 missing
-;; (defclass AngelmanSyndrome
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with a segment of the long arm of chromosome 15 missing
-;; (defclass PraderWilliSyndrome
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with ... chromosome 17
-;; (defclass MillerDiekerSyndrome
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with ... chromosome 17
-;; (defclass SmithMagenisSyndrome
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with ... chromosome 18
-;; (defclass DeletionSyndrome18q
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with ... chromosome 22
-;; (defclass DiGeorgeSyndrome
-;;   :subclass NamedKaryotype)
-
-;; ;; TODO An individual with ... chromosome 22
-;; (defclass CatEyeSyndrome
-;;   :subclass NamedKaryotype)
-
 ;; example defined classes
 
 ;; Ploidy descriptions
@@ -246,9 +82,6 @@
   :equivalent
   (e/event nil
            (e/addition-chromosome h/HumanAutosome)))
-
-  ;; DOES WORK HOWEVER IN THIS CASE WE WANT HASEVENT NOT HASDIRECTEVENT
-  ;; (e/event nil h/HumanAutosome))
 
 (defclass NumericalAbnormalKaryotypeAutosomalLoss
   :equivalent
@@ -381,3 +214,248 @@
   (owl-some e/hasDerivedEvent
             (owl-and e/Event
                      (owl-some e/hasBreakPoint k/ChromosomeComponent))))
+
+
+;; Define the namedKaryotypes
+
+;; Named Karyotypes that are caused by numerical abnormalities
+;; Allosomal abnormalites
+
+;; An (female) individual with only one sex chromosome = X ;;aka 45,X0
+;; or 45,X ;; aka abnormal female
+;; REFINE without derived
+(defclass TurnerSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/deletion 1 h/HumanSexChromosome)
+   (owl-not
+    (e/event nil (e/addition-chromosome h/HumanSexChromosome)))))
+
+;; An (male) individual with an extra X chromosome ;; aka 47,XXY ;;
+;; aka abnormal male
+;; REFINE without derived
+(defclass KlinefelterSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XY)
+   (e/addition 1 h/HumanChromosomeX)
+   (owl-not
+    (e/event nil (e/addition-chromosome h/HumanChromosomeY)))
+))
+
+;; An (male) individual with extra X chromosomes ;;aka abnormal male
+;; aka 47,XXY, 48,XXYY, 48,XXXY, 49,XXXYY, 49,XXXXY
+(defclass MaleWithExtraX
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XY)
+   (e/event nil (e/addition-chromosome h/HumanChromosomeX))
+   (owl-not
+    (e/event nil (e/deletion-chromosome h/HumanChromosomeX)))
+))
+
+;; An (male) individual with extra Y chromosomes ;; aka 47,XYY,
+;; 48,XYYY, 49,XYYYY
+(defclass MaleWithExtraY
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XY)
+   (e/event nil (e/addition-chromosome h/HumanChromosomeY))
+   (owl-not
+    (e/event nil (e/deletion-chromosome h/HumanChromosomeY)))
+))
+
+;; An individual with 3 X chromosomes ;;aka 47,XXX
+;; REFINE without derived
+(defclass TripleXSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XX)
+   (e/addition 1 h/HumanChromosomeX)
+   (owl-not
+    (e/event nil (e/deletion-chromosome h/HumanChromosomeX)))
+))
+
+;; An (female) individual with extra X chromosomes ;;aka 47,XXX,
+;; 48,XXXX, 49,XXXXX
+(defclass FemaleWithExtraX
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XX)
+   (e/event nil (e/addition-chromosome h/HumanChromosomeX))
+   (owl-not
+    (e/event nil (e/deletion-chromosome h/HumanChromosomeX)))
+))
+
+;; An individual with no X chromosome
+;; REFINE without derived
+(defclass Lethal
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-or
+   (owl-and
+    (owl-some b/derivedFrom b/k46_XX)
+    (e/deletion 2 h/HumanSexChromosome)
+    (e/event nil (e/addition-chromosome h/HumanChromosomeX))
+    )
+   (owl-and
+    (owl-some b/derivedFrom b/k46_XY)
+    (e/event nil (e/deletion-chromosome h/HumanChromosomeX))
+    (e/event nil (e/addition-chromosome h/HumanChromosomeX))
+)))
+
+;; Autsomal abnormalities
+;; REFINE without derived
+
+;; An individual with three copies of chromosome 8 ;;aka Trisomy8
+(defclass WarkanySyndrome2
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/addition 1 h/HumanChromosome8)
+   (owl-not (e/event nil (e/deletion-chromosome h/HumanChromosome8)))
+))
+
+;; An individual with three copies of chromosome 9
+(defclass Trisomy9
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/addition 1 h/HumanChromosome9)
+   (owl-not (e/event nil (e/deletion-chromosome h/HumanChromosome9)))
+))
+
+;; An individual with three copies of chromosome 13 ;;aka Trisomy13
+(defclass PatauSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/addition 1 h/HumanChromosome13)
+   (owl-not (e/event nil (e/deletion-chromosome h/HumanChromosome13)))
+))
+
+;; An individual with three copies of chromosome 16
+(defclass Trisomy16
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/addition 1 h/HumanChromosome16)
+   (owl-not (e/event nil (e/deletion-chromosome h/HumanChromosome16)))
+))
+
+;; An individual with three copies of chromosome 18 ;;aka Trisomy18
+(defclass EdwardsSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/addition 1 h/HumanChromosome18)
+   (owl-not (e/event nil (e/deletion-chromosome h/HumanChromosome18)))
+))
+
+;; An individual with three copies of chromosome 21 ;;aka Trisomy21
+(defclass DownSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/addition 1 h/HumanChromosome21)
+   (owl-not (e/event nil (e/deletion-chromosome h/HumanChromosome21)))
+))
+
+;; An individual with three copies of chromosome 22 ;;aka Trisomy 22
+(defclass CatEyeSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/addition 1 h/HumanChromosome22)
+   (owl-not (e/event nil (e/deletion-chromosome h/HumanChromosome22)))
+))
+
+;; Named Karyotypes that are caused by structural abnormalities
+
+;; An individual with loss of part of the short arm of chromosome 1
+;; (defclass DeletionSyndrome1p36
+;;   :subclass NamedKaryotype
+;;   :equivalent
+;;   (owl-and
+;;    (owl-some b/derivedFrom b/k46_XN)
+;;    (owl-some e/hasEvent
+;;             (owl-and e/Deletion
+;;                     (owl-some e/hasBreakPoint h/HumanChromosome1Bandp)))))
+
+;; An individual with the partial deletion of chromosomal material of
+;; the short arm of chromosome 4 ;;aka del(4p16.3) ;;WHS, Chromosome
+;; Deletion Dillian 4p Syndrome, Pitt-Rogers-Danks Syndrome, PRDS,
+;; Pitt Syndrome
+;; Terminal deletion
+(defclass WolfHirschhornSydrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/event nil (e/deletion-band h/HumanChromosome4Bandp
+                                 h/HumanChromosome4BandpTer))))
+
+;; An individual with a truncated short arm on chromosome 5 ;;aka cry
+;; of the cat ;;Chromosome 5p Feletion Syndrome
+(defclass CriDuChat
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/event nil (e/deletion-band h/HumanChromosome5Bandp
+                                 h/HumanChromosome5BandpTer))))
+
+;; An individual with chromosome 5 monosomy.
+(defclass Chromosome5qDeletionSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/event nil (e/deletion-band h/HumanChromosome5Bandq
+                                 h/HumanChromosome5BandqTer))))
+
+;; ;; TODO An individual with ... chromosome 7
+;; (defclass WilliamsSyndrome
+;;   :subclass NamedKaryotype)
+
+;; ;; TODO An individual with ... chromosome 11
+;; (defclass JacobsenSyndrome
+;;   :subclass NamedKaryotype)
+
+;; ;; TODO An individual with a segment of the long arm of chromosome 15 missing
+;; (defclass AngelmanSyndrome
+;;   :subclass NamedKaryotype)
+
+;; ;; TODO An individual with a segment of the long arm of chromosome 15 missing
+;; (defclass PraderWilliSyndrome
+;;   :subclass NamedKaryotype)
+
+;; ;; TODO An individual with ... chromosome 17
+;; (defclass MillerDiekerSyndrome
+;;   :subclass NamedKaryotype)
+
+;; ;; TODO An individual with ... chromosome 17
+;; (defclass SmithMagenisSyndrome
+;;   :subclass NamedKaryotype)
+
+;; ;; TODO An individual with ... chromosome 18
+;; (defclass Chromosome18qDeletionSyndrome
+;;   :subclass NamedKaryotype)
+
+;; ;; TODO An individual with ... chromosome 22
+;; (defclass DiGeorgeSyndrome
+;;   :subclass NamedKaryotype)
