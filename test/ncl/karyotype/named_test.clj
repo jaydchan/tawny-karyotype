@@ -50,16 +50,16 @@
 (deftest DiploidKaryotype
   (is (r/isuperclass? b/k46_XN n/DiploidKaryotype))
 
+  (is (r/isuperclass? n/CatEyeSyndrome n/DiploidKaryotype))
   (is (r/isuperclass? n/DownSyndrome n/DiploidKaryotype))
   (is (r/isuperclass? n/EdwardsSyndrome n/DiploidKaryotype))
   (is (r/isuperclass? n/FemaleKaryotype n/DiploidKaryotype))
   (is (r/isuperclass? n/MaleKaryotype n/DiploidKaryotype))
   (is (r/isuperclass? n/PatauSyndrome n/DiploidKaryotype))
   (is (r/isuperclass? n/Trisomy16 n/DiploidKaryotype))
-  (is (r/isuperclass? n/Trisomy22 n/DiploidKaryotype))
   (is (r/isuperclass? n/Trisomy9 n/DiploidKaryotype))
   (is (r/isuperclass? n/TurnerSyndrome n/DiploidKaryotype))
-  (is (r/isuperclass? n/Warkany2Syndrome n/DiploidKaryotype))
+  (is (r/isuperclass? n/WarkanySyndrome2 n/DiploidKaryotype))
 
   (is (not (r/isuperclass? b/k23_N n/DiploidKaryotype)))
   (is (not (r/isuperclass? b/k69_XNN n/DiploidKaryotype)))
@@ -82,26 +82,72 @@
   (is (not (r/isuperclass? b/k69_XNN n/TetraploidKaryotype))))
 
 ;; Gender
+
+;; Male
+(deftest MaleKaryotype
+  (is (r/isuperclass? b/k46_XY n/MaleKaryotype))
+  (is (r/isuperclass? n/MaleWithExtraX n/MaleKaryotype))
+
+  (is (not (r/isuperclass? b/k46_XN n/MaleKaryotype)))
+  (is (not (r/isuperclass? b/k46_XX n/MaleKaryotype))))
+
 ;; Female
 (deftest FemaleKaryotype
   (is (r/isuperclass? b/k46_XX n/FemaleKaryotype))
 
   (is (not (r/isuperclass? b/k46_XN n/FemaleKaryotype)))
   (is (not (r/isuperclass? b/k46_XY n/FemaleKaryotype)))
-  (is (not (r/isuperclass? n/KlinefelterSyndromeAllVariations
-                           n/FemaleKaryotype)))
-  )
-
-;; Male
-(deftest MaleKaryotype
-  (is (r/isuperclass? b/k46_XY n/MaleKaryotype))
-  (is (r/isuperclass? n/KlinefelterSyndromeAllVariations n/MaleKaryotype))
-
-  (is (not (r/isuperclass? b/k46_XN n/MaleKaryotype)))
-  (is (not (r/isuperclass? b/k46_XX n/MaleKaryotype)))
-  )
+  (is (not (r/isuperclass? n/MaleWithExtraX n/FemaleKaryotype))))
 
 ;; Numerical Abnormalities
+(deftest NumericalAbnormalKaryotypeAutosomalGain
+  (is (r/isuperclass? n/CatEyeSyndrome
+                      n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/DownSyndrome n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/EdwardsSyndrome
+                      n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/PatauSyndrome
+                   n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/Trisomy16 n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/Trisomy9 n/NumericalAbnormalKaryotypeAutosomalGain))
+  (is (r/isuperclass? n/WarkanySyndrome2
+                      n/NumericalAbnormalKaryotypeAutosomalGain)))
+
+;; (deftest NumericalAbnormalKaryotypeAutosomalLoss)
+
+(deftest NumericalAbnormalKaryotypeAutosomalGainOrLoss
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAutosomalGain
+                      n/NumericalAbnormalKaryotypeAutosomalGainOrLoss))
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAutosomalGain
+                      n/NumericalAbnormalKaryotypeAutosomalGainOrLoss)))
+
+(deftest NumericalAbnormalKaryotypeAllosomalGain
+  (is (r/isuperclass? n/MaleWithExtraX
+                      n/NumericalAbnormalKaryotypeAllosomalGain)))
+
+(deftest NumericalAbnormalKaryotypeAllosomalLoss
+  (is (r/isuperclass? n/TurnerSyndrome
+                      n/NumericalAbnormalKaryotypeAllosomalLoss)))
+
+(deftest NumericalAbnormalKaryotypeAllosomalGainOrLoss
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalGain
+                      n/NumericalAbnormalKaryotypeAllosomalGainOrLoss))
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalLoss
+                      n/NumericalAbnormalKaryotypeAllosomalGainOrLoss)))
+
+
+(deftest NumericalAbnormalKaryotypeChromosomalGain
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalGain
+                      n/NumericalAbnormalKaryotypeChromosomalGain))
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAutosomalGain
+                      n/NumericalAbnormalKaryotypeChromosomalGain)))
+
+(deftest NumericalAbnormalKaryotypeChromosomalLoss
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalLoss
+                      n/NumericalAbnormalKaryotypeChromosomalLoss))
+  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAutosomalLoss
+                      n/NumericalAbnormalKaryotypeChromosomalLoss)))
+
 (deftest NumericalAbnormalKaryotype
   (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalGainOrLoss
                       n/NumericalAbnormalKaryotype))
@@ -115,66 +161,40 @@
   (is (not (r/isuperclass? b/k23_N n/NumericalAbnormalKaryotype)))
   (is (not (r/isuperclass? b/k46_XN n/NumericalAbnormalKaryotype)))
   (is (not (r/isuperclass? b/k69_XNN n/NumericalAbnormalKaryotype)))
-  (is (not (r/isuperclass? b/k92_XNNN n/NumericalAbnormalKaryotype)))
-  )
+  (is (not (r/isuperclass? b/k92_XNNN n/NumericalAbnormalKaryotype))))
 
-(deftest NumericalAbnormalKaryotypeAllosomalGainOrLoss
-  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalGain
-                      n/NumericalAbnormalKaryotypeAllosomalGainOrLoss))
-  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalLoss
-                      n/NumericalAbnormalKaryotypeAllosomalGainOrLoss))
-  )
-
-(deftest NumericalAbnormalKaryotypeAllosomalGain
-  (is (r/isuperclass? n/KlinefelterSyndromeAllVariations
-                      n/NumericalAbnormalKaryotypeAllosomalGain))
-  )
-
-(deftest KlinefelterSyndromeAllVariations
-  (is (r/isuperclass? n/KlinefelterSyndromeMostCommonVariation
-                      n/KlinefelterSyndromeAllVariations))
-  )
-
-(deftest NumericalAbnormalKaryotypeAllosomalLoss
-  (is
-   (r/isuperclass? n/TurnerSyndrome n/NumericalAbnormalKaryotypeAllosomalLoss))
-  )
-
-(deftest NumericalAbnormalKaryotypeAutosomalGainOrLoss
-  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAutosomalGain
-                      n/NumericalAbnormalKaryotypeAutosomalGainOrLoss))
-  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAutosomalGain
-                      n/NumericalAbnormalKaryotypeAutosomalGainOrLoss))
-  )
-
-(deftest NumericalAbnormalKaryotypeAutosomalGain
-  (is (r/isuperclass? n/DownSyndrome n/NumericalAbnormalKaryotypeAutosomalGain))
-  (is
-   (r/isuperclass? n/EdwardsSyndrome n/NumericalAbnormalKaryotypeAutosomalGain))
-  (is
-   (r/isuperclass? n/PatauSyndrome n/NumericalAbnormalKaryotypeAutosomalGain))
-  (is (r/isuperclass? n/Trisomy16 n/NumericalAbnormalKaryotypeAutosomalGain))
-  (is (r/isuperclass? n/Trisomy22 n/NumericalAbnormalKaryotypeAutosomalGain))
-  (is (r/isuperclass? n/Trisomy9 n/NumericalAbnormalKaryotypeAutosomalGain))
-  (is (r/isuperclass? n/Warkany2Syndrome
-                      n/NumericalAbnormalKaryotypeAutosomalGain))
-  )
-
-(deftest NumericalAbnormalKaryotypeChromosomalGain
-  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalGain
-                      n/NumericalAbnormalKaryotypeChromosomalGain))
-  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAutosomalGain
-                      n/NumericalAbnormalKaryotypeChromosomalGain))
-  )
-
-(deftest NumericalAbnormalKaryotypeChromosomalLoss
-  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAllosomalLoss
-                      n/NumericalAbnormalKaryotypeChromosomalLoss))
-  (is (r/isuperclass? n/NumericalAbnormalKaryotypeAutosomalLoss
-                      n/NumericalAbnormalKaryotypeChromosomalLoss))
-  )
+;; (deftest DerivedNumericalAbnormalKaryotype)
 
 ;; Structural Abnormalities
+(deftest StructuralAbnormalKaryotypeAddition
+  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeAddition))))
+
+(deftest StructuralAbnormalKaryotypeDeletion
+  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeDeletion))))
+
+(deftest StructuralAbnormalKaryotypeDuplication
+  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeDuplication))))
+
+(deftest StructuralAbnormalKaryotypeFission
+  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeFission))))
+
+(deftest StructuralAbnormalKaryotypeInsertion
+  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeInsertion))))
+
+(deftest StructuralAbnormalKaryotypeInversion
+  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeInversion))))
+
+(deftest StructuralAbnormalKaryotypeQuadruplication
+  (is (not
+       (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeQuadruplication))))
+
+(deftest StructuralAbnormalKaryotypeTranslocation
+  (is (not
+       (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeTranslocation))))
+
+(deftest StructuralAbnormalKaryotypeTriplication
+  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeTriplication))))
+
 (deftest StrutcuralAbnormalKaryotype
   (is (r/isuperclass? n/StructuralAbnormalKaryotypeInsertion
                       n/StructuralAbnormalKaryotype))
@@ -198,43 +218,6 @@
   (is (not (r/isuperclass? b/k23_N n/StructuralAbnormalKaryotype)))
   (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotype)))
   (is (not (r/isuperclass? b/k69_XNN n/NumericalAbnormalKaryotype)))
-  (is (not (r/isuperclass? b/k92_XNNN n/NumericalAbnormalKaryotype)))
-  )
+  (is (not (r/isuperclass? b/k92_XNNN n/NumericalAbnormalKaryotype))))
 
-(deftest StructuralAbnormalKaryotypeAddition
-  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeAddition)))
-  )
-
-(deftest StructuralAbnormalKaryotypeDeletion
-  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeDeletion)))
-  )
-
-(deftest StructuralAbnormalKaryotypeDuplication
-  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeDuplication)))
-  )
-
-(deftest StructuralAbnormalKaryotypeFission
-  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeFission)))
-  )
-
-(deftest StructuralAbnormalKaryotypeInsertion
-  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeInsertion)))
-  )
-
-(deftest StructuralAbnormalKaryotypeInversion
-  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeInversion)))
-  )
-
-(deftest StructuralAbnormalKaryotypeQuadruplication
-  (is (not
-       (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeQuadruplication)))
-  )
-
-(deftest StructuralAbnormalKaryotypeTranslocation
-  (is (not
-       (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeTranslocation)))
-  )
-
-(deftest StructuralAbnormalKaryotypeTriplication
-  (is (not (r/isuperclass? b/k46_XN n/StructuralAbnormalKaryotypeTriplication)))
-  )
+;; (deftest DerivedStructuralAbnormalKaryotype)
