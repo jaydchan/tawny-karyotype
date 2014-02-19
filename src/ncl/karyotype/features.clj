@@ -128,13 +128,14 @@ hasDirectFeature restrictions."
 ;; FUNCTIONS
 ;; TODO if whole arm translocation can be defined as either rob or der
 (defn derivative [n chromosome & args]
-  {:pre (true? (h/chromosome? chromosome))}
+  {:pre (true? (every? h/chromosome? chromosome))}
   "Returns a derivative restriction. N is the number of derivative
   restrictions. ARGS is a list of events."
   (direct-feature n
                   (owl-and DerivativeChromosome
-                    (owl-some isRearrangedChromosomeOf chromosome)
-                    args)))
+                           (apply (partial owl-some isRearrangedChromosomeOf)
+                                  chromosome)
+                           args)))
 
 ;; MUST be defined before dicentric as dicentric calls isodicentric function!
 (defn isodicentric [n band]
