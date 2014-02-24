@@ -716,7 +716,7 @@ deletion, and also the breakpoints are unknown.'"
   the derivative chromosome is specified as the point of insertion of
   the unknown material.'"
   :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XX)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/derivative 1 [h/HumanChromosome7]
                 (e/translocation nil [h/HumanChromosome2Bandq21]
                                  [h/HumanChromosome7Bandq22])
@@ -805,7 +805,7 @@ deletion, and also the breakpoints are unknown.'"
   segemnt as in the previous example is inserted between the long arm
   of chromosome 5 and the short arm of chromosome 7 at band 7q32.'"
   :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XX)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/derivative 1 [h/HumanChromosome5 h/HumanChromosome7]
                 (e/translocation nil [h/HumanChromosome3Bandq21]
                                  [h/HumanChromosome5Bandq22])
@@ -819,7 +819,7 @@ deletion, and also the breakpoints are unknown.'"
   chromosomes as in the previous example but with a additional
   terminal deletion of the long arm of chromosome 7 at band 7q32.'"
   :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XX)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/derivative 1 [h/HumanChromosome5 h/HumanChromosome7]
                 (e/translocation nil [h/HumanChromosome3Bandq21]
                                  [h/HumanChromosome5Bandq22])
@@ -1112,7 +1112,7 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
   psu dic(15;13). The centromere of the chromosome mentioned first,
   i.e., chromosome 15, is the active one.'"
   :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XY)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/pseudo_dicentric 1
                       h/HumanChromosome15Bandq12
                       h/HumanChromosome15Bandq12))
@@ -1123,7 +1123,7 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
   replaced one chromosome 20, resulting in three copies of
   20pterq11.2. The psu idic(20) has one active centromere.'"
   :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XY)
+  (owl-some b/derivedFrom b/k46_XX)
   (f/pseudo_dicentric 1
                       h/HumanChromosome15Bandq12
                       h/HumanChromosome15Bandq12))
@@ -1157,6 +1157,26 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
   (e/duplication 1
                  h/HumanChromosome1Bandq25
                  h/HumanChromosome1Bandq22))
+
+;; NOTE: Only the detailed system will clarify the location of the
+;; duplicated segment
+;; AKA pterq25q25q22q25qter or pterq22q25q22q22qter
+(defclass k46_XY_dup!1!!q25q22!Again
+  :label "The 46,XY,dup(1)(q25q22) karyotype"
+  :comment "ISCN2009 pg 69 -> 'Inverse duplication of the segment
+  between bands 1q22 and 1q25. Note that only the detailed system will
+  clarify the location of the duplication segment.'
+  46,XY,dup(1)(pter->q25::q25->q22::q25->qter) or
+  46,XY,dup(1)(pter->q22::q25->q22::q22->qter)"
+  :subclass ISCNExampleKaryotype
+  (owl-some b/derivedFrom b/k46_XY)
+  (e/direct-event 1 (owl-and e/Duplication
+                             (owl-some e/hasBreakPoint
+                                       h/HumanChromosome1Bandq25
+                                       h/HumanChromosome1Bandq22)
+                             (e/direct-event nil (e/inversion-pattern
+                                                  h/HumanChromosome1Bandq25
+                                                  h/HumanChromosome1Bandq22)))))
 
 ;; FISSION
 (defclass k47_XY_-10_+fis!10!!p10!_+fis!10!!q10!
@@ -1243,7 +1263,7 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
   or larger than the deleted segment. The hsr is by convention
   assigned to the poximal deletion breakpoint band.'"
   :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XX)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/derivative 1 [h/HumanChromosome1]
                 (e/deletion nil h/HumanChromosome1Bandp21
                             h/HumanChromosome1Bandp33)
@@ -1729,7 +1749,7 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
   :comment "ISCN2009 pg 77 -> 'Association between the telomeric
   regions of Xq and 12p, and 12q and 3q.'"
   :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XX)
+  (owl-some b/derivedFrom b/k46_XY)
   (f/direct-feature
    1
    (owl-and f/TelomericAssociations
@@ -1990,16 +2010,18 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
                              h/HumanChromosome14Bandq21)
                     (owl-some e/hasReceivingBreakPoint
                              h/HumanChromosome9Bandp12
-                             h/HumanChromosome9Bandp23)
-                    ;; InverseOrientation ???
-                    )
+                             h/HumanChromosome9Bandp23))
                    (owl-and
                     (owl-some e/hasProvidingBreakPoint
                              h/HumanChromosome14Bandq24
                              h/HumanChromosome14Bandq21)
                     (owl-some e/hasReceivingBreakPoint
                              h/HumanChromosome5Bandq13
-                             h/HumanChromosome5Bandq23)))))
+                             h/HumanChromosome5Bandq23))
+                   (e/direct-event nil
+                                   (e/inversion-pattern
+                                    h/HumanChromosome14Bandq24
+                                    h/HumanChromosome14Bandq21)))))
 
 ;; balanced whole-arm translocations
 (defclass k46_XY_t!1_3!!p10_q10!
@@ -2551,7 +2573,7 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
   :label "The 46,X,t(X;18)(p11.1;q11.1) karyotype"
   :comment "ISCN2009 pg 43"
   :subclass ISCNExampleKaryotype
-  (owl-some b/derivedFrom b/k46_XN)
+  (owl-some b/derivedFrom b/k46_XX)
   (e/translocation 1
                    [h/HumanChromosomeXBandp11.1]
                    [h/HumanChromosome18Bandq11.1]))
