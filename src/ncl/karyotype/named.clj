@@ -163,6 +163,18 @@
                                   h/HumanChromosomeBand
                                   h/HumanChromosomeBand)))
 
+(defclass StructuralAbnormalKaryotypeInverseDuplication
+  :equivalent
+  (e/event nil
+           (owl-and e/Duplication
+                    (owl-some e/hasBreakPoint
+                              h/HumanChromosomeBand
+                              h/HumanChromosomeBand)
+                    (e/event nil (owl-and e/Inversion
+                                          (owl-some e/hasBreakPoint
+                                                    h/HumanChromosomeBand
+                                                    h/HumanChromosomeBand))))))
+
 (defclass StructuralAbnormalKaryotypeFission
   :equivalent
   (e/event nil
