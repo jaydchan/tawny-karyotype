@@ -18,7 +18,8 @@
 (ns ncl.karyotype.core
   (:use [tawny.owl])
   (:require [ncl.karyotype karyotype human resolutions events features
-             base named iscnexamples parse random affects1 affects2 affects3])
+             base named iscnexamples parse random affects1 affects2 affects3
+             generate_iscnexamples_test])
   (:gen-class))
 
 ;; to run:
@@ -74,4 +75,8 @@
   (with-ontology ncl.karyotype.affects2/affects2
     (save-ontology "affects2.omn" :omn)
     (save-ontology "affects2.owl" :owl))
+
+  (with-ontology ncl.karyotype.affects3/affects3
+    (save-ontology "affects3.omn" :omn)
+    (save-ontology "affects3.owl" :owl))
 )
