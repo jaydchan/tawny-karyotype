@@ -246,7 +246,15 @@
   (is (r/isuperclass? i/k46_XX_dup!1!!q22q25!
                       n/StructuralAbnormalKaryotypeDuplication))
   (is (r/isuperclass? i/k46_XY_dup!1!!q25q22!
+                      n/StructuralAbnormalKaryotypeDuplication))
+  (is (r/isuperclass? i/k46_XY_dup!1!!q25q22!Again
                       n/StructuralAbnormalKaryotypeDuplication)))
+
+(deftest StructuralAbnormalKaryotypeInverseDuplication
+  (is (r/isuperclass? i/k46_XY_dup!1!!q25q22!Again
+                      n/StructuralAbnormalKaryotypeInverseDuplication))
+  (is (not (r/isuperclass? i/k46_XX_dup!1!!q22q25!
+                      n/StructuralAbnormalKaryotypeInverseDuplication))))
 
 (deftest StructuralAbnormalKaryotypeFission
   (is (r/isuperclass? i/k47_XY_-10_+fis!10!!p10!_+fis!10!!q10!
