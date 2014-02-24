@@ -18,5 +18,6 @@
 (defproject ncl.karyotype "1.0.0-SNAPSHOT"
   :description "FIXME: write description"
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [uk.org.russet/tawny-owl "1.1.0-SNAPSHOT"]]
+                 [uk.org.russet/tawny-owl "1.1.0-SNAPSHOT"]
+                 [incanter "1.5.4"]]
   :main ncl.karyotype.core)
