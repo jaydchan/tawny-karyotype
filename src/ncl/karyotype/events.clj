@@ -30,7 +30,40 @@
   :comment "Event ontology for Human Karyotype Ontology, written using
   the tawny-owl library.")
 
+;; OWL CLASSES - EVENTS
 (defclass Event)
+
+(as-disjoint-subclasses
+ Event
+ (defclass Addition)
+ (defclass Deletion)
+ (defclass Duplication)
+ (defclass Fission)
+ (defclass Insertion)
+ (defclass Inversion)
+ (defclass Quadruplication)
+ (defclass Translocation)
+ (defclass Triplication))
+
+(as-disjoint-subclasses
+ Duplication
+ (defclass DirectDuplication)
+ (defclass InverseDuplication))
+
+(as-disjoint-subclasses
+ Insertion
+ (defclass InsertionOneChromosome)
+ (defclass InsertionTwoChromosome))
+
+(as-disjoint-subclasses
+ InsertionOneChromosome
+ (defclass DirectInsertionOneChromosome)
+ (defclass InverseInsertionOneChromosome))
+
+(as-disjoint-subclasses
+ InsertionTwoChromosome
+ (defclass DirectInsertionTwoChromosome)
+ (defclass InverseInsertionTwoChromosome))
 
 ;; define object properties
 ;; event object properties
@@ -281,39 +314,6 @@ hasDirectEvent restrictions."
     (some-direct-event axiom)
     (exactly-direct-event n axiom)))
 
-;; OWL CLASSES - EVENTS
-(as-disjoint-subclasses
- Event
- (defclass Addition)
- (defclass Deletion)
- (defclass Duplication)
- (defclass Fission)
- (defclass Insertion)
- (defclass Inversion)
- (defclass Quadruplication)
- (defclass Translocation)
- (defclass Triplication))
-
-(as-disjoint-subclasses
- Duplication
- (defclass DirectDuplication)
- (defclass InverseDuplication))
-
-(as-disjoint-subclasses
- Insertion
- (defclass InsertionOneChromosome)
- (defclass InsertionTwoChromosome))
-
-(as-disjoint-subclasses
- InsertionOneChromosome
- (defclass DirectInsertionOneChromosome)
- (defclass InverseInsertionOneChromosome))
-
-(as-disjoint-subclasses
- InsertionTwoChromosome
- (defclass DirectInsertionTwoChromosome)
- (defclass InverseInsertionTwoChromosome))
-
 ;; NOT NEEDED ???
 ;; (as-disjoint-subclasses
 ;;  Insertion
@@ -516,14 +516,18 @@ band1, band2, band3 is of type HumanChromosomeBand."
 ;; Chromosomal Band Inversion : includes both paracentric (involves
 ;; only 1 arm) and pericentric (involves both arms) inversion.
 ;; Involves only 1 chromosome
-(defn inversion [n band1 band2]
+(defn inversion-pattern [band1 band2]
   {:pre (true? (and (or (= (get-chromosome band1) (get-chromosome band2))
                         (parentband? band1) (parentband? band2))
                     (h/band? band1) (h/band? band2)))}
+  "Returns an inversion retriction. BAND1, BAND2 is of type HumanChromosomeBand."
+  (owl-and Inversion
+           (owl-some hasBreakPoint band1 band2)))
+
+(defn inversion [n band1 band2]
   "Returns an inversion retriction. N is the number of inversion
 restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
-  (direct-event n (owl-and Inversion
-                           (owl-some hasBreakPoint band1 band2))))
+  (direct-event n (inversion-pattern band1 band2)))
 
 ;; Chromosomal Band Quadruplication
 ;; Note: It is not possible to indicate the orientations of the
