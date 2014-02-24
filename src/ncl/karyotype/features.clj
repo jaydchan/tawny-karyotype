@@ -32,7 +32,34 @@
 ;; import ncl.karyotype.event axioms
 (owl-import e/events)
 
+;; OWL CLASSES - STRUCTURAL FEATURES
 (defclass Feature)
+
+(as-disjoint-subclasses
+ Feature
+ (defclass DerivativeChromosome)
+ (defclass IsodicentricChromosome)
+ (defclass DicentricChromosome)
+ (defclass FragileSite)
+ (defclass HomogeneouslyStainingRegion)
+ (defclass Isochromosome)
+ (defclass IsoderivativeChromosome)
+ (defclass MarkerChromosome)
+ (defclass Neocentromere)
+ (defclass PseudodicentricChromosome)
+ (defclass PseudoisodicentricChromosome)
+ (defclass RecombiantChromosome)
+ (defclass RobertsonianTranslocation)
+ (defclass RingChromosome)
+ (defclass TelomericAssociations)
+ (defclass TricentricChromosome)
+ (defclass UniparentalDisomy))
+
+(as-disjoint-subclasses
+ RingChromosome
+ (defclass MonoCentricRingChromosome)
+ (defclass DicentricRingChromosome)
+ (defclass TricentricRingChromosome))
 
 ;; define object properties
 ;; feature object properties
@@ -96,34 +123,6 @@ hasDirectFeature restrictions."
   (if (nil? n)
     (some-direct-feature axiom)
     (exactly-direct-feature n axiom)))
-
-
-;; OWL CLASSES - STRUCTURAL FEATURES
-(as-disjoint-subclasses
- Feature
- (defclass DerivativeChromosome)
- (defclass IsodicentricChromosome)
- (defclass DicentricChromosome)
- (defclass FragileSite)
- (defclass HomogeneouslyStainingRegion)
- (defclass Isochromosome)
- (defclass IsoderivativeChromosome)
- (defclass MarkerChromosome)
- (defclass Neocentromere)
- (defclass PseudodicentricChromosome)
- (defclass PseudoisodicentricChromosome)
- (defclass RecombiantChromosome)
- (defclass RobertsonianTranslocation)
- (defclass RingChromosome)
- (defclass TelomericAssociations)
- (defclass TricentricChromosome)
- (defclass UniparentalDisomy))
-
-(as-disjoint-subclasses
- RingChromosome
- (defclass MonoCentricRingChromosome)
- (defclass DicentricRingChromosome)
- (defclass TricentricRingChromosome))
 
 ;; FUNCTIONS
 ;; TODO if whole arm translocation can be defined as either rob or der
