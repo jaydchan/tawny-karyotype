@@ -398,31 +398,21 @@ EVENT is of type hasEvent."
        (str "Get-event-string expects a valid event restriction. Got:"
        event))))))
 
+;; Could filter by instance of OWLRestiction instead of use condition
 (defn- get-axiom-string [entity]
+  {:pre (true? (instance?
+                org.semanticweb.owlapi.model.OWLRestriction entity))}
   "Returns the string representation of the given ENTITY."
   (cond
-   (instance?
-    org.semanticweb.owlapi.model.OWLRestriction
-    entity)
-   (cond
-    (= (.getProperty entity) b/derivedFrom)
-    (get-base entity)
-    (= (.getProperty entity) e/hasDirectEvent)
-    (get-event-string entity)
-    :default
-    (throw
-     (IllegalArgumentException.
-      (str "Get-axiom-string expects a derivedFrom or hasDirectEvent
-        restriction. Got:" (.getProperty entity)))))
-   (instance?
-    org.semanticweb.owlapi.model.OWLClassExpression
-    entity)
-   "IGNORE-ME"
+   (= (.getProperty entity) b/derivedFrom)
+   (get-base entity)
+   (= (.getProperty entity) e/hasDirectEvent)
+   (get-event-string entity)
    :default
    (throw
     (IllegalArgumentException.
-     (str "Get-axiom-string expects an OWLClass or
-            OWLRestriction. Got:" entity)))))
+     (str "Get-axiom-string expects a derivedFrom or hasDirectEvent
+        restriction. Got:" (.getProperty entity))))))
 
 (defn chrom-sort [x y]
   "Comprator used to sort chromosomes in ISCN order - i.e. X,Y then
@@ -443,7 +433,10 @@ EVENT is of type hasEvent."
   "Returns the ISCN String of an OWL Karyotype Class.
 CLAZZ is of type ISCNExampleKaryotype."
   (let [parents (direct-superclasses o clazz)
-        strings (remove #{"IGNORE-ME"} (map get-axiom-string parents))
+        restrictions (filter
+                      #(instance?
+                       org.semanticweb.owlapi.model.OWLRestriction %) parents)
+        strings (map get-axiom-string restrictions)
         sorted (sort-by first chrom-sort (rest strings))
         add (count (filter #(re-find #"\+" %) (map second sorted)))
         del (count (filter #(re-find #"\-" %) (map second sorted)))
