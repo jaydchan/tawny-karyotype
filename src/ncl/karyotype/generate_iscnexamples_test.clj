@@ -29,6 +29,15 @@ ISCN2013."
   "Removes the prefix of STRING"
   (clojure.string/replace string #"ncl.karyotype.iscnexamples/" ""))
 
+(defn test-string [name parent bool]
+  ""
+  (str "(is "
+       (if (false? bool)
+         "(not ")
+       "(r/isuperclass? i/" name " n/" parent"))"
+       (if (false? bool)
+         ")")))
+
 (defn output [output-file string append error]
   "APPENDs STRING to OUTPUT-FILE unless there is an ERROR"
   (try
@@ -39,7 +48,7 @@ ISCN2013."
 
 ;; MAIN
 (def output-file "./test/ncl/karyotype/iscnexamplesB_test.clj")
-(def bypass true)
+(def bypass false)
 
 ;; If tests does not exist or bypass set to false
 (if (or (false? bypass) (not (.exists (io/as-file output-file))))
@@ -52,7 +61,7 @@ ISCN2013."
     (output output-file "" false "Error with new file.")
 
     ;; view data in popup table
-    (view $data)
+    ;; (view $data)
 
     ;; Check all defined ISCNExamplesKaryotype are in spreadsheet and
     ;; clojure file
@@ -73,42 +82,44 @@ ISCN2013."
         (println (str "Missing the following examples from spreadsheet:\n"
                       (clojure.string/join "\n" missing_spreadsheet)))))
 
-    ;; TODO Looks U--GLY
+    ;; TODO Still looks U--GLY
     ;; Generate tests for iscnexamples
     (let [names (into [] ($ :Name))
-          tests {:male ["MaleKaryotype" (into [] ($ :Male))]
-                 :female ["FemaleKaryotype" (into [] ($ :Female))]
-                 :haploid ["HaploidKaryotype" (into [] ($ :Haploid))]
-                 :diploid ["DiploidKaryotype" (into [] ($ :Diploid))]
-                 :triploid ["TriploidKaryotype" (into [] ($ :Triploid))]
-                 :tetraploid ["TetraploidKaryotype" (into [] ($ :Tetraploid))]
-                 ;; :sexgain ["NumericalAbnormalKaryotypeAllosomalGain"
-                 ;;            (into [] ($ :AllosomalGain))]
-                 ;; :sexloss ["NumericalAbnormalKaryotypeAllosomalLoss"
-                 ;;            (into [] ($ :AllosomalLoss))]
-                 ;; :autogain ["NumericalAbnormalKaryotypeAutosomalGain"
-                 ;;            (into [] ($ :AutosomalGain))]
-                 ;; :autoloss ["NumericalAbnormalKaryotypeAutosomalGain"
-                 ;;            (into [] ($ :AutosomalLoss))]
-                 ;; :turner ["TurnerSyndrome" (into [] ($ :Turner))]
+          tests {:Male "MaleKaryotype" :Female "FemaleKaryotype"
+                 :Haploid "HaploidKaryotype" :Diploid "DiploidKaryotype"
+                 :Triploid "TriploidKaryotype" :Tetraploid "TetraploidKaryotype"
+                 ;; :AllosomalGain "NumericalAbnormalKaryotypeAllosomalGain"
+                 ;; :AllosomalLoss "NumericalAbnormalKaryotypeAllosomalLoss"
+                 ;; :AutosomalGain "NumericalAbnormalKaryotypeAutosomalGain"
+                 ;; :AutosomalLoss "NumericalAbnormalKaryotypeAutosomalGain"
+                 ;; :Turner "TurnerSyndrome"
+                 :Addition "StructuralAbnormalKaryotypeAddition"
+                 :Deletion "StructuralAbnormalKaryotypeDeletion"
+                 :Duplication "StructuralAbnormalKaryotypeDuplication"
+                 :Fission "StructuralAbnormalKaryotypeFission"
+                 :Insertion "StructuralAbnormalKaryotypeInsertion"
+                 :Inversion "StructuralAbnormalKaryotypeInversion"
+                 :Quadruplication "StructuralAbnormalKaryotypeQuadruplication"
+                 :Translocation "StructuralAbnormalKaryotypeTranslocation"
+                 :Triplication "StructuralAbnormalKaryotypeTriplication"
                  }]
 
-      (doseq [test (vals tests)]
-        (output
-         output-file
-         (str "(deftest " (first test) "\n"
-              (clojure.string/join
-               "\n"
-               (for [i (range (count names))]
-                 (let [instance (get (second test) i)
-                       name (get names i)]
-                   (cond
-                    (= instance 1.0)
-                    (str "(is (r/isuperclass? i/" name " n/" (first test)"))")
-                    (= instance -1.0)
-                    (str
-                     "(is (not (r/isuperclass? i/" name " n/" (first test)")))")
-                    ))))
-              "\n)")
-         true
-         (str "Error with " (first test) " testing."))))))
+      (doseq [test (keys tests)]
+        (let [parent (get tests test)
+              vector (into [] ($ test))]
+          (output
+           output-file
+           (str "(deftest " parent "\n"
+                (clojure.string/join
+                 "\n"
+                 (for [i (range (count names))]
+                   (let [instance (get vector i)
+                         name (get names i)]
+                     (cond
+                      (= instance 1.0)
+                      (test-string name parent true)
+                      (= instance -1.0)
+                      (test-string name parent false)))))
+                "\n)")
+           true
+           (str "Error with " parent " testing.")))))))
