@@ -41,30 +41,34 @@ definitions to include affects object property and sequence pattern"
 (defoproperty follows)
 
 ;; PATTERNS
-(defn- sequence-pattern [clazzes]
+(defn- sequence-pattern
   "Pattern - encoded sequence ODP."
+  [clazzes]
   {:pre (= 2 (count clazzes))}
   (owl-and (first clazzes)
            (owl-some directlyPrecedes (rest clazzes))))
 
-(defn- affects-band [bands]
+(defn- affects-band
   "Pattern - returns sequence ODP variant for given BANDS, using
 affects object property"
+  [bands]
   (owl-some affects
             (if (vector? bands)
               (sequence-pattern bands)
               bands)))
 
 ;; DRIVERS
-(defn- get-affects [o clazz]
+(defn- get-affects
   "Returns a list of affects restrictions for a given CLAZZ in
 ontology O."
-    (flatten
-     (for [bands (a/get-bands o clazz)]
-       (affects-band bands))))
+  [o clazz]
+  (flatten
+   (for [bands (a/get-bands o clazz)]
+     (affects-band bands))))
 
-(defn affects3-driver [o clazz]
+(defn affects3-driver
   "Returns the updated class definition of CLAZZ in ontology O."
+  [o clazz]
   (let [bands (get-affects o clazz)]
     (if (= (count bands) 0)
       clazz

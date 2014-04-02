@@ -39,16 +39,17 @@ utilises 300-band chromosome bands."
 
 (def ^{:doc "An array of available diploid base karyotype classes."}
   sex (into [] (direct-subclasses b/base b/k46_XN)))
-(defn random-sex []
+(defn random-sex
   "Returns the 46,XX or 46,XY class."
-  (let [r (rand-int (count sex))]
-    (get sex r)))
+  [] (let [r (rand-int (count sex))]
+       (get sex r)))
 
 ;; TODO does not include constitutional karyotypes
-(defn karyotype-class [name & frames]
+(defn karyotype-class
   "Creates a class in the random ontology, with clojure symbol NAME,
 and subclass restrictions a) RandomKaryotype b) derivedFrom axiom c)
 FRAMES. Returns an OWL class as described."
+  [name & frames]
   (apply owl-class
          (list* (str "r" name)
                 :subclass RandomKaryotype
@@ -62,12 +63,13 @@ FRAMES. Returns an OWL class as described."
   bands-300 [1
   ["p36.3" "p36.2" "p36.1" "p35" "p34" "p33" "p32" "p31" "p22" "p21" "p13" "p12"
    "p11" "q11" "q12" "q21" "q22q23q24" "q25" "q31" "q32" "q41" "q42" "q43q44"]])
-(defn get-band [chromosome band]
+(defn get-band
   "Returns a 300-band chromosomal band class."
-  (owl-class h/human (str "HumanChromosome" chromosome "Band" band)))
-(defn random-band []
-  {:post (true? (h/band? %))}
+  [chromosome band] (owl-class h/human
+                               (str "HumanChromosome" chromosome "Band" band)))
+(defn random-band
   "Returns a random 300-band chromosomal band class."
+  [] {:post (true? (h/band? %))}
   (let [bands (second bands-300)
         r (rand-int (count bands))]
     (get-band (first bands-300) (get bands r))))
@@ -78,50 +80,51 @@ FRAMES. Returns an OWL class as described."
     (into [] (apply clojure.set/union
            (for [type types]
              (into #{} (direct-subclasses h/human type)))))))
-(defn random-chromosome []
-  {:post (true? (h/chromosome? %))}
+(defn random-chromosome
   "Returns a human chromosome class."
+  [] {:post (true? (h/chromosome? %))}
   (let [r (rand-int (count chromosomes))]
     (get chromosomes r)))
 
-(defn random-terminal-deletion []
+(defn random-terminal-deletion
   "Returns a terminal deletion event restriction."
-  (e/deletion 1 (random-band)))
+   [] (e/deletion 1 (random-band)))
 
-(defn random-interstitial-deletion []
+(defn random-interstitial-deletion
   "Returns a interstitial deletion event restriction."
-  (e/deletion 1 (random-band) (random-band)))
+   [] (e/deletion 1 (random-band) (random-band)))
 
 (def ^{:doc "An array of available deletion auxiliary functions."}
   deletions [random-terminal-deletion random-interstitial-deletion])
-(defn random-band-deletion []
+(defn random-band-deletion
   "Returns a deletion event restriction."
-  (let [r (rand-int (count deletions))]
-    ((get deletions r))))
+  [] (let [r (rand-int (count deletions))]
+       ((get deletions r))))
 
-(defn random-chromosome-deletion []
+(defn random-chromosome-deletion
   "Returns a chromosomal deletion event restriction."
-  (e/deletion 1 (random-chromosome)))
+  [] (e/deletion 1 (random-chromosome)))
 
-(defn random-band-addition []
+(defn random-band-addition
   "Returns a chromosomal band addition event restriction."
-  (e/addition 1 (random-band)))
+   [] (e/addition 1 (random-band)))
 
-(defn random-chromosome-addition []
+(defn random-chromosome-addition
   "Returns a chromosomal addition event restriction."
-  (e/addition 1 (random-chromosome)))
+  [] (e/addition 1 (random-chromosome)))
 
 (def ^{:doc "An array of available addition and deletion functions."}
   abnormalities [random-chromosome-deletion
   random-band-deletion random-chromosome-addition
   random-band-addition])
-(defn random-abnormality []
+(defn random-abnormality
   "Returns an event restriction."
-  (let [r (rand-int (count abnormalities))]
-    ((get abnormalities r))))
+  [] (let [r (rand-int (count abnormalities))]
+       ((get abnormalities r))))
 
-(defn random-karyotype0 [old n]
+(defn random-karyotype0
   "Recursive function - Returns a distinct list of event restrictions."
+  [old n]
   (if (= n 0)
     old
     (let [new (conj old (random-abnormality))]
@@ -129,28 +132,31 @@ FRAMES. Returns an OWL class as described."
         (random-karyotype0 new (- n 1))
         (random-karyotype0 new n)))))
 
-(defn random-abnormality-driver [n]
+(defn random-abnormality-driver
   "Returns a list of N number of event restrictions."
-  (into '() (random-karyotype0 #{} n)))
+   [n] (into '() (random-karyotype0 #{} n)))
 
-(defn refine-label [o clazz]
+(defn refine-label
   "Returns the updated class definition of CLAZZ in ontology O."
+  [o clazz]
   (refine clazz
           :label (str "The "
                       (p/parse-karyotype-class o clazz)
                       " Karyotype")))
 
-(defn random-karyotype [o name max]
+(defn random-karyotype
   "Returns a random karyotype class with clojure symbol NAME and has
 MAX number of restirctions."
+  [o name max]
   (refine-label o
                 (karyotype-class name
                                  :ontology o
                                  :subclass (random-abnormality-driver max))))
 
-(defn random-karyotype-driver [o number max]
+(defn random-karyotype-driver
   "Creates NUMBER number of random karyotypes with MAX number
 of event restrictions in ontology O. Returns nil."
+  [o number max]
   (doseq [i (range number)]
     (random-karyotype o i max)))
 

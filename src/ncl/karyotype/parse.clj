@@ -35,9 +35,10 @@ versa. Limitation - only available for addition and deletion events."
   using the tawny-owl library")
 
 ;; FUNCTIONS
-(defn- make-safe [karyotype]
+(defn- make-safe
   "Returns a 'safe' string name for the OWL class.
 karyotype is of type String."
+  [karyotype]
   (str "k"
        (clojure.string/replace
         (clojure.string/replace
@@ -45,15 +46,16 @@ karyotype is of type String."
          #"[;,\+ \?]" "_")
         (re-pattern "[\\(\\)]") "_")))
 
-(defn- get-no-of-Y [s]
+(defn- get-no-of-Y
   "Determines how many Y chromosomes exist in karyotype.
 s id of type String."
-  (- (count (re-seq #"Y" s))
-     (count (re-seq #"\+[a-zA-Z0-Z(;]*Y" s))))
+  [s] (- (count (re-seq #"Y" s))
+         (count (re-seq #"\+[a-zA-Z0-Z(;]*Y" s))))
 
 ;; assume that you are unable to have +Y when youre a female
-(defn- get-derived-from [karyotype]
+(defn- get-derived-from
   "Obtains the derivedFrom subclass"
+  [karyotype]
   (let [value (read-string (first (clojure.string/split karyotype #",")))]
     (cond
      ;; If karyotype is near-haploid
@@ -92,12 +94,13 @@ s id of type String."
      (throw (IllegalArgumentException.
              (str "Karyotype syntax not recognised: " karyotype))))))
 
-(defn- split-bands [bandinfo]
+(defn- split-bands
   "Splits bandinfo from one string to a vector of bands"
-  (into [] (re-seq #"[pq][\d\.]+|[pq]\?|\?" bandinfo)))
+   [bandinfo] (into [] (re-seq #"[pq][\d\.]+|[pq]\?|\?" bandinfo)))
 
-(defn- get-bands [chrominfo bandinfo]
+(defn- get-bands
   "Get the band entities inferred in bandinfo"
+  [chrominfo bandinfo]
   (for [band (split-bands bandinfo)]
     (owl-class
      ncl.karyotype.human/human
@@ -113,8 +116,9 @@ s id of type String."
       (re-find #"[pq][\d\.]+" band)
       (str "HumanChromosome" chrominfo "Band" band)))))
 
-(defn- get-direction [bandinfo]
+(defn- get-direction
   "Determines the direction of the band range as either direct or inverse"
+  [bandinfo]
   (let [band1 (get (split-bands bandinfo) 0)
         band2 (get (split-bands bandinfo) 1)]
     (cond
@@ -137,8 +141,9 @@ s id of type String."
         (> (read-string digit1) (read-string digit2))
         "Inverse")))))
 
-(defn- define-event [event]
-  "Returns "
+(defn- define-event
+  "Returns TODO"
+  [event]
   (with-ontology
     ncl.karyotype.human/human
      (let [info (clojure.string/split event (re-pattern "[\\(\\)]"))]
@@ -206,13 +211,15 @@ s id of type String."
         (throw (IllegalArgumentException.
                 (str "Event syntax not recognised: " event)))))))
 
-(defn- get-subclasses [class karyotype]
+(defn- get-subclasses
   "Obtains the other associated subclass"
+  [class karyotype]
   (doseq [subclass (rest (rest (clojure.string/split karyotype #",")))]
     (add-subclass class (define-event subclass))))
 
-(defn- parse-karyotype-string [karyotype]
+(defn- parse-karyotype-string
   "Creates OWL entity equivalent of ISCN String"
+  [karyotype]
   (let [name (make-safe karyotype)]
     (tawny.read/intern-entity
      (owl-class name
@@ -276,7 +283,9 @@ s id of type String."
 
 ;; CREATE KARYOTYPE STRING FUNCTIONS
 ;; Auxiliary functions
-(defn- clean-up [clazz]
+(defn- clean-up
+  "TODO"
+  [clazz]
   (let [s (second (clojure.string/split (str (r/form clazz)) #"/"))]
     (cond
      (subclass? b/base b/BaseKaryotype clazz)
@@ -291,47 +300,50 @@ s id of type String."
        (str "Clean-up expects a BaseKaryotype, Chromosome or Band
        Class. Got:" clazz))))))
 
-(defn- get-base [axiom]
+(defn- get-base
   "Returns the base karyotype. AXIOM is of type derivedFrom."
-  (clojure.string/replace (clean-up (.getFiller axiom)) #"_" ","))
+  [axiom] (clojure.string/replace (clean-up (.getFiller axiom)) #"_" ","))
 
-(defn- addition-chromosome [chromosome]
-  {:pre (true? (h/chromosome? chromosome))}
+(defn- addition-chromosome
   "Returns a vector [chromosome and chromosome addition string] based
   on given CHROMOSOME."
+  [chromosome] {:pre (true? (h/chromosome? chromosome))}
   [(clean-up chromosome) (str "+" (clean-up chromosome))])
 
-(defn- addition-band [band]
-  {:pre (true? (h/band? band))}
+(defn- addition-band
   "Returns a vector [chromosome and band addition string] based on
 given BAND."
+  [band] {:pre (true? (h/band? band))}
   (let [chromosome (clean-up (e/get-chromosome band))]
     [chromosome (str "add(" chromosome ")(" (clean-up band) ")")]))
 
-(defn- chrom-filter [axiom]
+(defn- chrom-filter
   "Returns HumanChromosome(s)S present in AXIOM."
-  (filter #(h/chromosome? %) (.asConjunctSet axiom)))
+   [axiom] (filter #(h/chromosome? %) (.asConjunctSet axiom)))
 
-(defn- band-filter [axiom]
+(defn- band-filter
   "Returns HumanChromosomeBand(s) present in AXIOM."
-  (let [coll (.asConjunctSet axiom)
-        axioms (filter #(instance?
-               uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl
-               %) coll)]
-    (for [a axioms
-      :let [clazz (.getFiller a)]
-      :when (h/band? clazz)]
-      clazz)))
+   [axiom]
+   (let [coll (.asConjunctSet axiom)
+         axioms (filter
+                 #(instance?
+                   uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl
+                   %) coll)]
+     (for [a axioms
+           :let [clazz (.getFiller a)]
+           :when (h/band? clazz)]
+       clazz)))
 
 ;; PUBLIC - used by affects1
-(defn human-filter [axiom]
+(defn human-filter
   "Returns HumanChromosome(s) and HumanChromosomeBand(s) present in
 AXIOM."
-  (flatten (merge '() (chrom-filter axiom) (band-filter axiom))))
+  [axiom] (flatten (merge '() (chrom-filter axiom) (band-filter axiom))))
 
-(defn- addition [axiom]
+(defn- addition
   "Returns a vector [chromosome and addition string] based on given
 AXIOM."
+  [axiom]
   (let [chrom_band (first (human-filter axiom))]
     (cond
      (h/chromosome? chrom_band)
@@ -344,19 +356,20 @@ AXIOM."
        (str "Addition expects a Chromosome or Band
        Class. Got:" axiom))))))
 
-(defn- deletion-chromosome [chromosome]
-  {:pre (true? (h/chromosome? chromosome))}
+(defn- deletion-chromosome
   "Returns a vector [chromosome and chromosome deletion string] based
   on given AXIOM."
+  [chromosome] {:pre (true? (h/chromosome? chromosome))}
   [(clean-up chromosome) (str "-" (clean-up chromosome))])
 
-(defn- deletion-band [chromosome bands]
+(defn- deletion-band
   "Returns a vector [chromosome and band deletion string] based on
   given AXIOM."
-  [chromosome (str "del(" chromosome ")(" bands ")")])
+  [chromosome bands] [chromosome (str "del(" chromosome ")(" bands ")")])
 
-(defn- deletion-band-driver [bands]
-  {:pre (true? (every? h/band? bands))}
+(defn- deletion-band-driver
+  "TODO"
+  [bands] {:pre (true? (every? h/band? bands))}
   (let [adjusted (if (= (count bands) 1)
                    (repeat 2 (first bands)) bands)
         band-info (for [band adjusted
@@ -366,9 +379,10 @@ AXIOM."
     (deletion-band (clean-up (e/get-chromosome (first bands)))
                    (apply str band-info))))
 
-(defn- deletion [axiom]
+(defn- deletion
   "Returns a vector [chromosome and deletion string] based on given
 AXIOM."
+  [axiom]
   (let [chrom_band (human-filter axiom)]
     (cond
      (h/chromosome? (first chrom_band))
@@ -381,9 +395,10 @@ AXIOM."
        (str "Deletion expects a Chromosome or Band
        Class. Got:" axiom))))))
 
-(defn- get-event-string [event]
+(defn- get-event-string
   "Returns the String representation of the event restriction.
 EVENT is of type hasEvent."
+  [event]
   (let [axiom (.getFiller event)]
     (cond
      ;; "If axiom is an addition event"
@@ -399,10 +414,11 @@ EVENT is of type hasEvent."
        event))))))
 
 ;; Could filter by instance of OWLRestiction instead of use condition
-(defn- get-axiom-string [entity]
-  {:pre (true? (instance?
-                org.semanticweb.owlapi.model.OWLRestriction entity))}
+(defn- get-axiom-string
   "Returns the string representation of the given ENTITY."
+  [entity] {:pre (true?
+                  (instance?
+                   org.semanticweb.owlapi.model.OWLRestriction entity))}
   (cond
    (= (.getProperty entity) b/derivedFrom)
    (get-base entity)
@@ -414,9 +430,10 @@ EVENT is of type hasEvent."
      (str "Get-axiom-string expects a derivedFrom or hasDirectEvent
         restriction. Got:" (.getProperty entity))))))
 
-(defn chrom-sort [x y]
+(defn chrom-sort
   "Comprator used to sort chromosomes in ISCN order - i.e. X,Y then
 1-22."
+  [x y]
   (cond
    (re-find #"X|Y" x)
    +1
@@ -429,9 +446,10 @@ EVENT is of type hasEvent."
     (IllegalArgumentException.
      (str "Unknown input for chrom-sort. Got: " x " and " y)))))
 
-(defn parse-karyotype-class [o clazz]
+(defn parse-karyotype-class
   "Returns the ISCN String of an OWL Karyotype Class.
 CLAZZ is of type ISCNExampleKaryotype."
+  [o clazz]
   (let [parents (direct-superclasses o clazz)
         restrictions (filter
                       #(instance?
@@ -448,9 +466,10 @@ CLAZZ is of type ISCNExampleKaryotype."
         ]
     (if (nil? base-string) "ERROR" (clojure.string/join "," all))))
 
-(defn- create-karyotype-string0 [o detail name]
+(defn- create-karyotype-string0
   "Prints details of the string input - used for testing purposes.
 detail is of type boolean. NAME is of type String."
+  [o detail name]
   (let [clazz (owl-class (make-safe name))]
     ;; If true, print the name, owl class, and resulting string.
     (if (true? detail)

@@ -26,8 +26,10 @@
 ;; 1. M-x 'compile' ('lein run')
 ;; 2. M-x 'lein run'
 
-(defn -main [& args]
+(defn -main
   "Save ontologies in .omn and .owl format"
+  [& args]
+
   (with-ontology ncl.karyotype.karyotype/karyotype
     (save-ontology "karyotype.omn" :omn)
     (save-ontology "karyotype.owl" :owl))

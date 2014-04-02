@@ -30,29 +30,31 @@
   written using the tawny-owl library.")
 
 ;; AUXILLARY FUNCTIONS
-(defn str-pband? [band]
+(defn str-pband?
   "Determine if the given band is a p band"
-  (re-find #"p" band))
+  [band] (re-find #"p" band))
 
-(defn str-qband? [band]
+(defn str-qband?
   "Determine if the given band is a q band"
-  (re-find #"q" band))
+  [band] (re-find #"q" band))
 
-(defn str-ter? [band]
+(defn str-ter?
   "Determine if the given band is a telomere"
-  (re-find #"Ter" band))
+  [band] (re-find #"Ter" band))
 
-(defn str-cen? [band]
+(defn str-cen?
   "Determine if the given band is a centromere"
-  (re-find #"0" band))
+  [band] (re-find #"0" band))
 
-(defn create-class-with-superclasses [name & parents]
+(defn create-class-with-superclasses
   "Generic pattern - creates a class with given name and superclasses"
+  [name & parents]
   (tawny.read/intern-entity
    (owl-class name :subclass parents)))
 
-(defn group-for-band [bandgroup band]
+(defn group-for-band
   "Given a band return the appropriate bandgroup"
+  [bandgroup band]
   (cond
    (str-pband? band)
    (str bandgroup "p")
@@ -146,16 +148,18 @@
  (into () (direct-subclasses HumanTelomere)))
 
 ;; private functions
-(defn- human-sub-band [parent name band]
+(defn- human-sub-band
   "Adds NAME as a sub-band of BAND and a kind of
 PARENT, which is either p or q band."
+  [parent name band]
   (create-class-with-superclasses
     name parent
     (owl-some k/isSubBandOf band)))
 
-(defn- humanbands0 [chromosome parent container bands firstlevel]
+(defn- humanbands0
   "Recursive auxiliary function for humanbands - used to create
  subbands of the human chromosome bands"
+  [chromosome parent container bands firstlevel]
   (let [bandgroup (str
                    (.getFragment
                     (.getIRI
@@ -181,8 +185,9 @@ PARENT, which is either p or q band."
       (human-sub-band parent (str bandgroup container)
                       (str bandgroup firstlevel)))))
 
-(defn- humanbands [chromosome & bands]
+(defn- humanbands
   "Function to generate human chromosome bands for a chromosome"
+  [chromosome & bands]
   (let [group (str
                (.getFragment
                 (.getIRI
@@ -987,15 +992,15 @@ PARENT, which is either p or q band."
 
 
 ;; FUNCTIONS
-(defn chromosome? [x]
+(defn chromosome?
   "Determine if X is a chromosome - using ontology"
-  (or (= x HumanChromosome)
-      (superclass? human x HumanChromosome)))
+  [x] (or (= x HumanChromosome)
+          (superclass? human x HumanChromosome)))
 
-(defn band? [x]
+(defn band?
   "Determine if X is a band - using ontology"
-  (or (= x HumanChromosomeBand)
-      (superclass? human x HumanChromosomeBand)))
+  [x] (or (= x HumanChromosomeBand)
+          (superclass? human x HumanChromosomeBand)))
 
 ;; (rea/reasoner-factory :hermit)
 ;; (binding [rea/*reasoner-progress-monitor*
@@ -1022,22 +1027,22 @@ PARENT, which is either p or q band."
 ;; reasoner"
 ;;     (rea/isuperclass? human band is-qband)))
 
-(defn ter? [band]
+(defn ter?
   "Determine if the given band is a telomere - not using reasoner"
-  (or (= band HumanTelomere)
-      (superclass? human band HumanTelomere)
-      (not (nil? (re-find #"Band[pq]Ter" (str band))))))
+  [band] (or (= band HumanTelomere)
+             (superclass? human band HumanTelomere)
+             (not (nil? (re-find #"Band[pq]Ter" (str band))))))
 
-(defn cen? [band]
+(defn cen?
   "Determine if the given band is a centromere - not using reasoner"
-  (or (= band HumanCentromere)
-      (superclass? human band HumanCentromere)
-      (not (nil? (re-find #"Band[pq]10" (str band))))))
+  [band] (or (= band HumanCentromere)
+             (superclass? human band HumanCentromere)
+             (not (nil? (re-find #"Band[pq]10" (str band))))))
 
-(defn pband? [band]
+(defn pband?
   "Determine if the given band is a pband - not using reasoner"
-  (not (nil? (re-find #"Bandp" (str band)))))
+  [band] (not (nil? (re-find #"Bandp" (str band)))))
 
-(defn qband? [band]
+(defn qband?
   "Determine if the given band is a qband - not using reasoner"
-  (not (nil? (re-find #"Bandq" (str band)))))
+  [band] (not (nil? (re-find #"Bandq" (str band)))))

@@ -46,14 +46,14 @@ bands."
   :range Resolution)
 
 ;; Auxiliary functions
-(defn get-lines [file-name]
+(defn get-lines
   "Reads in file-name line by line. Returns a java.lang.Cons"
-  (with-open [r (io/reader file-name)]
-    (doall (line-seq r))))
+  [file-name] (with-open [r (io/reader file-name)]
+                (doall (line-seq r))))
 
-(defn get-band [string]
-  {:post (true? (h/band? %))}
+(defn get-band
   "Returns (finds) human chromosome band."
+  [string] {:post (true? (h/band? %))}
   (let [string-band
         (str "HumanChromosome"
              (re-find #"\d+|X|Y" string)
@@ -62,16 +62,17 @@ bands."
               string #"\d+|X|Y" ""))]
     (owl-class h/human string-band)))
 
-(defn get-resolution [value]
-  {:post (true? (subclass? resolutions Resolution %))}
+(defn get-resolution
   "Returns (finds) resolution class."
+  [value] {:post (true? (subclass? resolutions Resolution %))}
   (let [string-resolution
         (str "r" value "-band")]
     (owl-class resolutions string-resolution)))
 
-(defn resolution [band & resolutions]
+(defn resolution
   "Resolution pattern - redefines human band class with addditional
 resolution information."
+  [band & resolutions]
   (refine (owl-class h/human band)
           :subclass
           (some-only seenAtResolution resolutions)))

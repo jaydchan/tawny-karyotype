@@ -38,16 +38,17 @@ definitions to include affects object property."
   :range h/HumanChromosomeBand)
 
 ;; PATTERN
-(defn affects-band [bands]
-  {:pre (every? h/band? bands)}
+(defn affects-band
   "Pattern - returns some-only axiom for BANDS, using affects
 oproperty."
+  [bands] {:pre (every? h/band? bands)}
   (apply some-only affects bands))
 
 ;; AUXILIARY FUNCTIONS
-(defn get-band [chromosome band]
-  {:post (h/band? %)}
+(defn get-band
   "Returns a 300-band chromosomal band class."
+  [chromosome band]
+  {:post (h/band? %)}
   (owl-class h/human (str "HumanChromosome" chromosome "Band" band)))
 ;; missing chromo 2-22,X,Y bands
 (def ^{:doc "An ordered array of available 300-band resolution band
@@ -57,30 +58,34 @@ oproperty."
    "p12" "p11" "q11" "q12" "q21" "q22q23q24" "q25" "q31" "q32" "q41" "q42"
    "q43q44" "qTer"]))
 
-(defn not-breakpoint? [breakpoint band]
-  {:pre [(h/band? breakpoint) (h/band? band)]}
+(defn not-breakpoint?
   "Determines if BAND is equal to BREAKPOINT."
+  [breakpoint band]
+  {:pre [(h/band? breakpoint) (h/band? band)]}
   (not (= breakpoint band)))
 
-(defn subset [start finish]
+(defn subset
   "Returns a range of 300 resolution bands for given START and FINISH
 bands."
+  [start finish]
   (conj (into [] (take-while
                   (partial not-breakpoint? finish)
                   (drop-while (partial not-breakpoint? start)
                               bands-300)))
         finish))
 
-(defn band-range [start finish]
+(defn band-range
   "Returns a range of 300 resolution bands for given START and FINISH
 bands. Swaps START and FINISH bands if START band index is greater
 than FINISH band, determined by bands-300 vector."
+  [start finish]
   (if (> (.indexOf bands-300 start) (.indexOf bands-300 finish))
     (subset finish start)
     (subset start finish)))
 
-(defn- get-band-range [bands]
+(defn- get-band-range
   "Returns either one band or a range of bands, determined by BANDS."
+  [bands]
   (cond
    (= (count bands) 1)
    (first bands)
@@ -91,9 +96,10 @@ than FINISH band, determined by bands-300 vector."
     (IllegalArgumentException.
      (str "Get-band-range expects one or two bands. Got:" bands)))))
 
-(defn- get-breakpoints [o clazz]
+(defn- get-breakpoints
   "Returns a list of breakpoint bands for a given CLAZZ in ontology
 O."
+  [o clazz]
   (let [parents (direct-superclasses o clazz)
         restrictions (filter #(instance?
                                org.semanticweb.owlapi.model.OWLRestriction %)
@@ -104,21 +110,24 @@ O."
         bands (into [] (filter #(h/band? (first %)) chrom_band))]
     bands))
 
-(defn get-bands [o clazz]
+(defn get-bands
   "Returns a list of affected bands for a given CLAZZ in ontology O."
+  [o clazz]
   (for [band (get-breakpoints o clazz)]
     (get-band-range band)))
 
 ;; PATTERN
-(defn- affects-band [bands]
-  {:pre (every? h/band? bands)}
+(defn- affects-band
   "Pattern - returns some-only axiom for BANDS, using affects
 object property."
+  [bands]
+  {:pre (every? h/band? bands)}
   (apply some-only affects bands))
 
 ;; DRIVERS
-(defn affects1-driver [o clazz]
+(defn affects1-driver
   "Returns the updated class definition of CLAZZ in ontology O."
+  [o clazz]
   (let [bands (flatten (get-bands o clazz))]
     (if (= (count bands) 0)
       clazz

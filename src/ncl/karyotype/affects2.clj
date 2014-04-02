@@ -47,8 +47,9 @@ definitions to include affects data property."
 ;;         band-ordinal (int (* (read-string band-name) 10))]
 ;;     (read-string (str "1" chromosome arm band-ordinal))))
 
-(defn- get-ordinal [band]
+(defn- get-ordinal
   "Returns the ordinal number for given band."
+  [band]
   (+ 1 (.indexOf a/bands-300 band)))
 
 ;; Set ordinal value for each chromosome
@@ -57,16 +58,18 @@ definitions to include affects data property."
           :subclass (data-has-value hasOrdinalNumber
                                     (literal (get-ordinal clazz)))))
 ;; PATTERNS
-(defn- affects-band [bands]
+(defn- affects-band
   "Pattern - returns data-only axiom for BANDS using affects data
-property."
+ property."
+  [bands]
   (data-only affects
              (apply data-oneof
                     (map #(literal (get-ordinal %)) bands))))
 
 ;; DRIVERS
-(defn affects2-driver [o clazz]
+(defn affects2-driver
   "Returns the updated class definition of CLAZZ in ontology O."
+  [o clazz]
   (let [bands (flatten (a/get-bands o clazz))]
     (if (= (count bands) 0)
       clazz

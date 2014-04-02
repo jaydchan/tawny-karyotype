@@ -25,12 +25,14 @@ ISCN2013."
             [ncl.karyotype [iscnexamples :as i]]
             [clojure.java.io :as io]))
 
-(defn shorten [string]
+(defn shorten
   "Removes the prefix of STRING"
+  [string]
   (clojure.string/replace string #"ncl.karyotype.iscnexamples/" ""))
 
-(defn test-string [name parent bool]
-  ""
+(defn test-string
+  "TODO"
+  [name parent bool]
   (str "(is "
        (if (false? bool)
          "(not ")
@@ -38,15 +40,18 @@ ISCN2013."
        (if (false? bool)
          ")")))
 
-(defn output [output-file string append error]
+(defn output
   "APPENDs STRING to OUTPUT-FILE unless there is an ERROR"
+  [output-file string append error]
   (try
     (spit output-file string :append append)
     (catch
         Exception exp (println error exp))))
 
 ;; If tests does not exist or bypass set to false
-(defn generate-iscn-tests [output-file bypass]
+(defn generate-iscn-tests
+  "TODO"
+  [output-file bypass]
   (if (or (false? bypass) (not (.exists (io/as-file output-file))))
 
     ;; Read data from .xlsx file

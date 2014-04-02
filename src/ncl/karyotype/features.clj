@@ -91,45 +91,49 @@
  (defoproperty isRearrangedChromosomeOf))
 
 ;; hasFeature auxiliary functions
-(defn- some-feature [axiom]
+(defn- some-feature
   "Returns a LazySeq of SomeValuesFrom hasFeature restrictions."
+  [axiom]
   (owl-some hasFeature axiom))
 
-(defn- exactly-feature [n axiom]
-  {:pre (number? n)}
+(defn- exactly-feature
   "Returns a (single) ExactCardinality hasFeature restriction."
+  [n axiom] {:pre (number? n)}
   (exactly n hasFeature axiom))
 
-(defn feature [n axiom]
+(defn feature
   "(Either) Returns a LazySeq SomeValuesFrom or one ExactCardinality
 hasFeature restrictions."
+  [n axiom]
   (if (nil? n)
     (some-feature axiom)
     (exactly-feature n axiom)))
 
 ;; hasDirectFeature auxiliary functions
-(defn- some-direct-feature [axiom]
+(defn- some-direct-feature
   "Returns a LazySeq of SomeValuesFrom hasDirectFeature restrictions"
+  [axiom]
   (owl-some hasDirectFeature axiom))
 
-(defn- exactly-direct-feature [n axiom]
-  {:pre (number? n)}
+(defn- exactly-direct-feature
   "Returns a (single) ExactCardinality hasDirectFeature restriction."
+  [n axiom] {:pre (number? n)}
   (exactly n hasDirectFeature axiom))
 
-(defn direct-feature [n axiom]
+(defn direct-feature
   "(Either) Returns a LazySeq SomeValuesFrom or one ExactCardinality
 hasDirectFeature restrictions."
+  [n axiom]
   (if (nil? n)
     (some-direct-feature axiom)
     (exactly-direct-feature n axiom)))
 
 ;; FUNCTIONS
 ;; TODO if whole arm translocation can be defined as either rob or der
-(defn derivative [n chromosome & args]
-  {:pre (true? (every? h/chromosome? chromosome))}
+(defn derivative
   "Returns a derivative restriction. N is the number of derivative
   restrictions. ARGS is a list of events."
+  [n chromosome & args] {:pre (true? (every? h/chromosome? chromosome))}
   (direct-feature n
                   (owl-and DerivativeChromosome
                            (apply (partial owl-some isRearrangedChromosomeOf)
@@ -137,19 +141,20 @@ hasDirectFeature restrictions."
                            args)))
 
 ;; MUST be defined before dicentric as dicentric calls isodicentric function!
-(defn isodicentric [n band]
-  {:pre (true? (h/band? band))}
+(defn isodicentric
   "Returns an isodicentric restriction. N is the number of
   isodicentric restrictions. BAND is of type HumanChromosomeBand."
+  [n band] {:pre (true? (h/band? band))}
   (direct-feature n
                   (owl-and IsodicentricChromosome
                     (owl-some e/hasBreakPoint band))))
 
-(defn dicentric [n band1 band2]
-  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+(defn dicentric
   "Returns either a dicentric or isdicentric restriction. N is the
   number of isodicentric restrictions. BAND1, BAND2 is of type
   HumanChromosomeBand."
+  [n band1 band2]
+  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
   (if (= band1 band2)
     ;; If band1 and band2 are equivalent then create an isodicentric
     ;; restriction.
@@ -159,10 +164,10 @@ hasDirectFeature restrictions."
                     (owl-and DicentricChromosome
                              (owl-some e/hasBreakPoint band1 band2)))))
 
-(defn fragilesite [n band]
-  {:pre (true? (h/band? band))}
+(defn fragilesite
   "Returns a fragilesite restriction. N is the number of fragilesite
   restrictions. BAND is of type HumanChromosomeBand."
+  [n band] {:pre (true? (h/band? band))}
   (direct-feature n
                   (owl-and FragileSite
                            (owl-some e/hasBreakPoint band))))
@@ -187,46 +192,48 @@ band, band1, band2 is of type HumanChromosomeBand."
                      (owl-and HomogeneouslyStainingRegion
                               (owl-some e/hasBreakPoint band1 band2)))))
 
-(defn isochromosome [n band]
-  {:pre (true? (h/band? band))}
+(defn isochromosome
   "Returns an isochromosome restriction. N is the number of
 isochromosome restrictions. BAND is of type HumanChromosomeBand."
+  [n band] {:pre (true? (h/band? band))}
   (direct-feature n
                   (owl-and Isochromosome
                            (owl-some e/hasBreakPoint band))))
 
 ;; TODO
 (defn isoderivative
-  [n chromosome arm & events]
   "Returns an isoderivative restriction.
 N is the number of isoderivative restrictions.
 CHROMOSOME is ...
 ARM is ...
 EVENTS is ..."
+  [n chromosome arm & events]
   (direct-feature n
                   (owl-and IsoderivativeChromosome chromosome arm events)))
 
-(defn marker [n]
+(defn marker
   "Returns a marker restriction. N is the number of marker
 restrictions."
+  [n]
   (direct-feature n
                   (owl-and MarkerChromosome h/HumanChromosome)))
 
 ;; TODO Neocentromere - LONG STRING FORMAT
 
-(defn pseudo_dicentric [n band1 band2]
-  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+(defn pseudo_dicentric
   "Returns a pseudodicentric restriction. N is the number of
 pseudodicentric restrictions. BAND1, BAND2 is of type
 HumanChromosomeBand."
+  [n band1 band2]
+  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
   (direct-feature n
                   (owl-and PseudodicentricChromosome
                            (owl-some e/hasBreakPoint band1 band2))))
 
-(defn pseudo_isodicentric [n band]
-  {:pre (true? (h/band? band))}
+(defn pseudo_isodicentric
   "Returns a pseudoisodicentric restriction. N is the number of
 pseudoisodicentric restrictions. BAND is of type HumanChromosomeBand."
+  [n band] {:pre (true? (h/band? band))}
   (direct-feature n
                   (owl-and PseudoisodicentricChromosome
                            (owl-some e/hasBreakPoint band))))
@@ -234,19 +241,21 @@ pseudoisodicentric restrictions. BAND is of type HumanChromosomeBand."
 ;; TODO RecombiantChromosome
 
 ;; if whole arm translocation can be defined as either rob or der
-(defn robertsonian [n band1 band2]
-  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+(defn robertsonian
   "Returns a robertsonian restriction. N is the number of robertsonian
 restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
+  [n band1 band2]
+  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
   (direct-feature n
                   (owl-and RobertsonianTranslocation
                            (owl-some e/hasBreakPoint band1 band2))))
 
 ;; TOFIX - ORDER IS IMPORTANT
-(defn ring [n & chrom_bands]
+(defn ring
   "Returns a ring restriction. N is the number of ring
 restrictions. CHROMOSOME is of type HumanChromosome. BAND1, BAND2 is
 of type HumanChromosomeBand."
+  [n & chrom_bands]
   (cond
    (and (= (count chrom_bands) 1) (h/chromosome? (first chrom_bands)))
    (direct-feature n
