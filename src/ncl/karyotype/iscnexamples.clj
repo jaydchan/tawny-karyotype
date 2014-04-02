@@ -2800,18 +2800,33 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
 
 ) ;; ends as-disjoint
 
-(println "TOTAL" (count (direct-subclasses iscnexamples ISCNExampleKaryotype)))
+;; ;; implement closure axiom on each ISCNExampleKaryotype
+;; (doseq [clazz (direct-subclasses iscnexamples ISCNExampleKaryotype)]
+;;   (let [parents (superclasses iscnexamples clazz)
+;;         restrictions (filter
+;;                       #(instance?
+;;                         org.semanticweb.owlapi.model.OWLRestriction %) parents)
+;;         events (filter
+;;               #(= (.getProperty %) e/hasDirectEvent) restrictions)
+;;         axioms (map #(.getFiller %) events)]
 
-;; implement closure axiom on each ISCNExampleKaryotype
-(doseq [clazz (direct-subclasses iscnexamples ISCNExampleKaryotype)]
-  (let [parents (superclasses iscnexamples clazz)
-        restrictions (filter
-                      #(instance?
-                        org.semanticweb.owlapi.model.OWLRestriction %) parents)
-        events (filter
-              #(= (.getProperty %) e/hasDirectEvent) restrictions)
-        axioms (map #(.getFiller %) events)]
+;;     (if (> (count axioms) 0)
+;;       (refine clazz
+;;               :subclass (owl-only e/hasDirectEvent (apply owl-or axioms))))))
 
-    (if (> (count axioms) 0)
-      (refine clazz
-              :subclass (owl-only e/hasDirectEvent (apply owl-or axioms))))))
+;; TODO
+(defdproperty hasMosiac)
+
+;; mos 47,XXY[10]/46,XY[20]
+(defclass kmos_47_XXY!10!_46_XY!20!
+  :label "The mos 47,XXY[10]/46,XY[20] karyotype"
+  :comment "ISCN2009 pg 56 -> 'TODO'"
+  :subclass ISCNExampleKaryotype
+  (owl-and
+   k47_XXY
+   (data-has-value hasMosiac (literal 10)))
+  (owl-and
+   b/k46_XY
+   (data-has-value hasMosiac (literal 20))))
+
+;; (println "TOTAL" (count (direct-subclasses iscnexamples ISCNExampleKaryotype)))
