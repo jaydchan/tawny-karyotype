@@ -45,81 +45,77 @@ ISCN2013."
     (catch
         Exception exp (println error exp))))
 
-
-;; MAIN
-(def output-file "./test/ncl/karyotype/iscnexamplesB_test.clj")
-(def bypass false)
-
 ;; If tests does not exist or bypass set to false
-(if (or (false? bypass) (not (.exists (io/as-file output-file))))
+(defn generate-iscn-tests [output-file bypass]
+  (if (or (false? bypass) (not (.exists (io/as-file output-file))))
 
-  ;; Read data from .xlsx file
-  (with-data (read-xls
-              (.getFile (io/resource "iscnexamples_test.xlsx")))
+    ;; Read data from .xlsx file
+    (with-data (read-xls
+                (.getFile (io/resource "iscnexamples_test.xlsx")))
 
-    ;; Clean file
-    (output output-file "" false "Error with new file.")
+      ;; Clean file
+      (output output-file "" false "Error with new file.")
 
-    ;; view data in popup table
-    ;; (view $data)
+      ;; view data in popup table
+      ;; (view $data)
 
-    ;; Check all defined ISCNExamplesKaryotype are in spreadsheet and
-    ;; clojure file
-    (let [clojure_file
-          (into #{}
-                (map
-                 #(shorten (r/form %))
-                 (o/direct-subclasses i/iscnexamples i/ISCNExampleKaryotype)))
-          spreadsheet_data (into #{} ($ :Name))
-          missing_clojure (clojure.set/difference spreadsheet_data clojure_file)
-          missing_spreadsheet (clojure.set/difference
-                               clojure_file spreadsheet_data)]
+      ;; Check all defined ISCNExamplesKaryotype are in spreadsheet and
+      ;; clojure file
+      (let [clojure_file
+            (into #{}
+                  (map
+                   #(shorten (r/form %))
+                   (o/direct-subclasses i/iscnexamples i/ISCNExampleKaryotype)))
+            spreadsheet_data (into #{} ($ :Name))
+            missing_clojure (clojure.set/difference spreadsheet_data clojure_file)
+            missing_spreadsheet (clojure.set/difference
+                                 clojure_file spreadsheet_data)]
 
-      (if (> (count missing_clojure) 0)
-        (println (str "Missing the following examples from clojure file:\n"
-                      (clojure.string/join "\n" missing_clojure))))
-      (if (> (count missing_spreadsheet) 0)
-        (println (str "Missing the following examples from spreadsheet:\n"
-                      (clojure.string/join "\n" missing_spreadsheet)))))
+        (if (> (count missing_clojure) 0)
+          (println (str "Missing the following examples from clojure file:\n"
+                        (clojure.string/join "\n" missing_clojure))))
+        (if (> (count missing_spreadsheet) 0)
+          (println (str "Missing the following examples from spreadsheet:\n"
+                        (clojure.string/join "\n" missing_spreadsheet)))))
 
-    ;; TODO Still looks U--GLY
-    ;; Generate tests for iscnexamples
-    (let [names (into [] ($ :Name))
-          tests {:Male "MaleKaryotype" :Female "FemaleKaryotype"
-                 :Haploid "HaploidKaryotype" :Diploid "DiploidKaryotype"
-                 :Triploid "TriploidKaryotype" :Tetraploid "TetraploidKaryotype"
-                 ;; :AllosomalGain "NumericalAbnormalKaryotypeAllosomalGain"
-                 ;; :AllosomalLoss "NumericalAbnormalKaryotypeAllosomalLoss"
-                 ;; :AutosomalGain "NumericalAbnormalKaryotypeAutosomalGain"
-                 ;; :AutosomalLoss "NumericalAbnormalKaryotypeAutosomalGain"
-                 ;; :Turner "TurnerSyndrome"
-                 :Addition "StructuralAbnormalKaryotypeAddition"
-                 :Deletion "StructuralAbnormalKaryotypeDeletion"
-                 :Duplication "StructuralAbnormalKaryotypeDuplication"
-                 :Fission "StructuralAbnormalKaryotypeFission"
-                 :Insertion "StructuralAbnormalKaryotypeInsertion"
-                 :Inversion "StructuralAbnormalKaryotypeInversion"
-                 :Quadruplication "StructuralAbnormalKaryotypeQuadruplication"
-                 :Translocation "StructuralAbnormalKaryotypeTranslocation"
-                 :Triplication "StructuralAbnormalKaryotypeTriplication"
-                 }]
+      ;; TODO Still looks U--GLY
+      ;; Generate tests for iscnexamples
+      (let [names (into [] ($ :Name))
+            tests {:Male "MaleKaryotype" :Female "FemaleKaryotype"
+                   :Haploid "HaploidKaryotype" :Diploid "DiploidKaryotype"
+                   :Triploid "TriploidKaryotype" :Tetraploid "TetraploidKaryotype"
+                   ;; :AllosomalGain "NumericalAbnormalKaryotypeAllosomalGain"
+                   ;; :AllosomalLoss "NumericalAbnormalKaryotypeAllosomalLoss"
+                   ;; :AutosomalGain "NumericalAbnormalKaryotypeAutosomalGain"
+                   ;; :AutosomalLoss "NumericalAbnormalKaryotypeAutosomalGain"
+                   ;; :Turner "TurnerSyndrome"
+                   :Addition "StructuralAbnormalKaryotypeAddition"
+                   :Deletion "StructuralAbnormalKaryotypeDeletion"
+                   :Duplication "StructuralAbnormalKaryotypeDuplication"
+                   :Fission "StructuralAbnormalKaryotypeFission"
+                   :Insertion "StructuralAbnormalKaryotypeInsertion"
+                   :Inversion "StructuralAbnormalKaryotypeInversion"
+                   :Quadruplication "StructuralAbnormalKaryotypeQuadruplication"
+                   :Translocation "StructuralAbnormalKaryotypeTranslocation"
+                   :Triplication "StructuralAbnormalKaryotypeTriplication"
+                   }]
 
-      (doseq [test (keys tests)]
-        (let [parent (get tests test)
-              vector (into [] ($ test))]
-          (output
-           output-file
-           (str "(deftest " parent "\n"
-                (clojure.string/join
-                 "\n"
-                 (for [i (range (count names))]
-                   (let [instance (get vector i)
-                         name (get names i)]
-                     (cond
-                      (= instance 1.0)
-                      (test-string name parent true)
-                      (= instance -1.0)
-                      (test-string name parent false)))))
-                "\n)")
-           true
-           (str "Error with " parent " testing.")))))))
+        (doseq [test (keys tests)]
+          (let [parent (get tests test)
+                vector (into [] ($ test))]
+            (output
+             output-file
+             (str "(deftest " parent "\n"
+                  (clojure.string/join
+                   "\n"
+                   (for [i (range (count names))]
+                     (let [instance (get vector i)
+                           name (get names i)]
+                       (cond
+                        (= instance 1.0)
+                        (test-string name parent true)
+                        (= instance -1.0)
+                        (test-string name parent false)))))
+                  "\n)")
+             true
+             (str "Error with " parent " testing."))))))))

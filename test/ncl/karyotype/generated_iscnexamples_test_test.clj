@@ -15,9 +15,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.generated_iscnexamples_test
+(ns ncl.karyotype.generated_iscnexamples_test_test
   (:use [clojure.test])
   (:require
+   [ncl.karyotype.generate_iscnexamples_test]
    [ncl.karyotype.iscnexamples :as i]
    [ncl.karyotype.named :as n]
    [tawny.owl :as o]
@@ -38,5 +39,10 @@
 (deftest Basic
   (is (r/consistent?))
   (is (r/coherent?)))
+
+(def output-file "./test/ncl/karyotype/iscnexamplesB_test.clj")
+(if (not (.exists (clojure.java.io/as-file output-file)))
+  (ncl.karyotype.generate_iscnexamples_test/generate-iscn-tests
+   output-file false))
 
 (clojure.core/load "iscnexamplesB_test")
