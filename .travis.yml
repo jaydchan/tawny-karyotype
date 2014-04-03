@@ -1,0 +1,8 @@
+language: clojure
+lein: lein2
+jdk:
+  - openjdk7
+
+notifications:
+   email:
+     - jennifer.warrender@newcastle.ac.uk
