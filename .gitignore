@@ -8,3 +8,4 @@ lib/
 *.owl
 *~
 *.class
+iscnexamplesB_test.clj
