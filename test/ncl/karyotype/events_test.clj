@@ -174,7 +174,7 @@
     (is (= (.getProperty event) e/hasEvent))
     (is (not (= (.getProperty event) e/hasDirectEvent))))
   ;; invalid input
-  (is (thrown? ClassCastException
+  (is (thrown? AssertionError
                (#'ncl.karyotype.events/exactly-event "1" (o/owl-and e/Addition
                                                h/HumanChromosome1)))))
 
@@ -197,7 +197,7 @@
       (is (= (.getProperty event) e/hasEvent))
       (is (not (= (.getProperty event) e/hasDirectEvent)))))
   ;; invalid input
-  (is (thrown? ClassCastException
+  (is (thrown? AssertionError
                (e/event
                 "1" (o/owl-and e/Addition h/HumanChromosome1)))))
 
@@ -224,7 +224,7 @@
     (is (= (.getProperty event) e/hasDirectEvent))
     (is (not (= (.getProperty event) e/hasEvent))))
   ;; invalid input
-  (is (thrown? ClassCastException
+  (is (thrown? AssertionError
                (#'ncl.karyotype.events/exactly-direct-event
                 "1" (o/owl-and e/Addition h/HumanChromosome1)))))
 
@@ -247,7 +247,7 @@
       (is (= (.getProperty event) e/hasDirectEvent))
       (is (not (= (.getProperty event) e/hasEvent)))))
   ;; invalid input
-  (is (thrown? ClassCastException
+  (is (thrown? AssertionError
                (e/direct-event
                 "1" (o/owl-and e/Addition h/HumanChromosome1)))))
 
