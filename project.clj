@@ -16,7 +16,13 @@
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
 (defproject ncl.karyotype "1.0.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "Modelling karyotypes in OWL"
   :dependencies [[uk.org.russet/tawny-owl "1.1.0-SNAPSHOT"]
                  [incanter "1.5.4"]]
-  :main ncl.karyotype.core)
+  :scm {:url "https://github.com/jaydchan/tawny-karyotype.git"
+        :name "git"}
+  :license {:name "LGPL"
+            :url "http://www.gnu.org/licenses/lgpl-3.0.txt"
+            :distribution :repo}
+  :main ncl.karyotype.core
+  :aot [ncl.karyotype.core])
