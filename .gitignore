@@ -1,11 +1,9 @@
-syntax: glob
-
-lib/
 .lein-plugins
 .lein-deps-sum
 .lein-failures
 *.omn
 *.owl
 *~
-*.class
 iscnexamplesB_test.clj
+*.xml
+target/
