@@ -48,12 +48,13 @@ bands."
 ;; Auxiliary functions
 (defn get-lines
   "Reads in file-name line by line. Returns a java.lang.Cons"
-  [file-name] (with-open [r (io/reader file-name)]
-                (doall (line-seq r))))
+  [file-name]
+  (with-open [r (io/reader file-name)]
+    (doall (line-seq r))))
 
 (defn get-band
   "Returns (finds) human chromosome band."
-  [string] {:post (true? (h/band? %))}
+  [string] {:post [(h/band? %)]}
   (let [string-band
         (str "HumanChromosome"
              (re-find #"\d+|X|Y" string)
@@ -64,7 +65,7 @@ bands."
 
 (defn get-resolution
   "Returns (finds) resolution class."
-  [value] {:post (true? (subclass? resolutions Resolution %))}
+  [value] {:post [(subclass? resolutions Resolution %)]}
   (let [string-resolution
         (str "r" value "-band")]
     (owl-class resolutions string-resolution)))

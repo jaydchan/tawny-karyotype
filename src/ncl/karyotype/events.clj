@@ -114,8 +114,7 @@
 
 (defn- telomere-band
   "Returns sub-axiom to find associated telomere band using given CHROMOSOME."
-  [chromosome]
-  {:pre (true? (h/chromosome? chromosome))}
+  [chromosome] {:pre [(h/chromosome? chromosome)]}
   (owl-and h/HumanChromosomeBand
            (owl-some k/isBandOf chromosome)
            (owl-some k/isBandOf h/HumanTelomere)))
@@ -123,8 +122,7 @@
 (defn- telomere-component
   "Returns sub-axiom to find associated telomere component using given
 CHROMOSOME."
-  [chromosome]
-  {:pre (true? (h/chromosome? chromosome))}
+  [chromosome] {:pre [(h/chromosome? chromosome)]}
   (owl-and h/HumanTelomere
            (owl-some k/isComponentOf chromosome)))
 
@@ -201,9 +199,7 @@ CHROMOSOME."
 (defn- get-centromere-string
   "Returns associated centromere of given CLAZZ. The centromere can be
 specified by providing an ARM function."
-  [clazz arm]
-  {:pre (true? (or (= arm h/pband?)
-                   (= arm h/qband?)))}
+  [clazz arm] {:pre [(or (= arm h/pband?) (= arm h/qband?))]}
   (cond
    (h/cen? clazz)
    clazz
@@ -236,8 +232,7 @@ specified by providing an ARM function."
 
 (defn- get-direction
   "Determines the direction of the band range as either direct or inverse"
-  [band1 band2]
-  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+  [band1 band2] {:pre [(h/band? band1) (h/band? band2)]}
   (cond
    (or (not (or (h/pband? band1) (h/qband? band1)))
        (not (or (h/pband? band2) (h/qband? band2))))
@@ -286,7 +281,9 @@ specified by providing an ARM function."
 ;;            (str "Class not recognized:" clazz)))))
 
 ;; get-telomere-ontology takes awhile
-(defn get-telomere [clazz]
+(defn get-telomere
+  "TODO"
+  [clazz]
   (get-telomere-string clazz))
 
 ;; hasEvent auxiliary functions
@@ -297,8 +294,7 @@ specified by providing an ARM function."
 
 (defn- exactly-event
   "Returns a (single) ExactCardinality hasEvent restriction."
-  [n axiom]
-  {:pre (number? n)}
+  [n axiom] {:pre [(number? n)]}
   (exactly n hasEvent axiom))
 
 (defn event
@@ -317,8 +313,7 @@ hasEvent restrictions."
 
 (defn- exactly-direct-event
   "Returns a (single) ExactCardinality hasDirectEvent restriction."
-  [n axiom]
-  {:pre (number? n)}
+  [n axiom] {:pre [(number? n)]}
   (exactly n hasDirectEvent axiom))
 
 (defn direct-event
@@ -352,14 +347,12 @@ hasDirectEvent restrictions."
 ;; Addition patterns
 (defn addition-chromosome
   "Pattern - returns part of chromosomal addition axiom."
-  [chromosome]
-  {:pre (true? (h/chromosome? chromosome))}
+  [chromosome] {:pre [(h/chromosome? chromosome)]}
   (owl-and Addition chromosome))
 
 (defn addition-band
   "Pattern - returns part of chromosomal band addition axiom."
-  [band]
-  {:pre (true? (h/band? band))}
+  [band] {:pre [(h/band? band)]}
   (owl-and Addition
            (owl-some hasBreakPoint band)))
 
@@ -388,14 +381,13 @@ HumanChromosomeBand."
 ;; Deletion patterns
 (defn deletion-chromosome
   "Pattern - returns chromosomal deletion axiom."
-  [chromosome]
-  {:pre (true? (h/chromosome? chromosome))}
+  [chromosome] {:pre [(h/chromosome? chromosome)]}
   (owl-and Deletion chromosome))
 
 (defn deletion-band
   "Pattern - return chromosomal band deletion axiom."
-  [band1 band2]
-  {:pre [(true? (h/band? band1)) (true? (or (h/ter? band2) (h/band? band2)))]}
+  [band1 band2] {:pre [(h/band? band1)
+                       (or (h/ter? band2) (h/band? band2))]}
   (owl-and Deletion
            (owl-some hasBreakPoint band1 band2)))
 
@@ -432,9 +424,8 @@ HumanChromosomeBand."
 (defn duplication-pattern
   "Pattern - returns an EVENT duplication restriction using BAND1 and
 BAND2 bands."
-  [event band1 band2]
-  {:pre (true? (or (superclass? events event Duplication)
-                   (= event Duplication)))}
+  [event band1 band2] {:pre [(or (superclass? events event Duplication)
+                                 (= event Duplication))]}
   (owl-and event
            (owl-some hasBreakPoint band1 band2)))
 
@@ -445,8 +436,7 @@ BAND2 bands."
 (defn duplication
   "Returns a duplication retriction. N is the number of duplication
 restrictions. BAND1, BAND2 are of type HumanChromosomeBand."
-  [n band1 band2]
-  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+  [n band1 band2] {:pre [(h/band? band1) (h/band? band2)]}
   (let [direction (get-direction band1 band2)]
     (cond
      (= direction "Unknown")
@@ -486,9 +476,8 @@ restrictions. BAND is of type HumanChromosomeBand."
 (defn insertion-pattern
   "Pattern - returns an EVENT insertion restriction using BAND1, BAND2
 and BAND3 bands."
-  [event band1 band2 band3]
-  {:pre (true? (or (superclass? events event Insertion)
-            (= event Insertion)))}
+  [event band1 band2 band3] {:pre [(or (superclass? events event Insertion)
+                                       (= event Insertion))]}
   (owl-and event
            (owl-some hasReceivingBreakPoint band1)
            (owl-some hasProvidingBreakPoint band2 band3)))
@@ -498,8 +487,7 @@ and BAND3 bands."
 (defn insertion
   "Returns an insertion retriction. N is the number of insertion
 restrictions. BAND1, BAND2, BAND3 is of type HumanChromosomeBand."
-  ([n chrom1]
-     {:pre (= 3 (count chrom1))}
+  ([n chrom1] {:pre [(= 3 (count chrom1))]}
      (let [band2 (second chrom1)
            band3 (second (rest chrom1))
            direction (get-direction band2 band3)]
@@ -516,8 +504,7 @@ restrictions. BAND1, BAND2, BAND3 is of type HumanChromosomeBand."
         (direct-event n
                       (insertion-pattern InverseInsertionOneChromosome
                                          (first chrom1) band2 band3)))))
-  ([n chrom1 chrom2]
-     {:pre (true? (and (= 1 (count chrom1)) (= 2 (count chrom2))))}
+  ([n chrom1 chrom2] {:pre [(= 1 (count chrom1)) (= 2 (count chrom2))]}
      (let [band2 (first chrom2)
            band3 (second chrom2)
            direction (get-direction band2 band3)]
@@ -541,10 +528,9 @@ restrictions. BAND1, BAND2, BAND3 is of type HumanChromosomeBand."
 (defn inversion-pattern
   "Returns an inversion retriction. BAND1, BAND2 is of type
 HumanChromosomeBand."
-  [band1 band2]
-  {:pre (true? (and (or (= (get-chromosome band1) (get-chromosome band2))
-                        (parentband? band1) (parentband? band2))
-                    (h/band? band1) (h/band? band2)))}
+  [band1 band2] {:pre [(or (= (get-chromosome band1) (get-chromosome band2))
+                           (parentband? band1) (parentband? band2))
+                       (h/band? band1) (h/band? band2)]}
   (owl-and Inversion
            (owl-some hasBreakPoint band1 band2)))
 
@@ -561,10 +547,9 @@ restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
   "Returns a quadruplication retriction. N is the number of
 quadruplication restrictions. BAND1, BAND2 is of type
 HumanChromosomeBand."
-  [n band1 band2]
-  {:pre (true? (and (or (= (get-chromosome band1) (get-chromosome band2))
-                        (parentband? band1) (parentband? band2))
-                    (h/band? band1) (h/band? band2)))}
+  [n band1 band2] {:pre [(or (= (get-chromosome band1) (get-chromosome band2))
+                             (parentband? band1) (parentband? band2))
+                         (h/band? band1) (h/band? band2)]}
   (direct-event n (owl-and Quadruplication
                            (owl-some hasBreakPoint band1 band2))))
 
@@ -595,7 +580,7 @@ is a list of vectors - each vector contains 1 or 2 HumanChromosome."
   "Returns a translocation restriction. N is the number of
 translocation restrictions.BANDS is a list of vectors - each vector
 contains 1 or 2 HumanChromosomeBand"
-  [n & bands] {:pre (> 1 (count bands))}
+  [n & bands] {:pre [(> (count bands) 1)]}
   (let [sorted-bands (adjust-bands bands)]
     (direct-event n
              (owl-and Translocation
@@ -626,8 +611,7 @@ contains 1 or 2 HumanChromosomeBand"
 (defn triplication-pattern
   "Returns a triplication retriction. N is the number of triplication
 restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
-  [event band1 band2]
-  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+  [event band1 band2] {:pre [(h/band? band1) (h/band? band2)]}
   (owl-and event
            (owl-some hasBreakPoint band1 band2)))
 

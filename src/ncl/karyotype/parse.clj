@@ -49,8 +49,9 @@ karyotype is of type String."
 (defn- get-no-of-Y
   "Determines how many Y chromosomes exist in karyotype.
 s id of type String."
-  [s] (- (count (re-seq #"Y" s))
-         (count (re-seq #"\+[a-zA-Z0-Z(;]*Y" s))))
+  [s]
+  (- (count (re-seq #"Y" s))
+     (count (re-seq #"\+[a-zA-Z0-Z(;]*Y" s))))
 
 ;; assume that you are unable to have +Y when youre a female
 (defn- get-derived-from
@@ -96,7 +97,8 @@ s id of type String."
 
 (defn- split-bands
   "Splits bandinfo from one string to a vector of bands"
-   [bandinfo] (into [] (re-seq #"[pq][\d\.]+|[pq]\?|\?" bandinfo)))
+   [bandinfo]
+   (into [] (re-seq #"[pq][\d\.]+|[pq]\?|\?" bandinfo)))
 
 (defn- get-bands
   "Get the band entities inferred in bandinfo"
@@ -302,24 +304,26 @@ s id of type String."
 
 (defn- get-base
   "Returns the base karyotype. AXIOM is of type derivedFrom."
-  [axiom] (clojure.string/replace (clean-up (.getFiller axiom)) #"_" ","))
+  [axiom]
+  (clojure.string/replace (clean-up (.getFiller axiom)) #"_" ","))
 
 (defn- addition-chromosome
   "Returns a vector [chromosome and chromosome addition string] based
   on given CHROMOSOME."
-  [chromosome] {:pre (true? (h/chromosome? chromosome))}
+  [chromosome] {:pre [(h/chromosome? chromosome)]}
   [(clean-up chromosome) (str "+" (clean-up chromosome))])
 
 (defn- addition-band
   "Returns a vector [chromosome and band addition string] based on
 given BAND."
-  [band] {:pre (true? (h/band? band))}
+  [band] {:pre [(h/band? band)]}
   (let [chromosome (clean-up (e/get-chromosome band))]
     [chromosome (str "add(" chromosome ")(" (clean-up band) ")")]))
 
 (defn- chrom-filter
   "Returns HumanChromosome(s)S present in AXIOM."
-   [axiom] (filter #(h/chromosome? %) (.asConjunctSet axiom)))
+   [axiom]
+   (filter #(h/chromosome? %) (.asConjunctSet axiom)))
 
 (defn- band-filter
   "Returns HumanChromosomeBand(s) present in AXIOM."
@@ -338,7 +342,8 @@ given BAND."
 (defn human-filter
   "Returns HumanChromosome(s) and HumanChromosomeBand(s) present in
 AXIOM."
-  [axiom] (flatten (merge '() (chrom-filter axiom) (band-filter axiom))))
+  [axiom]
+  (flatten (merge '() (chrom-filter axiom) (band-filter axiom))))
 
 (defn- addition
   "Returns a vector [chromosome and addition string] based on given
@@ -359,7 +364,7 @@ AXIOM."
 (defn- deletion-chromosome
   "Returns a vector [chromosome and chromosome deletion string] based
   on given AXIOM."
-  [chromosome] {:pre (true? (h/chromosome? chromosome))}
+  [chromosome] {:pre [(h/chromosome? chromosome)]}
   [(clean-up chromosome) (str "-" (clean-up chromosome))])
 
 (defn- deletion-band
@@ -369,7 +374,7 @@ AXIOM."
 
 (defn- deletion-band-driver
   "TODO"
-  [bands] {:pre (true? (every? h/band? bands))}
+  [bands] {:pre [(every? h/band? bands)]}
   (let [adjusted (if (= (count bands) 1)
                    (repeat 2 (first bands)) bands)
         band-info (for [band adjusted
@@ -416,9 +421,8 @@ EVENT is of type hasEvent."
 ;; Could filter by instance of OWLRestiction instead of use condition
 (defn- get-axiom-string
   "Returns the string representation of the given ENTITY."
-  [entity] {:pre (true?
-                  (instance?
-                   org.semanticweb.owlapi.model.OWLRestriction entity))}
+  [entity] {:pre [(instance?
+                   org.semanticweb.owlapi.model.OWLRestriction entity)]}
   (cond
    (= (.getProperty entity) b/derivedFrom)
    (get-base entity)

@@ -98,7 +98,7 @@
 
 (defn- exactly-feature
   "Returns a (single) ExactCardinality hasFeature restriction."
-  [n axiom] {:pre (number? n)}
+  [n axiom] {:pre [(number? n)]}
   (exactly n hasFeature axiom))
 
 (defn feature
@@ -117,7 +117,7 @@ hasFeature restrictions."
 
 (defn- exactly-direct-feature
   "Returns a (single) ExactCardinality hasDirectFeature restriction."
-  [n axiom] {:pre (number? n)}
+  [n axiom] {:pre [(number? n)]}
   (exactly n hasDirectFeature axiom))
 
 (defn direct-feature
@@ -133,7 +133,7 @@ hasDirectFeature restrictions."
 (defn derivative
   "Returns a derivative restriction. N is the number of derivative
   restrictions. ARGS is a list of events."
-  [n chromosome & args] {:pre (true? (every? h/chromosome? chromosome))}
+  [n chromosome & args] {:pre [(every? h/chromosome? chromosome)]}
   (direct-feature n
                   (owl-and DerivativeChromosome
                            (apply (partial owl-some isRearrangedChromosomeOf)
@@ -144,7 +144,7 @@ hasDirectFeature restrictions."
 (defn isodicentric
   "Returns an isodicentric restriction. N is the number of
   isodicentric restrictions. BAND is of type HumanChromosomeBand."
-  [n band] {:pre (true? (h/band? band))}
+  [n band] {:pre [(h/band? band)]}
   (direct-feature n
                   (owl-and IsodicentricChromosome
                     (owl-some e/hasBreakPoint band))))
@@ -154,7 +154,7 @@ hasDirectFeature restrictions."
   number of isodicentric restrictions. BAND1, BAND2 is of type
   HumanChromosomeBand."
   [n band1 band2]
-  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+  {:pre [(h/band? band1) (h/band? band2)]}
   (if (= band1 band2)
     ;; If band1 and band2 are equivalent then create an isodicentric
     ;; restriction.
@@ -167,7 +167,7 @@ hasDirectFeature restrictions."
 (defn fragilesite
   "Returns a fragilesite restriction. N is the number of fragilesite
   restrictions. BAND is of type HumanChromosomeBand."
-  [n band] {:pre (true? (h/band? band))}
+  [n band] {:pre [(h/band? band)]}
   (direct-feature n
                   (owl-and FragileSite
                            (owl-some e/hasBreakPoint band))))
@@ -178,16 +178,14 @@ n is the number of homogeneouslystainingregion restrictions.
 band, band1, band2 is of type HumanChromosomeBand."
   ;; Used to describe the presence, but not the size, of a hsr region
   ;; on a chromosome, arm or band.
-  ([n band]
-     {:pre (true? (h/band? band))}
+  ([n band] {:pre [(h/band? band)]}
      (direct-feature n
                      (owl-and HomogeneouslyStainingRegion
                               (owl-some e/hasBreakPoint band))))
   ;; Used to describe the presence of a hsr, located at the interface
   ;; between segments of different chromosome involved in a
   ;; rearrangement.
-  ([n band1 band2]
-     {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+  ([n band1 band2] {:pre [(h/band? band1) (h/band? band2)]}
      (direct-feature n
                      (owl-and HomogeneouslyStainingRegion
                               (owl-some e/hasBreakPoint band1 band2)))))
@@ -195,7 +193,7 @@ band, band1, band2 is of type HumanChromosomeBand."
 (defn isochromosome
   "Returns an isochromosome restriction. N is the number of
 isochromosome restrictions. BAND is of type HumanChromosomeBand."
-  [n band] {:pre (true? (h/band? band))}
+  [n band] {:pre [(h/band? band)]}
   (direct-feature n
                   (owl-and Isochromosome
                            (owl-some e/hasBreakPoint band))))
@@ -214,7 +212,7 @@ EVENTS is ..."
 (defn marker
   "Returns a marker restriction. N is the number of marker
 restrictions."
-  [n]
+  [n] {:pre [(number? n)]}
   (direct-feature n
                   (owl-and MarkerChromosome h/HumanChromosome)))
 
@@ -224,8 +222,7 @@ restrictions."
   "Returns a pseudodicentric restriction. N is the number of
 pseudodicentric restrictions. BAND1, BAND2 is of type
 HumanChromosomeBand."
-  [n band1 band2]
-  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+  [n band1 band2] {:pre [(h/band? band1) (h/band? band2)]}
   (direct-feature n
                   (owl-and PseudodicentricChromosome
                            (owl-some e/hasBreakPoint band1 band2))))
@@ -233,7 +230,7 @@ HumanChromosomeBand."
 (defn pseudo_isodicentric
   "Returns a pseudoisodicentric restriction. N is the number of
 pseudoisodicentric restrictions. BAND is of type HumanChromosomeBand."
-  [n band] {:pre (true? (h/band? band))}
+  [n band] {:pre [(h/band? band)]}
   (direct-feature n
                   (owl-and PseudoisodicentricChromosome
                            (owl-some e/hasBreakPoint band))))
@@ -244,8 +241,7 @@ pseudoisodicentric restrictions. BAND is of type HumanChromosomeBand."
 (defn robertsonian
   "Returns a robertsonian restriction. N is the number of robertsonian
 restrictions. BAND1, BAND2 is of type HumanChromosomeBand."
-  [n band1 band2]
-  {:pre (true? (and (h/band? band1) (true? (h/band? band2))))}
+  [n band1 band2] {:pre [(h/band? band1) (h/band? band2)]}
   (direct-feature n
                   (owl-and RobertsonianTranslocation
                            (owl-some e/hasBreakPoint band1 band2))))
