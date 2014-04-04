@@ -392,8 +392,8 @@
   (owl-some b/derivedFrom b/k46_XY)
   (f/derivative 1 [h/HumanChromosome10]
                 (e/translocation nil
-                                 [h/HumanChromosome1Bandp22
-                                  h/HumanChromosome3Bandq13.1])))
+                                 [h/HumanChromosome1Bandp22]
+                                 [h/HumanChromosome3Bandq13.1])))
 
 (defclass k46_XX_ins!1_?!!p22_?!
   :label "The 46,XX,ins(1;?)(p22;?) karyotype"
@@ -417,8 +417,8 @@
   (e/deletion 1 h/HumanChromosome10)
   (f/derivative 1 [h/HumanChromosome10]
                 (e/translocation nil
-                                 [h/HumanChromosome10Bandq22
-                                  h/HumanChromosome17Bandp12])))
+                                 [h/HumanChromosome10Bandq22]
+                                 [h/HumanChromosome17Bandp12])))
 
 
 ;; ADDITIONAL MATERIAL OF UNKNOWN ORIGIN
