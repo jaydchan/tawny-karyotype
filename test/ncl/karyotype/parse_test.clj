@@ -16,13 +16,15 @@
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
 (ns ncl.karyotype.parse_test
-  (:use [clojure.test])
+  (:use [clojure.test]
+        (incanter core io excel))
   (:require
    [ncl.karyotype.events :as e]
    [ncl.karyotype.human :as h]
    [ncl.karyotype.parse :as p]
    [tawny.owl :as o]
-   [tawny.reasoner :as r]))
+   [tawny.reasoner :as r]
+   [clojure.java.io :as io]))
 
 (defn ontology-reasoner-fixture [tests]
   (r/reasoner-factory :hermit)
@@ -172,3 +174,33 @@
 ;; (deftest Chrom-Sort)
 ;; (deftest Parse-Karyotype-Class)
 ;; (deftest Create-Karyotype-String0)
+
+(deftest Roundtrip
+  ;; Read data from .xlsx file
+  (with-data (read-xls
+              (.getFile (io/resource "iscnexamples_test.xlsx")))
+
+    (let [parse? (into [] ($ :Parse)) ;; get parse (values)
+          labels (into [] ($ :Label)) ;; get label (values)
+          filtered ;; filter for 'valid' labels
+          (filter #(= (get parse? (.indexOf labels %)) 1.0) labels)
+          clazzes (map p/parse-karyotype-string filtered) ;; create classes
+          ;; strings ;; create labels
+          ;; (map #(p/parse-karyotype-class p/parse %) clazzes)
+          ]
+
+      ;; errors parsing str->clazz
+      (doseq [f filtered]
+        (try (p/parse-karyotype-string f)
+             (catch Exception e (println (str "Error: str->clazz " f)))))
+
+      ;; ;; errors parsing clazz->str
+      ;; (doseq [f filtered]
+      ;;   (try (p/parse-karyotype-class p/parse (p/parse-karyotype-string f))
+      ;;        (catch Exception e (println (str "Error: clazz->str " f)))))
+
+      ;; ;; make sure they match
+      ;; (doseq [string strings]
+      ;;   (println (str string " " (get filtered (.indexOf strings string))))
+      ;;   (is (= string (get filtered (.indexOf strings string)))))
+)))

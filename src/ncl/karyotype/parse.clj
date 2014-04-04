@@ -219,7 +219,7 @@ s id of type String."
   (doseq [subclass (rest (rest (clojure.string/split karyotype #",")))]
     (add-subclass class (define-event subclass))))
 
-(defn- parse-karyotype-string
+(defn parse-karyotype-string
   "Creates OWL entity equivalent of ISCN String"
   [karyotype]
   (let [name (make-safe karyotype)]
@@ -230,57 +230,6 @@ s id of type String."
                 (if-not (re-find #"c" karyotype)
                   (owl-some b/derivedFrom (get-derived-from karyotype)))))
     (get-subclasses (owl-class name) karyotype)))
-
-;; TESTING
-;; import all ncl.karyotype axioms
-(owl-import k/karyotype)
-(owl-import h/human)
-(owl-import e/events)
-(owl-import f/features)
-(owl-import b/base)
-
-;; define karyotypes
-(parse-karyotype-string "26,X,+4,+6,+21")
-(parse-karyotype-string "71,XXX,+8,+10")
-(parse-karyotype-string "89,XXYY,-1,-3,-5,+8,-21")
-(parse-karyotype-string "47,XX,+X")
-(parse-karyotype-string "45,X,-X")
-(parse-karyotype-string "45,X,-Y")
-(parse-karyotype-string "45,Y,-X")
-(parse-karyotype-string "69,XXX,del(7)(p11.2)")
-(parse-karyotype-string "46,XX,ins(1;?)(p22;?)")
-(parse-karyotype-string "46,XX,add(19)(p13.3)")
-(parse-karyotype-string "46,XY,add(12)(q13)")
-(parse-karyotype-string "46,XX,ins(5;?)(q13;?)")
-(parse-karyotype-string "46,XX,del(5)(q13)")
-(parse-karyotype-string "46,XX,del(5)(q13q33)")
-(parse-karyotype-string "46,XX,del(5)(q13q13)")
-(parse-karyotype-string "46,XX,del(5)(q?)")
-(parse-karyotype-string "46,Y,del(X)(p21p21)")
-(parse-karyotype-string "46,XX,dup(1)(q22q25)")
-(parse-karyotype-string "46,XY,dup(1)(q25q22)")
-(parse-karyotype-string "47,XY,-10,+fis(10)(p10),+fis(10)(q10)")
-(parse-karyotype-string "46,XX,ins(2)(p13q21q31)")
-(parse-karyotype-string "46,XY,ins(2)(p13q31q21)")
-(parse-karyotype-string "46,XY,ins(5;2)(p14;q22q32)")
-(parse-karyotype-string "46,XY,ins(5;2)(p14;q32q22)")
-(parse-karyotype-string "46,XX,ins(5;2)(q31;p13p23)")
-(parse-karyotype-string "46,XX,ins(5;2)(q31;p23p13)")
-(parse-karyotype-string "46,XX,inv(3)(q21q26.2)")
-(parse-karyotype-string "46,XY,inv(3)(p13q21)")
-(parse-karyotype-string "46,XX,qdp(1)(q23q32)")
-(parse-karyotype-string "46,XY,t(2;5)(q21;q31)")
-(parse-karyotype-string "46,XY,t(2;5)(p12;q31)")
-(parse-karyotype-string "46,X,t(X;13)(q27;q12)")
-(parse-karyotype-string "46,XX,t(2;7;5)(p21;q22;q23)")
-(parse-karyotype-string "46,X,t(X;22;1)(q24;q11.2;p33)")
-(parse-karyotype-string "46,XX,t(3;9;22;21)(p13;q34;q11.2;q21)")
-(parse-karyotype-string "46,XY,t(5;6)(q13q23;q15q23)")
-(parse-karyotype-string "46,XX,t(5;14;9)(q13q23;q24q21;p12p23)")
-(parse-karyotype-string "46,XY,t(1;3)(p10;q10)")
-(parse-karyotype-string "46,XY,t(1;3)(p10;p10)")
-(parse-karyotype-string "46,XX,trp(1)(q21q32)")
-(parse-karyotype-string "46,XX,inv trp(1)(q32q21)")
 
 
 ;; CREATE KARYOTYPE STRING FUNCTIONS
@@ -481,29 +430,15 @@ detail is of type boolean. NAME is of type String."
        (println (str "CLASS: " class))
        (println (str "STRING: " (parse-karyotype-class o clazz)))])))
 
-;; TESTING
-;; get ISCN String
-(def ^{:doc "Partial function for creating a karyotype string. FALSE
-  mean that the output is elided."} create-karyotype-string
-  (partial create-karyotype-string0 parse false))
+;; ;; TESTING
+;; ;; get ISCN String
+;; (def ^{:doc "Partial function for creating a karyotype string. FALSE
+;;   mean that the output is elided."} create-karyotype-string
+;;   (partial create-karyotype-string0 parse false))
 
-(create-karyotype-string "47,XX,+X")
-(create-karyotype-string "45,X,-X")
-(create-karyotype-string "45,X,-Y")
-(create-karyotype-string "45,Y,-X")
-(create-karyotype-string "26,X,+4,+6,+21")
-(create-karyotype-string "71,XXX,+8,+10")
-(create-karyotype-string "89,XXYY,-1,-3,-5,+8,-21")
-
-(create-karyotype-string "46,XX,add(19)(p13.3)")
-(create-karyotype-string "46,XY,add(12)(q13)")
-(create-karyotype-string "46,XX,del(5)(q13)")
-(create-karyotype-string "46,XX,del(5)(q13q13)")
-(create-karyotype-string "69,XXX,del(7)(p11.2)")
-
-(def ^{:doc "Partial function for creating a karyotype string. TRUE
-  mean that the output is shown."} create-karyotype-string
-  (partial create-karyotype-string0 parse true))
+;; (def ^{:doc "Partial function for creating a karyotype string. TRUE
+;;   mean that the output is shown."} create-karyotype-string
+;;   (partial create-karyotype-string0 parse true))
 
 ;; TODO
 ;; 1. Order of bands
@@ -516,3 +451,5 @@ detail is of type boolean. NAME is of type String."
 ;; (create-karyotype-string "46,XX,del(5)(q?)")
 
 ;; 4. Other event types
+
+;; 5. Include o arg in parse-karyotype-string
