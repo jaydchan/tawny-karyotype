@@ -32,19 +32,23 @@
 ;; AUXILLARY FUNCTIONS
 (defn str-pband?
   "Determine if the given band is a p band"
-  [band] (re-find #"p" band))
+  [band]
+  (re-find #"p" band))
 
 (defn str-qband?
   "Determine if the given band is a q band"
-  [band] (re-find #"q" band))
+  [band]
+  (re-find #"q" band))
 
 (defn str-ter?
   "Determine if the given band is a telomere"
-  [band] (re-find #"Ter" band))
+  [band]
+  (re-find #"Ter" band))
 
 (defn str-cen?
   "Determine if the given band is a centromere"
-  [band] (re-find #"0" band))
+  [band]
+  (re-find #"0" band))
 
 (defn create-class-with-superclasses
   "Generic pattern - creates a class with given name and superclasses"
@@ -994,13 +998,15 @@ PARENT, which is either p or q band."
 ;; FUNCTIONS
 (defn chromosome?
   "Determine if X is a chromosome - using ontology"
-  [x] (or (= x HumanChromosome)
-          (superclass? human x HumanChromosome)))
+  [x]
+  (or (= x HumanChromosome)
+      (superclass? human x HumanChromosome)))
 
 (defn band?
   "Determine if X is a band - using ontology"
-  [x] (or (= x HumanChromosomeBand)
-          (superclass? human x HumanChromosomeBand)))
+  [x]
+  (or (= x HumanChromosomeBand)
+      (superclass? human x HumanChromosomeBand)))
 
 ;; (rea/reasoner-factory :hermit)
 ;; (binding [rea/*reasoner-progress-monitor*
@@ -1029,20 +1035,24 @@ PARENT, which is either p or q band."
 
 (defn ter?
   "Determine if the given band is a telomere - not using reasoner"
-  [band] (or (= band HumanTelomere)
-             (superclass? human band HumanTelomere)
-             (not (nil? (re-find #"Band[pq]Ter" (str band))))))
+  [band]
+  (or (= band HumanTelomere)
+      (superclass? human band HumanTelomere)
+      (not (nil? (re-find #"Band[pq]Ter" (str band))))))
 
 (defn cen?
   "Determine if the given band is a centromere - not using reasoner"
-  [band] (or (= band HumanCentromere)
-             (superclass? human band HumanCentromere)
-             (not (nil? (re-find #"Band[pq]10" (str band))))))
+  [band]
+  (or (= band HumanCentromere)
+      (superclass? human band HumanCentromere)
+      (not (nil? (re-find #"Band[pq]10" (str band))))))
 
 (defn pband?
   "Determine if the given band is a pband - not using reasoner"
-  [band] (not (nil? (re-find #"Bandp" (str band)))))
+  [band]
+  (not (nil? (re-find #"Bandp" (str band)))))
 
 (defn qband?
   "Determine if the given band is a qband - not using reasoner"
-  [band] (not (nil? (re-find #"Bandq" (str band)))))
+  [band]
+  (not (nil? (re-find #"Bandq" (str band)))))
