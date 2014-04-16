@@ -42,13 +42,13 @@ definitions to include affects object property and sequence pattern"
 
 ;; PATTERNS
 (defn- sequence-pattern
-  "Pattern - encoded sequence ODP."
+  "Pattern -- encoded sequence ODP."
   [clazzes] {:pre [(> (count clazzes) 1)]}
   (owl-and (first clazzes)
            (owl-some directlyPrecedes (rest clazzes))))
 
 (defn- affects-band
-  "Pattern - returns sequence ODP variant for given BANDS, using
+  "Pattern -- returns sequence ODP variant for given BANDS, using
 affects object property"
   [bands]
   (owl-some affects
@@ -56,7 +56,7 @@ affects object property"
               (sequence-pattern bands)
               bands)))
 
-;; DRIVERS
+;; AUXILIARY FUNCTIONS
 (defn- get-affects
   "Returns a list of affects restrictions for a given CLAZZ in
 ontology O."
@@ -65,8 +65,9 @@ ontology O."
    (for [bands (a/get-bands o clazz)]
      (affects-band bands))))
 
+;; DRIVERS
 (defn affects3-driver
-  "Returns the updated class definition of CLAZZ in ontology O."
+  "Driver -- Returns the updated class definition of CLAZZ in ontology O."
   [o clazz]
   (let [bands (get-affects o clazz)]
     (if (= (count bands) 0)
@@ -74,68 +75,3 @@ ontology O."
       (refine clazz
               :ontology o
               :subclass bands))))
-
-;; ;; TESTS
-;; ;; import human ontology axioms
-;; (owl-import h/human)
-
-;; (defclass AffectsKaryotype
-;;   :subclass k/Karyotype)
-
-;; ;; addition
-;; (defclass test-addition-chromosome
-;;   :label "The 47,XX,+21 karyotype"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (e/addition 1 h/HumanChromosome21))
-
-;; (defclass test-addition-band
-;;   :label "The 46,XX,add(1)(p13) karyotype"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (e/addition 1 h/HumanChromosome1Bandp13))
-
-;; (defclass test-addition-both
-;;   :label "The 47,XX,add(1)(p13),+21 karyotype"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (e/addition 1 h/HumanChromosome1Bandp13)
-;;   (e/addition 1 h/HumanChromosome21))
-
-;; ;; deletion
-;; (defclass test-deletion-chromosome
-;;   :label "The 47,XX,-21 karyotype"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (e/deletion 1 h/HumanChromosome21))
-
-;; (defclass test-deletion-band-terminal
-;;   :label "The 46,XX,del(1)(p13) karyotype"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (e/deletion 1 h/HumanChromosome1Bandp13))
-
-;; (defclass test-deletion-two-bands
-;;   :label "The 46,XX,del(1)(p13p11) karyotype"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (e/deletion 1 h/HumanChromosome1Bandp13 h/HumanChromosome1Bandp11))
-
-;; (defclass test-deletion-one-band
-;;   :label "The 46,XX,del(1)(p13p13) karyotype"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (e/deletion 1 h/HumanChromosome1Bandp13 h/HumanChromosome1Bandp13))
-
-;; ;; both events
-;; (defclass test-both-events
-;;   :label "The 46,XX,del(1)(p13pTer),add(q21) karyotype"
-;;   :subclass AffectsKaryotype
-;;   (owl-some b/derivedFrom b/k46_XX)
-;;   (e/deletion 1 h/HumanChromosome1Bandp13 h/HumanChromosome1BandpTer)
-;;   (e/addition 1 h/HumanChromosome1Bandq21))
-
-;; ;; MAIN - (may) redefine classes defined above to include affects
-;; ;; oproperty and sequence pattern.
-;; (doseq [clazz (subclasses affects3 AffectsKaryotype)]
-;;   (affects3-driver affects3 clazz))
