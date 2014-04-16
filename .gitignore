@@ -6,3 +6,4 @@ iscnexamplesB_test.clj
 *.xml
 target/
 output/
+core_test.clj
