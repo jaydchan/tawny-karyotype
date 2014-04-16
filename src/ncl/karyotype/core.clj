@@ -17,28 +17,15 @@
 
 (ns ncl.karyotype.core
   (:use [tawny.owl :exclude [save-ontology]]
-        [clojure.java.shell :only [sh]])
+        [ncl.karyotype.generic])
   (:require [ncl.karyotype karyotype human resolutions events features
              base named iscnexamples parse random affects1 affects2 affects3
              generate_iscnexamples_test])
   (:gen-class))
 
-;; to run:
-;; 1. M-x 'compile' ('lein run')
-;; 2. M-x 'lein run'
-
-(def output-file-path "./output/")
-(defn- save-ontology
-  "'Overlaods' save-ontology function."
-  [name type]
-  (tawny.owl/save-ontology (str output-file-path name) type))
-
 (defn -main
   "Save ontologies in .omn and .owl format"
   [& args]
-
-  (if (not (.exists (clojure.java.io/as-file output-file-path)))
-    (sh "mkdir" "-p" output-file-path))
 
   (with-ontology ncl.karyotype.karyotype/karyotype
     (save-ontology "karyotype.omn" :omn)

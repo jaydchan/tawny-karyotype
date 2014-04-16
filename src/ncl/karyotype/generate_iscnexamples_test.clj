@@ -19,9 +19,10 @@
 ISCN2013."
       :author "Jennifer Warrender"}
   ncl.karyotype.generate_iscnexamples_test
-  (:use (incanter core io excel))
-  (:require [tawny.owl :as o]
-            [tawny.render :as r]
+  (:use (incanter core io excel)
+        [tawny.owl :exclude [save-ontology]]
+        [ncl.karyotype.generic])
+  (:require [tawny.render :as r]
             [ncl.karyotype [iscnexamples :as i]]
             [clojure.java.io :as io]))
 
@@ -39,14 +40,6 @@ ISCN2013."
        "(r/isuperclass? i/" name " n/" parent"))"
        (if (false? bool)
          ")")))
-
-(defn output
-  "APPENDs STRING to OUTPUT-FILE unless there is an ERROR"
-  [output-file string append error]
-  (try
-    (spit output-file string :append append)
-    (catch
-        Exception exp (println error exp))))
 
 ;; If tests does not exist or bypass set to false
 (defn generate-iscn-tests
@@ -70,7 +63,7 @@ ISCN2013."
             (into #{}
                   (map
                    #(shorten (r/form %))
-                   (o/direct-subclasses i/iscnexamples i/ISCNExampleKaryotype)))
+                   (direct-subclasses i/iscnexamples i/ISCNExampleKaryotype)))
             spreadsheet_data (into #{} ($ :Name))
             missing_clojure (clojure.set/difference spreadsheet_data clojure_file)
             missing_spreadsheet (clojure.set/difference
