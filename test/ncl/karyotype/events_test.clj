@@ -56,9 +56,8 @@
          uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl
          test))
     (is (.containsConjunct test h/HumanChromosomeBand))
-    (is (.containsConjunct test(first
-                                (o/owl-some k/isBandOf h/HumanTelomere))))
-    (is (.containsConjunct test (first (o/owl-some k/isBandOf chromosome)))))
+    (is (.containsConjunct test (o/owl-some k/isBandOf h/HumanTelomere)))
+    (is (.containsConjunct test (o/owl-some k/isBandOf chromosome))))
 
   (is (thrown? AssertionError
                "HumanChromosomeBand"
@@ -72,8 +71,8 @@
          uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl
          test))
     (is (.containsConjunct test h/HumanTelomere))
-    (is (.containsConjunct test (first
-                                 (o/owl-some k/isComponentOf chromosome)))))
+
+    (is (.containsConjunct test (o/owl-some k/isComponentOf chromosome))))
 
   (is (thrown? AssertionError
                "HumanChromosomeBand"
@@ -150,22 +149,22 @@
 ;; (deftest Get-Centromere)
 ;; (deftest Get-Direction)
 
-;; unlike exactly, owl-some returns a lazyseq of hasEvent restrictions
+;; unlike exactly, owl-some can return a lazyseq of hasEvent
+;; restrictions iff more than one restriction
 (deftest Some-Event
-  (let [events (#'ncl.karyotype.events/some-event
+  (let [event (#'ncl.karyotype.events/some-event
                 (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
-    (doseq [event events]
-      (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom
-                     event))
-      (is (.isObjectRestriction event))
-      (is (= (.getProperty event) e/hasEvent))
-      (is (not (= (.getProperty event) e/hasDirectEvent))))))
+
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
+    (is (.isObjectRestriction event))
+    (is (= (.getProperty event) e/hasEvent))
+    (is (not (= (.getProperty event) e/hasDirectEvent)))))
 
 (deftest Exactly-Event
   ;; valid input
   (let [n 1
-        event (#'ncl.karyotype.events/exactly-event n (o/owl-and e/Addition
-                                            h/HumanChromosome1))]
+        event (#'ncl.karyotype.events/exactly-event
+               n (o/owl-and e/Addition h/HumanChromosome1))]
     (is (number? n))
     (is (instance?
          org.semanticweb.owlapi.model.OWLObjectExactCardinality event))
@@ -202,14 +201,12 @@
                 "1" (o/owl-and e/Addition h/HumanChromosome1)))))
 
 (deftest Some-Direct-Event
-  (let [events (#'ncl.karyotype.events/some-direct-event
-                (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
-    (doseq [event events]
-      (is (instance?
-           org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
-      (is (.isObjectRestriction event))
-      (is (= (.getProperty event) e/hasDirectEvent))
-      (is (not (= (.getProperty event) e/hasEvent))))))
+  (let [event (#'ncl.karyotype.events/some-direct-event
+               (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
+    (is (.isObjectRestriction event))
+    (is (= (.getProperty event) e/hasDirectEvent))
+    (is (not (= (.getProperty event) e/hasEvent)))))
 
 (deftest Exactly-Direct-Event
   ;; valid input
@@ -478,7 +475,7 @@
         (is (.containsConjunct (.getFiller event) e/Fission))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint (get inputs i))))))))
+             (o/owl-some e/hasBreakPoint (get inputs i)))))))
 
   ;; invalid input
   ;; TODO is this true?
@@ -511,10 +508,10 @@
         (is (.containsConjunct (.getFiller event) e/Inversion))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint input1))))
+             (o/owl-some e/hasBreakPoint input1)))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint input2))))
+             (o/owl-some e/hasBreakPoint input2)))
         (if (= input1 input2)
           (is (= 2 (count (.asConjunctSet (.getFiller event)))))
           (is (= 3 (count (.asConjunctSet (.getFiller event)))))))))
@@ -552,10 +549,10 @@
         (is (.containsConjunct (.getFiller event) e/Quadruplication))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint input1))))
+             (o/owl-some e/hasBreakPoint input1)))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint input2))))
+             (o/owl-some e/hasBreakPoint input2)))
         (if (= input1 input2)
           (is (= 2 (count (.asConjunctSet (.getFiller event)))))
           (is (= 3 (count (.asConjunctSet (.getFiller event)))))))))
