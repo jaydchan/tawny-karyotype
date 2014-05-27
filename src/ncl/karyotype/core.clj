@@ -19,63 +19,52 @@
   (:use [tawny.owl :exclude [save-ontology]]
         [ncl.karyotype.generic])
   (:require [ncl.karyotype karyotype human resolutions events features
-             base named iscnexamples parse random affects1 affects2 affects3
-             generate_iscnexamples_test])
+             base named iscnexamples parse random affects1 affects2
+             affects3 generate_iscnexamples_test])
   (:gen-class))
 
 (defn -main
   "Save ontologies in .omn and .owl format"
   [& args]
 
-  (with-ontology ncl.karyotype.karyotype/karyotype
-    (save-ontology "karyotype.omn" :omn)
-    (save-ontology "karyotype.owl" :owl))
+  (save-ontology ncl.karyotype.karyotype/karyotype "karyotype.omn" :omn)
+  (save-ontology ncl.karyotype.karyotype/karyotype "karyotype.owl" :owl)
 
-  (with-ontology ncl.karyotype.human/human
-    (save-ontology "human.omn" :omn)
-    (save-ontology "human.owl" :owl))
+  (save-ontology ncl.karyotype.human/human "human.omn" :omn)
+  (save-ontology ncl.karyotype.human/human "human.owl" :owl)
 
-  (with-ontology ncl.karyotype.resolutions/resolutions
-    (save-ontology "resolutions.omn" :omn)
-    (save-ontology "resolutions.owl" :owl))
+  (save-ontology ncl.karyotype.resolutions/resolutions "resolutions.omn" :omn)
+  (save-ontology ncl.karyotype.resolutions/resolutions "resolutions.owl" :owl)
 
-  (with-ontology ncl.karyotype.events/events
-    (save-ontology "events.omn" :omn)
-    (save-ontology "events.owl" :owl))
+  (save-ontology ncl.karyotype.events/events "events.omn" :omn)
+  (save-ontology ncl.karyotype.events/events "events.owl" :owl)
 
-  (with-ontology ncl.karyotype.features/features
-    (save-ontology "features.omn" :omn)
-    (save-ontology "features.owl" :owl))
+  (save-ontology ncl.karyotype.features/features "features.omn" :omn)
+  (save-ontology ncl.karyotype.features/features "features.owl" :owl)
 
-  (with-ontology ncl.karyotype.base/base
-    (save-ontology "base.omn" :omn)
-    (save-ontology "base.owl" :owl))
+  (save-ontology ncl.karyotype.base/base "base.omn" :omn)
+  (save-ontology ncl.karyotype.base/base "base.owl" :owl)
 
-  (with-ontology ncl.karyotype.named/named
-    (save-ontology "named.omn" :omn)
-    (save-ontology "named.owl" :owl))
+  (save-ontology ncl.karyotype.named/named "named.omn" :omn)
+  (save-ontology ncl.karyotype.named/named "named.owl" :owl)
 
-  (with-ontology ncl.karyotype.iscnexamples/iscnexamples
-    (save-ontology "iscnexamples.omn" :omn)
-    (save-ontology "iscnexamples.owl" :owl))
+  (save-ontology
+   ncl.karyotype.iscnexamples/iscnexamples "iscnexamples.omn" :omn)
+  (save-ontology
+   ncl.karyotype.iscnexamples/iscnexamples "iscnexamples.owl" :owl)
 
-  (with-ontology ncl.karyotype.parse/parse
-    (save-ontology "parse.omn" :omn)
-    (save-ontology "parse.owl" :owl))
+  (save-ontology ncl.karyotype.parse/parse "parse.omn" :omn)
+  (save-ontology ncl.karyotype.parse/parse "parse.owl" :owl)
 
-  (with-ontology ncl.karyotype.random/random
-    (save-ontology "random.omn" :omn)
-    (save-ontology "random.owl" :owl))
+  (save-ontology ncl.karyotype.random/random "random.omn" :omn)
+  (save-ontology ncl.karyotype.random/random "random.owl" :owl)
 
-  (with-ontology ncl.karyotype.affects1/affects1
-    (save-ontology "affects1.omn" :omn)
-    (save-ontology "affects1.owl" :owl))
+  (save-ontology ncl.karyotype.affects1/affects1 "affects1.omn" :omn)
+  (save-ontology ncl.karyotype.affects1/affects1 "affects1.owl" :owl)
 
-  (with-ontology ncl.karyotype.affects2/affects2
-    (save-ontology "affects2.omn" :omn)
-    (save-ontology "affects2.owl" :owl))
+  (save-ontology ncl.karyotype.affects2/affects2 "affects2.omn" :omn)
+  (save-ontology ncl.karyotype.affects2/affects2 "affects2.owl" :owl)
 
-  (with-ontology ncl.karyotype.affects3/affects3
-    (save-ontology "affects3.omn" :omn)
-    (save-ontology "affects3.owl" :owl))
+  (save-ontology ncl.karyotype.affects3/affects3 "affects3.omn" :omn)
+  (save-ontology ncl.karyotype.affects3/affects3 "affects3.owl" :owl)
 )
