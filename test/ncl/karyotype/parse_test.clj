@@ -19,9 +19,10 @@
   (:use [clojure.test]
         (incanter core io excel))
   (:require
-   [ncl.karyotype.events :as e]
-   [ncl.karyotype.human :as h]
-   [ncl.karyotype.parse :as p]
+   [ncl.karyotype
+    [events :as e]
+    [human :as h]
+    [parse :as p]]
    [tawny.owl :as o]
    [tawny.reasoner :as r]
    [clojure.java.io :as io]))
