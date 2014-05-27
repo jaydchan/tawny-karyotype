@@ -19,10 +19,13 @@
       :author "Jennifer Warrender"}
   ncl.karyotype.events
   (:use [tawny.owl])
-  (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]
-            [tawny [reasoner :as rea]]
-            [tawny [render :as ren]]))
+  (:require [ncl.karyotype
+             [generic :as g]
+             [karyotype :as k]
+             [human :as h]]
+            [tawny
+             [reasoner :as rea]
+             [render :as ren]]))
 
 (defontology events
   :iri "http://ncl.ac.uk/karyotype/events"
@@ -230,6 +233,12 @@ specified by providing an ARM function."
    (throw (IllegalArgumentException.
            (str "Class not recognized:" clazz)))))
 
+(defn- get-band-no
+  [band]
+  (re-find #"[\d\.]+$"
+           (g/get-entity-short-string
+            (owl-class h/human band))))
+
 (defn- get-direction
   "Determines the direction of the band range as either direct or inverse"
   [band1 band2] {:pre [(h/band? band1) (h/band? band2)]}
@@ -244,8 +253,8 @@ specified by providing an ARM function."
    (or
     (and (h/pband? band1) (h/pband? band2))
     (and (h/qband? band1) (h/qband? band2)))
-   (let [digit1 (re-find #"[\d\.]+$" (str (ren/form band1)))
-         digit2 (re-find #"[\d\.]+$" (str (ren/form band2)))]
+   (let [digit1 (get-band-no band1)
+         digit2 (get-band-no band1)]
      (if (<= (read-string digit1) (read-string digit2))
        "Direct"
        "Inverse"))))
