@@ -20,7 +20,8 @@
   ncl.karyotype.generic
   (:use [tawny.owl :exclude [save-ontology]]
         [clojure.java.shell :only [sh]]
-        [clojure.java.io :only [as-file reader]]))
+        [clojure.java.io :only [as-file reader]]
+        [tawny.render :only [named-entity-as-string]]))
 
 (defonce output-file-path "./output/")
 
@@ -29,10 +30,10 @@
 
 (defn save-ontology
   "'Overloads' save-ontology function."
-  [name type]
+  [o name type]
   (if (not (.exists (clojure.java.io/as-file output-file-path)))
     (sh "mkdir" "-p" output-file-path))
-  (tawny.owl/save-ontology (str output-file-path name) type))
+  (tawny.owl/save-ontology o (str output-file-path name) type))
 
 (defn output
   "APPENDs STRING to OUTPUT-FILE unless there is an ERROR"
@@ -55,3 +56,12 @@
   [file]
   (for [r (get-lines file)]
     (read-string r)))
+
+(defn shorten
+  "Removes the prefix of STRING"
+  [string]
+  (second (clojure.string/split string #"#")))
+
+(defn get-entity-short-string
+  [entity]
+  (shorten (named-entity-as-string entity)))
