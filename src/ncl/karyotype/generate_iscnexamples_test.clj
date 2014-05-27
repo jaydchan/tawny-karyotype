@@ -26,11 +26,6 @@ ISCN2013."
             [ncl.karyotype [iscnexamples :as i]]
             [clojure.java.io :as io]))
 
-(defn shorten
-  "Removes the prefix of STRING"
-  [string]
-  (clojure.string/replace string #"ncl.karyotype.iscnexamples/" ""))
-
 (defn test-string
   "TODO"
   [name parent bool]
@@ -62,7 +57,7 @@ ISCN2013."
       (let [clojure_file
             (into #{}
                   (map
-                   #(shorten (r/form %))
+                   #(get-entity-short-string %)
                    (direct-subclasses i/iscnexamples i/ISCNExampleKaryotype)))
             spreadsheet_data (into #{} ($ :Name))
             missing_clojure (clojure.set/difference spreadsheet_data clojure_file)
