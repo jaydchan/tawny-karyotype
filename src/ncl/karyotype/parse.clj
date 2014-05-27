@@ -20,12 +20,14 @@ versa. Limitation - only available for addition and deletion events."
       :author "Jennifer Warrender"}
   ncl.karyotype.parse
   (:use [tawny.owl])
-  (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]
-            [ncl.karyotype [base :as b]]
-            [ncl.karyotype [events :as e]]
-            [ncl.karyotype [features :as f]]
-            [ncl.karyotype [iscnexamples :as i]]
+  (:require [ncl.karyotype
+             [generic :as g :only [get-entity-short-string]]
+             [karyotype :as k]
+             [human :as h]
+             [base :as b]
+             [events :as e]
+             [features :as f]
+             [iscnexamples :as i]]
             [tawny [render :as r]]))
 
 (defontology parse
@@ -105,7 +107,7 @@ s id of type String."
   [chrominfo bandinfo]
   (for [band (split-bands bandinfo)]
     (owl-class
-     ncl.karyotype.human/human
+     h/human
      (cond
       (and (= "?" band) (= "?" chrominfo))
       "HumanChromosomeBand"
@@ -146,72 +148,70 @@ s id of type String."
 (defn- define-event
   "Returns TODO"
   [event]
-  (with-ontology
-    ncl.karyotype.human/human
-     (let [info (clojure.string/split event (re-pattern "[\\(\\)]"))]
-       (cond
-        ;; If event is a band addition event
-        (re-find (re-pattern "add\\(") event)
-        (apply e/addition 1 (get-bands (get info 1) (get info 3)))
-        ;; If event is a band deletion event
-        (re-find (re-pattern "del\\(") event)
-        (apply e/deletion 1 (get-bands (get info 1) (get info 3)))
-        ;; If event is a duplication event
-        (re-find (re-pattern "dup\\(") event)
-        (apply e/duplication 1 (get-bands (get info 1) (get info 3)))
-        ;; If event is a fission event
-        (re-find (re-pattern "fis\\(") event)
-        (apply e/fission 1 (get-bands (get info 1) (get info 3)))
-        ;; If event is an insertion event
-        (re-find (re-pattern "ins\\(") event)
-        (e/insertion 1 [h/HumanChromosomeBand
-                        h/HumanChromosomeBand
-                        h/HumanChromosomeBand])
-        ;; (let [bands (split-bands (get info 3))
-        ;;       band1 (get bands 0)
-        ;;       band23 (str (get bands 1) (get bands 2))]
-        ;;    (if (re-find #";" (get info 3))
-        ;;      (apply (get-insertion-function band23)
-        ;;             1
-        ;;             (flatten
-        ;;              (conj (get-bands (re-find #"\d+$|\?$" (get info 1))
-        ;;                               (if (= "?" band23)
-        ;;                                 (str band23 band23)
-        ;;                                 band23))
-        ;;                    (get-bands (re-find #"^\d+|^\?" (get info 1))
-        ;;                               band1))))
-        ;;      (apply (get-insertion-function band23)
-        ;;             1 (get-bands (get info 1) (get info 3)))))
-        ;; If event is an inversion event
-        (re-find (re-pattern "inv\\(") event)
-        (apply e/inversion 1 (get-bands (get info 1) (get info 3)))
-        ;; If event is a quadruplication event
-        (re-find (re-pattern "qdp\\(") event)
-        (apply e/quadruplication 1 (get-bands (get info 1) (get info 3)))
-        ;; If event is a translocation event
-        (re-find (re-pattern "t\\(") event)
-        (let [chrominfo (clojure.string/split (get info 1) #";")
-              bandinfo (clojure.string/split (get info 3) #";")]
-          (apply e/translocation
-                 1
-                 (for [i (range (count chrominfo))]
-                   (into [] (get-bands (get chrominfo i) (get bandinfo i))))))
-        ;; If event is a triplication event
-        (re-find (re-pattern "trp\\(") event)
-        (apply e/triplication 1 (get-bands (get info 1) (get info 3)))
-        ;; If event is a chromosomal addition event
-        (re-find #"\+" event)
-        (e/addition 1 (owl-class
-                       (str "HumanChromosome"
-                            (subs event 1))))
-        ;; If event is a chromosomal deletion event
-        (re-find #"\-" event)
-        (e/deletion 1 (owl-class
-                       (str "HumanChromosome"
-                            (subs event 1))))
-        :default
-        (throw (IllegalArgumentException.
-                (str "Event syntax not recognised: " event)))))))
+  (let [info (clojure.string/split event (re-pattern "[\\(\\)]"))]
+    (cond
+     ;; If event is a band addition event
+     (re-find (re-pattern "add\\(") event)
+     (apply e/addition 1 (get-bands (get info 1) (get info 3)))
+     ;; If event is a band deletion event
+     (re-find (re-pattern "del\\(") event)
+     (apply e/deletion 1 (get-bands (get info 1) (get info 3)))
+     ;; If event is a duplication event
+     (re-find (re-pattern "dup\\(") event)
+     (apply e/duplication 1 (get-bands (get info 1) (get info 3)))
+     ;; If event is a fission event
+     (re-find (re-pattern "fis\\(") event)
+     (apply e/fission 1 (get-bands (get info 1) (get info 3)))
+     ;; If event is an insertion event
+     (re-find (re-pattern "ins\\(") event)
+     (e/insertion 1 [h/HumanChromosomeBand
+                     h/HumanChromosomeBand
+                     h/HumanChromosomeBand])
+     ;; (let [bands (split-bands (get info 3))
+     ;;       band1 (get bands 0)
+     ;;       band23 (str (get bands 1) (get bands 2))]
+     ;;    (if (re-find #";" (get info 3))
+     ;;      (apply (get-insertion-function band23)
+     ;;             1
+     ;;             (flatten
+     ;;              (conj (get-bands (re-find #"\d+$|\?$" (get info 1))
+     ;;                               (if (= "?" band23)
+     ;;                                 (str band23 band23)
+     ;;                                 band23))
+     ;;                    (get-bands (re-find #"^\d+|^\?" (get info 1))
+     ;;                               band1))))
+     ;;      (apply (get-insertion-function band23)
+     ;;             1 (get-bands (get info 1) (get info 3)))))
+     ;; If event is an inversion event
+     (re-find (re-pattern "inv\\(") event)
+     (apply e/inversion 1 (get-bands (get info 1) (get info 3)))
+     ;; If event is a quadruplication event
+     (re-find (re-pattern "qdp\\(") event)
+     (apply e/quadruplication 1 (get-bands (get info 1) (get info 3)))
+     ;; If event is a translocation event
+     (re-find (re-pattern "t\\(") event)
+     (let [chrominfo (clojure.string/split (get info 1) #";")
+           bandinfo (clojure.string/split (get info 3) #";")]
+       (apply e/translocation
+              1
+              (for [i (range (count chrominfo))]
+                (into [] (get-bands (get chrominfo i) (get bandinfo i))))))
+     ;; If event is a triplication event
+     (re-find (re-pattern "trp\\(") event)
+     (apply e/triplication 1 (get-bands (get info 1) (get info 3)))
+     ;; If event is a chromosomal addition event
+     (re-find #"\+" event)
+     (e/addition 1 (owl-class h/human
+                              (str "HumanChromosome"
+                                   (subs event 1))))
+     ;; If event is a chromosomal deletion event
+     (re-find #"\-" event)
+     (e/deletion 1 (owl-class h/human
+                              (str "HumanChromosome"
+                                   (subs event 1))))
+     :default
+     (throw (IllegalArgumentException.
+             (str "Event syntax not recognised: " event))))))
 
 (defn- get-subclasses
   "Obtains the other associated subclass"
@@ -234,10 +234,11 @@ s id of type String."
 
 ;; CREATE KARYOTYPE STRING FUNCTIONS
 ;; Auxiliary functions
+
 (defn- clean-up
   "TODO"
   [clazz]
-  (let [s (second (clojure.string/split (str (r/form clazz)) #"/"))]
+  (let [s (g/get-entity-short-string clazz)]
     (cond
      (subclass? b/base b/BaseKaryotype clazz)
      (clojure.string/replace s #"k" "")
@@ -319,7 +320,8 @@ AXIOM."
 (defn- deletion-band
   "Returns a vector [chromosome and band deletion string] based on
   given AXIOM."
-  [chromosome bands] [chromosome (str "del(" chromosome ")(" bands ")")])
+  [chromosome bands]
+  [chromosome (str "del(" chromosome ")(" bands ")")])
 
 (defn- deletion-band-driver
   "TODO"
