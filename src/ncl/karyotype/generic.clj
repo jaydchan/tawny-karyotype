@@ -20,8 +20,7 @@
   ncl.karyotype.generic
   (:use [tawny.owl :exclude [save-ontology]]
         [clojure.java.shell :only [sh]]
-        [clojure.java.io :only [as-file reader]]
-        [tawny.render :only [named-entity-as-string]]))
+        [clojure.java.io :only [as-file reader]]))
 
 (defonce output-file-path "./output/")
 
@@ -52,16 +51,15 @@
     (doall (line-seq r))))
 
 (defn read-file
-  "TODO"
+  "Reads in file line by line as Clojure atoms. Returns a LazySeq."
   [file]
-  (for [r (get-lines file)]
-    (read-string r)))
+  (for [r (get-lines file)] (read-string r)))
 
 (defn shorten
   "Removes the prefix of STRING"
   [string]
-  (second (clojure.string/split string #"#")))
+  (last (clojure.string/split string #"#")))
 
 (defn get-entity-short-string
   [entity]
-  (shorten (named-entity-as-string entity)))
+  (shorten (str (.getIRI entity))))
