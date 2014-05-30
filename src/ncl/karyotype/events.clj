@@ -142,7 +142,7 @@ CHROMOSOME."
 ;;                             frames))]
 ;;       (-> (rea/isubclasses o clazz)))))
 
-(defn filter-parent-axioms
+(defn- filter-parent-axioms
   "Returns PROPERTY axioms of given CLAZZ."
   [clazz property]
   (let [parents (superclasses h/human clazz)
@@ -174,6 +174,68 @@ CHROMOSOME."
    (throw (IllegalArgumentException.
            (str "Class not recognized:" clazz)))))
 
+(defn- get-centromere-string
+  "Returns associated centromere of given CLAZZ. The centromere can be
+specified by providing an ARM function."
+  [clazz arm] {:pre [(or (= arm h/pband?) (= arm h/qband?) (nil? arm))]}
+  (cond
+   (h/cen? clazz)
+   clazz
+   (or (= h/HumanChromosomeBand clazz)
+       (= h/HumanTelomere clazz)
+       (= h/HumanChromosome clazz)
+       (= h/HumanAutosome clazz)
+       (= h/HumanSexChromosome clazz))
+   h/HumanCentromere
+   (h/pband? clazz)
+   (owl-class h/human
+              (str (re-find #"HumanChromosome[\dXY]+Bandp" (str clazz)) "10"))
+   (h/qband? clazz)
+   (owl-class h/human
+              (str (re-find #"HumanChromosome[\dXY]+Bandq" (str clazz)) "10"))
+   (or (h/chromosome? clazz) (h/band? clazz) (h/ter? clazz))
+   (if (nil? arm)
+     (owl-class h/human
+                (str
+                 (re-find #"HumanChromosome[\dXY]+" (str clazz)) "Centromere"))
+     (filter arm (direct-subclasses
+                  h/human
+                  (owl-class
+                   h/human
+                   (str
+                    (re-find #"HumanChromosome[\dXY]+" (str clazz)) "Band")))))
+   :default
+   (throw (IllegalArgumentException.
+           (str "Class not recognized:" clazz)))))
+
+(defn- get-band-no
+  [band] {:pre [(h/band? band)]}
+  (re-find #"[\d\.]+$"
+           (g/get-entity-short-string
+            (owl-class h/human band))))
+
+(defn- get-direction
+  "Determines the direction of the band range as either direct or inverse"
+  [band1 band2] {:pre [(h/band? band1) (h/band? band2)]}
+  (cond
+   (or (not (or (h/pband? band1) (h/qband? band1)))
+       (not (or (h/pband? band2) (h/qband? band2))))
+   "Unknown"
+   (and (h/pband? band1) (h/qband? band2))
+   "Direct"
+   (and (h/qband? band1) (h/pband? band2))
+   "Inverse"
+   (or
+    (and (h/pband? band1) (h/pband? band2))
+    (and (h/qband? band1) (h/qband? band2)))
+   (let [digit1 (get-band-no band1)
+         digit2 (get-band-no band1)]
+     (if (or (= digit1 nil) (= digit2 nil))
+       "Unknown"
+       (if (<= (read-string digit1) (read-string digit2))
+         "Direct"
+         "Inverse")))))
+
 (defn- get-telomere-string
   "Returns associated telomere of given CLAZZ."
   [clazz]
@@ -198,66 +260,6 @@ CHROMOSOME."
    :default
    (throw (IllegalArgumentException.
            (str "Class not recognized:" clazz)))))
-
-(defn- get-centromere-string
-  "Returns associated centromere of given CLAZZ. The centromere can be
-specified by providing an ARM function."
-  [clazz arm] {:pre [(or (= arm h/pband?) (= arm h/qband?))]}
-  (cond
-   (h/cen? clazz)
-   clazz
-   (or (= h/HumanChromosomeBand clazz)
-       (= h/HumanCentromere clazz)
-       (= h/HumanChromosome clazz)
-       (= h/HumanAutosome clazz)
-       (= h/HumanSexChromosome clazz))
-   h/HumanCentromere
-   (h/pband? clazz)
-   (owl-class h/human
-              (str (re-find #"HumanChromosome[\dXY]+Bandp" (str clazz)) "10"))
-   (h/qband? clazz)
-   (owl-class h/human
-              (str (re-find #"HumanChromosome[\dXY]+Bandq" (str clazz)) "10"))
-   (or (h/chromosome? clazz) (h/band? clazz) (h/cen? clazz))
-   (if (nil? arm)
-     (owl-class h/human
-                (str
-                 (re-find #"HumanChromosome[\dXY]+" (str clazz)) "Centromere"))
-     (filter arm (direct-subclasses
-                  h/human
-                  (owl-class
-                   h/human
-                   (str
-                    (re-find #"HumanChromosome[\dXY]+" (str clazz)) "Band")))))
-   :default
-   (throw (IllegalArgumentException.
-           (str "Class not recognized:" clazz)))))
-
-(defn- get-band-no
-  [band]
-  (re-find #"[\d\.]+$"
-           (g/get-entity-short-string
-            (owl-class h/human band))))
-
-(defn- get-direction
-  "Determines the direction of the band range as either direct or inverse"
-  [band1 band2] {:pre [(h/band? band1) (h/band? band2)]}
-  (cond
-   (or (not (or (h/pband? band1) (h/qband? band1)))
-       (not (or (h/pband? band2) (h/qband? band2))))
-   "Unknown"
-   (and (h/pband? band1) (h/qband? band2))
-   "Direct"
-   (and (h/qband? band1) (h/pband? band2))
-   "Inverse"
-   (or
-    (and (h/pband? band1) (h/pband? band2))
-    (and (h/qband? band1) (h/qband? band2)))
-   (let [digit1 (get-band-no band1)
-         digit2 (get-band-no band1)]
-     (if (<= (read-string digit1) (read-string digit2))
-       "Direct"
-       "Inverse"))))
 
 ;; (defn- get-telomere-ontology [clazz]
 ;;   "Returns associated telomere of given CLAZZ."
