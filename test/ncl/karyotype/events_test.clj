@@ -21,6 +21,8 @@
    [ncl.karyotype.events :as e]
    [ncl.karyotype.human :as h]
    [ncl.karyotype.karyotype :as k]
+   [ncl.karyotype.generic :as g] ;; TESTING
+   [tawny.render :as re] ;; TESTING
    [tawny.owl :as o]
    [tawny.reasoner :as r]))
 
@@ -34,21 +36,15 @@
 
 (use-fixtures :once ontology-reasoner-fixture)
 
-;; (o/defontology to
-;;   :iri "http://ncl.ac.uk/karyotype/test"
-;;   :prefix "test:"
-;;   :comment "Test ontology for Human Karyotype Ontology, written using
-;;   the tawny-owl library.")
-
 (deftest Basic
   (is (r/consistent?))
   (is (r/coherent?)))
 
-(deftest Parentband?
+(deftest parentband?
   (is (#'ncl.karyotype.events/parentband? h/HumanChromosomeBand))
   (is (not (#'ncl.karyotype.events/parentband? h/HumanChromosome1Band))))
 
-(deftest Telomere-Band
+(deftest telomere-Band
   (let [chromosome h/HumanChromosome1
         test (#'ncl.karyotype.events/telomere-band chromosome)]
     (is (h/chromosome? chromosome))
@@ -56,18 +52,15 @@
          uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl
          test))
     (is (.containsConjunct test h/HumanChromosomeBand))
-    ;; FOR VERSION 1.1.1
-    ;; (is (.containsConjunct test (o/owl-some k/isBandOf h/HumanTelomere)))
-    ;; (is (.containsConjunct test (o/owl-some k/isBandOf chromosome))))
-    (is (.containsConjunct test
-                           (first (o/owl-some k/isBandOf h/HumanTelomere))))
-    (is (.containsConjunct test (first (o/owl-some k/isBandOf chromosome)))))
+    (is (.containsConjunct test (o/owl-some k/isBandOf h/HumanTelomere)))
+    (is (.containsConjunct test (o/owl-some k/isBandOf chromosome))))
 
   (is (thrown? AssertionError
                "HumanChromosomeBand"
                (#'ncl.karyotype.events/telomere-band h/HumanChromosomeBand))))
 
-(deftest Telomere-Component
+(deftest telomere-component
+  ;; valid inputs
   (let [chromosome h/HumanChromosome1
         test (#'ncl.karyotype.events/telomere-component chromosome)]
     (is (h/chromosome? chromosome))
@@ -75,22 +68,45 @@
          uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl
          test))
     (is (.containsConjunct test h/HumanTelomere))
-    ;; FOR VERSION 1.1.1
-    ;; (is (.containsConjunct test (o/owl-some k/isComponentOf chromosome))))
-    (is (.containsConjunct test
-                           (first (o/owl-some k/isComponentOf chromosome)))))
+    (is (.containsConjunct test (o/owl-some k/isComponentOf chromosome))))
 
+  ;; invalid input
   (is (thrown? AssertionError
                "HumanChromosomeBand"
                (#'ncl.karyotype.events/telomere-component
                 h/HumanChromosomeBand))))
 
 ;; TODO
-;; (deftest Query-Class)
-;; (deftest Filter-Parent-Axioms)
-;; (deftest Get-Chromosome0)
+;; (deftest query-class)
 
-(deftest Get-Chromosome
+(deftest filter-parent-axioms
+  ;; valid inputs
+  (let [inputs [h/HumanChromosome1Bandp h/HumanChromosome1Bandp10 e/Addition]
+        property k/isBandOf
+        expected [(list (o/owl-some k/isBandOf h/HumanChromosome1))
+                  (list (o/owl-some k/isBandOf h/HumanChromosome1Centromere)
+                        (o/owl-some k/isBandOf h/HumanChromosome1))
+                  (list)]
+        actual (into [] (map #(#'ncl.karyotype.events/filter-parent-axioms
+                               %1 property) inputs))]
+
+    (is (= actual expected))))
+
+(deftest get-chromosome0
+  ;; valid input
+  (let [chromosome h/HumanChromosome1
+        test (#'ncl.karyotype.events/get-chromosome0
+              (list (o/owl-some k/isBandOf chromosome)))]
+
+    (is (= chromosome test))
+
+    ;; invalid input
+    (is (thrown?
+         IllegalArgumentException
+         (str chromosome)
+         (#'ncl.karyotype.events/get-chromosome0 chromosome)))))
+
+(deftest get-chromosome
   ;; valid inputs
   (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
                 h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
@@ -109,13 +125,98 @@
              chromosome))
         (is (h/chromosome? chromosome))
         (is (= chromosome (get expected i))))))
+
   ;; invalid input
   (is (thrown?
        IllegalArgumentException
        "Addition"
        (e/get-chromosome e/Addition))))
 
-(deftest Get-Telomere
+(deftest get-centromere-string
+  ;; valid inputs
+  (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
+                h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
+                h/HumanChromosome1Bandq h/HumanChromosome1Band
+                h/HumanChromosome1Centromere h/HumanChromosome1Telomere
+                h/HumanChromosome1 h/HumanChromosomeBand
+                h/HumanCentromere h/HumanTelomere h/HumanChromosome
+                ]
+        expected (into [] (reverse
+                           (flatten
+                            (merge
+                             (repeat 4 h/HumanChromosome1Bandp10)
+                             h/HumanChromosome1Bandq10
+                             (repeat 4 h/HumanChromosome1Centromere)
+                             (repeat 4 h/HumanCentromere)))))
+        actual (into [] (map
+                         #(#'ncl.karyotype.events/get-centromere-string % nil)
+                         inputs))]
+
+    (doseq [i (range (count inputs))]
+      (let [centromere (get actual i)]
+        (is (instance?
+             org.semanticweb.owlapi.model.OWLClassExpression
+             centromere))
+        (is (h/cen? centromere))
+        (is centromere (get expected i)))))
+
+  ;; invalid input
+  (is (thrown?
+       IllegalArgumentException
+       "Addition"
+       (#'ncl.karyotype.events/get-centromere-string e/Addition nil))))
+
+(deftest get-band-no
+  (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
+                h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
+                h/HumanChromosome1Bandq h/HumanChromosome1Band
+                h/HumanChromosomeBand]
+        expected (into [] (flatten ["36.31" "10" (repeat 5 nil)]))
+        actual (into [] (map #'ncl.karyotype.events/get-band-no inputs))]
+
+    (is (= actual expected)))
+
+  ;; invalid input
+  (is (thrown?
+       AssertionError
+       "HumanChromosome1"
+       (#'ncl.karyotype.events/get-band-no h/HumanChromosome1))))
+
+(deftest get-direction
+  ;; valid inputs
+  (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
+                h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
+                h/HumanChromosome1Bandq h/HumanChromosome1Band
+                h/HumanChromosomeBand]
+        expected (into [] (reverse
+                           (flatten
+                            (merge
+                             (repeat 2 "Unknown")
+                             "Direct"
+                             "Unknown"
+                             "Inverse"
+                             (repeat 2 "Unknown")))))
+        actual (into [] (map #(#'ncl.karyotype.events/get-direction
+                               %1 %2)
+                             inputs (reverse inputs)))]
+
+    (is (= actual expected)))
+
+  ;; invalid inputs
+  (is (thrown?
+       AssertionError
+       (#'ncl.karyotype.events/get-direction
+        h/HumanChromosome1 h/HumanChromosome1Band)))
+  (is (thrown?
+       AssertionError
+       (#'ncl.karyotype.events/get-direction
+        h/HumanChromosome1Band h/HumanChromosome1)))
+  (is (thrown?
+       AssertionError
+       (#'ncl.karyotype.events/get-direction
+        h/HumanChromosome1 h/HumanChromosome1))))
+
+(deftest get-telomere
   ;; tests each get-telmere function
   (let [functions
         [e/get-telomere #'ncl.karyotype.events/get-telomere-string]]
@@ -151,35 +252,18 @@
            "Addition"
            (function e/Addition))))))
 
-;; TODO
-;; (deftest Get-Centromere)
-;; (deftest Get-Direction)
-
-;; unlike exactly, owl-some returns a lazyseq of hasEvent restrictions
-;; FOR VERSION 1.1.1
 ;; unlike exactly, owl-some can return a lazyseq of hasEvent
 ;; restrictions iff more than one restriction
-(deftest Some-Event
-  ;; FOR VERSION 1.1.1
-  ;; (let [event (#'ncl.karyotype.events/some-event
-  ;;               (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
+(deftest some-event
+  (let [event (#'ncl.karyotype.events/some-event
+               (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
 
-  ;;   (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
-  ;;   (is (.isObjectRestriction event))
-  ;;   (is (= (.getProperty event) e/hasEvent))
-  ;;   (is (not (= (.getProperty event) e/hasDirectEvent)))))
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
+    (is (.isObjectRestriction event))
+    (is (= (.getProperty event) e/hasEvent))
+    (is (not (= (.getProperty event) e/hasDirectEvent)))))
 
-  (let [events (#'ncl.karyotype.events/some-event
-                (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
-
-    (doseq [event events]
-      (is (instance?
-           org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
-      (is (.isObjectRestriction event))
-      (is (= (.getProperty event) e/hasEvent))
-      (is (not (= (.getProperty event) e/hasDirectEvent))))))
-
-(deftest Exactly-Event
+(deftest exactly-event
   ;; valid input
   (let [n 1
         event (#'ncl.karyotype.events/exactly-event
@@ -191,12 +275,13 @@
     (is (= (.getCardinality event) n))
     (is (= (.getProperty event) e/hasEvent))
     (is (not (= (.getProperty event) e/hasDirectEvent))))
+
   ;; invalid input
   (is (thrown? AssertionError
                (#'ncl.karyotype.events/exactly-event "1" (o/owl-and e/Addition
                                                h/HumanChromosome1)))))
 
-(deftest Event
+(deftest event
   ;; valid input
   (let [n 1
         exact (e/event n (o/owl-and e/Addition h/HumanChromosome1))
@@ -219,24 +304,15 @@
                (e/event
                 "1" (o/owl-and e/Addition h/HumanChromosome1)))))
 
-(deftest Some-Direct-Event
-  ;; FOR VERSION 1.1.1
-  ;; (let [event (#'ncl.karyotype.events/some-direct-event
-  ;;              (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
-  ;;   (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
-  ;;   (is (.isObjectRestriction event))
-  ;;   (is (= (.getProperty event) e/hasDirectEvent))
-  ;;   (is (not (= (.getProperty event) e/hasEvent)))))
-
-  (let [events (#'ncl.karyotype.events/some-direct-event
+(deftest some-direct-event
+  (let [event (#'ncl.karyotype.events/some-direct-event
                (o/owl-and e/Addition h/HumanChromosome1 h/HumanChromosome12))]
-    (doseq [event events]
-      (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
-      (is (.isObjectRestriction event))
-      (is (= (.getProperty event) e/hasDirectEvent))
-      (is (not (= (.getProperty event) e/hasEvent))))))
+    (is (instance? org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom event))
+    (is (.isObjectRestriction event))
+    (is (= (.getProperty event) e/hasDirectEvent))
+    (is (not (= (.getProperty event) e/hasEvent)))))
 
-(deftest Exactly-Direct-Event
+(deftest exactly-direct-event
   ;; valid input
   (let [n 1
         event (#'ncl.karyotype.events/exactly-direct-event
@@ -253,7 +329,7 @@
                (#'ncl.karyotype.events/exactly-direct-event
                 "1" (o/owl-and e/Addition h/HumanChromosome1)))))
 
-(deftest Direct-Event
+(deftest direct-event
   ;; valid input
   (let [n 1
         exact (e/direct-event n (o/owl-and e/Addition h/HumanChromosome1))
@@ -276,7 +352,7 @@
                (e/direct-event
                 "1" (o/owl-and e/Addition h/HumanChromosome1)))))
 
-(deftest Addition-Chromosome
+(deftest addition-chromosome
   ;; valid inputs
   (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
         events (into [] (map e/addition-chromosome inputs))]
@@ -292,7 +368,7 @@
                "HumanChromosomeBand"
                (e/addition-chromosome h/HumanChromosomeBand))))
 
-(deftest Addition-Band
+(deftest addition-band
   ;; valid inputs
   (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
                 h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
@@ -318,7 +394,7 @@
                "HumanChromosome"
                (e/addition-band h/HumanChromosome))))
 
-(deftest Addition
+(deftest addition
   ;; valid inputs - chromosomes
   (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
         expected (into []
@@ -349,7 +425,7 @@
                "Addition"
                (e/addition 1 e/Addition))))
 
-(deftest Deletion-Chromosome
+(deftest deletion-chromosome
   ;; valid inputs
   (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
         events (into [] (map e/deletion-chromosome inputs))]
@@ -365,7 +441,7 @@
                "HumanChromosomeBand"
                (e/deletion-chromosome h/HumanChromosomeBand))))
 
-(deftest Deletion-Band
+(deftest deletion-band
   ;; valid inputs
   (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
                 h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
@@ -400,7 +476,7 @@
                "HumanChromosome and HumanChromosome"
                (e/deletion-band h/HumanChromosome h/HumanChromosome))))
 
-(deftest Deletion
+(deftest deletion
   ;; valid inputs - chromosomes
   (let [inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
         expected (into []
@@ -446,12 +522,76 @@
        "HumanChromosome1Centromere"
        (e/deletion 1 h/HumanChromosome1Centromere))))
 
-;; TODO
-;; (deftest Duplication-Pattern)
-;; (deftest Duplication)
+(deftest duplication-pattern
+  ;; valid inputs
+  (let [type e/Duplication
+        bands [h/HumanChromosome1Band h/HumanChromosome2Band]
+        event (e/duplication-pattern type (get bands 0) (get bands 1))]
+
+    (is (instance?
+         uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl
+         event))
+    (is (.containsConjunct event type))
+    (doseq [conjunct (.asConjunctSet event)]
+      (if (instance?
+           uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl
+           conjunct)
+        (let [property conjunct]
+          (is (.isObjectRestriction property))
+          (is (= (.getProperty property) e/hasBreakPoint))
+          (is (or (= (.getFiller property) (get bands 0))
+                  (= (.getFiller property) (get bands 1)))))))
+
+    ;; invalid input
+    (is (thrown? AssertionError
+                 "Addition"
+                 (e/duplication-pattern e/Addition
+                                        (get bands 0) (get bands 1))))))
+
+(deftest duplication
+  ;; valid inputs
+  (let [inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
+                h/HumanChromosome1BandpTer h/HumanChromosome1Bandp
+                h/HumanChromosome1Bandq h/HumanChromosome1Band
+                h/HumanChromosomeBand]
+        types (into [] (reverse
+                        (flatten
+                         (merge
+                          (repeat 2 e/Duplication)
+                          e/DirectDuplication
+                          e/Duplication
+                          e/InverseDuplication
+                          (repeat 2 e/Duplication)))))
+        actual (into [] (map #(e/duplication 1 %1 %2)
+                             inputs (reverse inputs)))]
+
+    (doseq [i (range (count inputs))]
+      (let [event (.getFiller (get actual i))]
+        (is (instance?
+             uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl
+             event))
+        (is (.containsConjunct event (get types i)))
+        (doseq [conjunct (.asConjunctSet event)]
+          (if (instance?
+               uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl
+               conjunct)
+            (let [property conjunct]
+              (is (.isObjectRestriction property))
+              (is (= (.getProperty property) e/hasBreakPoint))
+              (is (or (= (.getFiller property) (get inputs i))
+                      (= (.getFiller property)
+                         (get (into [] (reverse inputs)) i))))))))))
+
+  ;; invalid inputs
+  (is (thrown?
+       AssertionError
+       (e/duplication 1 h/HumanChromosome1 h/HumanChromosome1Band)))
+  (is (thrown?
+       AssertionError
+       (e/duplication 1 h/HumanChromosome1Band h/HumanChromosome1))))
 
 ;; TOFIX
-(deftest Fission
+(deftest fission
   ;; valid inputs - chromosomes
   ;; (let [n 1
   ;;       inputs [h/HumanChromosome1 h/HumanAutosome h/HumanChromosome]
@@ -501,13 +641,9 @@
         (is (= (.getProperty event) e/hasDirectEvent))
         (is (= (.getCardinality event) n))
         (is (.containsConjunct (.getFiller event) e/Fission))
-        ;; FOR VERSION 1.1.1
-        ;; (is (.containsConjunct
-        ;;      (.getFiller event)
-        ;;      (o/owl-some e/hasBreakPoint (get inputs i)))))))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint (get inputs i))))))))
+             (o/owl-some e/hasBreakPoint (get inputs i)))))))
 
   ;; invalid input
   ;; TODO is this true?
@@ -516,10 +652,10 @@
        "HumanChromosome1Centromere"
        (e/fission 1 h/HumanChromosome1Centromere))))
 
-;; (deftest Insertion-Pattern)
-;; (deftest Insertion)
+;; (deftest insertion-pattern)
+;; (deftest insertion)
 
-(deftest Inversion
+(deftest inversion
   ;; valid input
   (let [n 1
         inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
@@ -538,19 +674,12 @@
         (is (= (.getProperty event) e/hasDirectEvent))
         (is (= (.getCardinality event) n))
         (is (.containsConjunct (.getFiller event) e/Inversion))
-        ;; FOR VERSION 1.1.1
-        ;; (is (.containsConjunct
-        ;;      (.getFiller event)
-        ;;      (o/owl-some e/hasBreakPoint input1)))
-        ;; (is (.containsConjunct
-        ;;      (.getFiller event)
-        ;;      (o/owl-some e/hasBreakPoint input2)))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint input1))))
+             (o/owl-some e/hasBreakPoint input1)))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint input2))))
+             (o/owl-some e/hasBreakPoint input2)))
         (if (= input1 input2)
           (is (= 2 (count (.asConjunctSet (.getFiller event)))))
           (is (= 3 (count (.asConjunctSet (.getFiller event)))))))))
@@ -566,7 +695,7 @@
                (e/inversion 1 h/HumanChromosome1 h/HumanChromosome1))))
 
 ;; similar to inversion
-(deftest Quadruplication
+(deftest quadruplication
   ;; valid input
   (let [n 1
         inputs [h/HumanChromosome1Bandp36.31 h/HumanChromosome1Bandp10
@@ -586,19 +715,12 @@
         (is (= (.getProperty event) e/hasDirectEvent))
         (is (= (.getCardinality event) n))
         (is (.containsConjunct (.getFiller event) e/Quadruplication))
-        ;; FOR VERSION 1.1.1
-        ;; (is (.containsConjunct
-        ;;      (.getFiller event)
-        ;;      (o/owl-some e/hasBreakPoint input1)))
-        ;; (is (.containsConjunct
-        ;;      (.getFiller event)
-        ;;      (o/owl-some e/hasBreakPoint input2)))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint input1))))
+             (o/owl-some e/hasBreakPoint input1)))
         (is (.containsConjunct
              (.getFiller event)
-             (first (o/owl-some e/hasBreakPoint input2))))
+             (o/owl-some e/hasBreakPoint input2)))
         (if (= input1 input2)
           (is (= 2 (count (.asConjunctSet (.getFiller event)))))
           (is (= 3 (count (.asConjunctSet (.getFiller event)))))))))
@@ -613,7 +735,7 @@
   (is (thrown? AssertionError
                (e/inversion 1 h/HumanChromosome1 h/HumanChromosome1))))
 
-;; (deftest Adjust-Bands)
-;; (deftest Translocation)
-;; (deftest Triplication-Pattern)
-;; (deftest Triplication)
+;; (deftest adjust-bands)
+;; (deftest translocation)
+;; (deftest triplication-pattern)
+;; (deftest triplication)
