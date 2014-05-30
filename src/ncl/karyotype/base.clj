@@ -39,9 +39,7 @@
    :domain k/Karyotype
    :range k/Karyotype)
 
- (defoproperty derivedTo
-   :range k/Karyotype
-   :domain k/Karyotype))
+ (defoproperty derivedTo))
 
 ;; define chain properties
 ;; due to build dependancy, the subproperty chain axiom for
@@ -82,7 +80,7 @@
  (defclass k46_XY
    :label "The 46,XY karyotype"))
 
-;; define all triploid base karyotypes #CHECK
+;; define all triploid base karyotypes
 (defclass k69_XNN
   :label "The 69,XNN karyotype"
   :subclass BaseKaryotype)
@@ -95,7 +93,7 @@
  (defclass k69_XYY
    :label "The 69,XYY karyotype"))
 
-;; define all tetraploid base karyotypes #CHECK
+;; define all tetraploid base karyotypes
 (defclass k92_XNNN
   :label "The 92,XNNN karyotype"
   :subclass BaseKaryotype)
