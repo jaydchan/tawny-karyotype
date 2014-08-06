@@ -13,11 +13,10 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
 (ns ncl.karyotype.core
-  (:use [tawny.owl :exclude [save-ontology]]
-        [ncl.karyotype.generic])
+  (:use [ncl.karyotype.generic :only [save-ontology]])
   (:require [ncl.karyotype karyotype human resolutions events features
              base named iscnexamples parse random affects1 affects2
              affects3 generate_iscnexamples_test])

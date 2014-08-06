@@ -18,9 +18,9 @@
 (ns ^{:doc "TODO"
       :author "Jennifer Warrender"}
   ncl.karyotype.generic
-  (:use [tawny.owl :exclude [save-ontology]]
-        [clojure.java.shell :only [sh]]
-        [clojure.java.io :only [as-file reader]]))
+  (:use [clojure.java.shell :only [sh]]
+        [clojure.java.io :only [as-file reader]])
+  (:require [tawny.owl :only save-ontology]))
 
 (defonce output-file-path "./output/")
 
@@ -30,8 +30,6 @@
 (defn save-ontology
   "'Overloads' save-ontology function."
   [o name type]
-  (if (not (.exists (clojure.java.io/as-file output-file-path)))
-    (sh "mkdir" "-p" output-file-path))
   (tawny.owl/save-ontology o (str output-file-path name) type))
 
 (defn output
