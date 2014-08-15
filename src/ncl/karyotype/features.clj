@@ -218,7 +218,7 @@ restrictions."
 
 ;; TODO Neocentromere - LONG STRING FORMAT
 
-(defn pseudo_dicentric
+(defn pseudo-dicentric
   "Returns a pseudodicentric restriction. N is the number of
 pseudodicentric restrictions. BAND1, BAND2 is of type
 HumanChromosomeBand."
@@ -227,7 +227,7 @@ HumanChromosomeBand."
                   (owl-and PseudodicentricChromosome
                            (owl-some e/hasBreakPoint band1 band2))))
 
-(defn pseudo_isodicentric
+(defn pseudo-isodicentric
   "Returns a pseudoisodicentric restriction. N is the number of
 pseudoisodicentric restrictions. BAND is of type HumanChromosomeBand."
   [n band] {:pre [(h/band? band)]}
