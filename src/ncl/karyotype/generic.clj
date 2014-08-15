@@ -24,7 +24,7 @@
 
 (defonce output-file-path "./output/")
 
-(if (not (.exists (clojure.java.io/as-file output-file-path)))
+(if-not (.exists (clojure.java.io/as-file output-file-path))
   (sh "mkdir" "-p" output-file-path))
 
 (defn save-ontology
