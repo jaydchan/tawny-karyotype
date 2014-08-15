@@ -71,7 +71,7 @@ bands."
     (owl-class resolutions string-resolution)))
 
 (defn resolution
-  "Resolution pattern - redefines human band class with addditional
+  "Resolution pattern - redefines human band class with additional
 resolution information."
   [band & resolutions]
   (refine (owl-class h/human band)
