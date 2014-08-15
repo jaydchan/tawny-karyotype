@@ -1113,7 +1113,7 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
   i.e., chromosome 15, is the active one.'"
   :subclass ISCNExampleKaryotype
   (owl-some b/derivedFrom b/k46_XX)
-  (f/pseudo_dicentric 1
+  (f/pseudo-dicentric 1
                       h/HumanChromosome15Bandq12
                       h/HumanChromosome15Bandq12))
 
@@ -1124,7 +1124,7 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
   20pterq11.2. The psu idic(20) has one active centromere.'"
   :subclass ISCNExampleKaryotype
   (owl-some b/derivedFrom b/k46_XX)
-  (f/pseudo_dicentric 1
+  (f/pseudo-dicentric 1
                       h/HumanChromosome15Bandq12
                       h/HumanChromosome15Bandq12))
 
