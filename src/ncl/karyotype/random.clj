@@ -50,8 +50,9 @@ utilises 300-band chromosome bands."
   "Creates a class in the random ontology, with clojure symbol NAME,
 and subclass restrictions a) RandomKaryotype b) derivedFrom axiom c)
 FRAMES. Returns an OWL class as described."
-  [name & frames]
+  [o name & frames]
   (apply owl-class
+         o
          (list* (str "r" name)
                 :subclass RandomKaryotype
                 (owl-some b/derivedFrom (random-sex))
@@ -149,7 +150,8 @@ FRAMES. Returns an OWL class as described."
 (defn refine-label
   "Returns the updated class definition of CLAZZ in ontology O."
   [o clazz]
-  (refine clazz
+  (refine o
+          clazz
           :label (str "The "
                       (p/parse-karyotype-class o clazz)
                       " Karyotype")))
@@ -158,10 +160,9 @@ FRAMES. Returns an OWL class as described."
   "Returns a random karyotype class with clojure symbol NAME and has
 MAX number of restirctions."
   [o name max]
-  (refine-label o
-                (karyotype-class name
-                                 :ontology o
-                                 :subclass (random-abnormality-driver max))))
+  (refine-label
+   o (karyotype-class o name
+                      :subclass (random-abnormality-driver max))))
 
 (defn random-karyotype-driver
   "Creates NUMBER number of random karyotypes with MAX number
