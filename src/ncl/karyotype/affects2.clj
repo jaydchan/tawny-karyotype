@@ -55,9 +55,10 @@ definitions to include affects data property."
   "Pattern -- returns data-only axiom for BANDS using affects data
  property."
   [bands]
-  (data-only affects
-             (apply data-oneof
-                    (map #(literal (get-ordinal %)) bands))))
+  (let [data-range (apply data-oneof
+                    (map #(literal (get-ordinal %)) bands))]
+    (list (data-some affects data-range)
+          (data-only affects data-range))))
 
 ;; DRIVERS
 (defn affects2-driver
@@ -66,13 +67,15 @@ definitions to include affects data property."
   (let [bands (flatten (a/get-bands o clazz))]
     (if (= (count bands) 0)
       clazz
-      (refine clazz
-              :ontology o
+      (refine o
+              clazz
               :subclass (affects-band bands)))))
 
-;; MAIN
-;; Set ordinal value for each chromosome
-(doseq [clazz a/bands-300]
-  (refine clazz
-          :subclass (data-has-value hasOrdinalNumber
-                                    (literal (get-ordinal clazz)))))
+(defn set-ordinal
+  "Set ordinal value for each chromosome"
+  [o]
+  (doseq [clazz a/bands-300]
+    (refine o
+            clazz
+            :subclass (data-has-value hasOrdinalNumber
+                                      (literal (get-ordinal clazz))))))
