@@ -63,7 +63,8 @@
      (= (+ size 5)
         (o/with-probe-entities ran/random
           [clazz (ran/karyotype-class
-               1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
+                  ran/random
+                  1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
           (-> ran/random
               (.getClassesInSignature)
               (.size)))))
@@ -71,10 +72,12 @@
      (instance? org.semanticweb.owlapi.model.OWLClassExpression
                 (o/with-probe-entities ran/random
                   [clazz (ran/karyotype-class
-                       1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
+                          ran/random
+                          1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
                   (-> clazz))))
     (is (o/with-probe-entities ran/random
           [clazz (ran/karyotype-class
+                  ran/random
                   1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
           (-> (o/superclass? ran/random "r1" ran/RandomKaryotype))))))
 
@@ -230,7 +233,7 @@
 
 (deftest Refine-Label
   (let [clazz (ran/karyotype-class
-               1 (e/addition 1 h/HumanChromosome1Bandp36.3))
+               ran/random 1 (e/addition 1 h/HumanChromosome1Bandp36.3))
         axioms (.getAnnotations clazz ran/random)
         sex (re-find #"XX|XY" (str (ren/as-form clazz)))
         parse (str "46," sex ",add(1p36.3)")
