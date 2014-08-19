@@ -51,9 +51,9 @@ oproperty."
 (def ^{:doc "An ordered array of available 300-band resolution band
   information for chromosome 1 only."}
   bands-300 (map #(get-band 1 %)
-  ["pTer" "p36.3" "p36.2" "p36.1" "p35" "p34" "p33" "p32" "p31" "p22" "p21" "p13"
-   "p12" "p11" "q11" "q12" "q21" "q22q23q24" "q25" "q31" "q32" "q41" "q42"
-   "q43q44" "qTer"]))
+  ["pTer" "p36.3" "p36.2" "p36.1" "p35" "p34" "p33" "p32" "p31" "p22" "p21"
+   "p13" "p12" "p11" "q11" "q12" "q21" "q22q23q24" "q25" "q31" "q32" "q41"
+   "q42" "q43q44" "qTer"]))
 
 (defn not-breakpoint?
   "Determines if BAND is equal to BREAKPOINT."
