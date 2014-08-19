@@ -35,10 +35,15 @@ definitions to include affects object property and sequence pattern"
 (defoproperty affects)
 
 ;; TODO should really import sequence.owl.rdf
-(defoproperty precedes)
-(defoproperty directlyPrecedes)
-(defoproperty directlyFollows)
+(defoproperty precedes
+  :characteristic :transitive)
+(defoproperty directlyPrecedes
+  :super precedes
+  :characteristic :functional)
 (defoproperty follows)
+(defoproperty directlyFollows
+  :super follows
+  :inverse directlyPrecedes)
 
 ;; PATTERNS
 (defn- sequence-pattern
@@ -51,10 +56,11 @@ definitions to include affects object property and sequence pattern"
   "Pattern -- returns sequence ODP variant for given BANDS, using
 affects object property"
   [bands]
-  (owl-some affects
-            (if (vector? bands)
-              (sequence-pattern bands)
-              bands)))
+  (list
+   (owl-some affects bands)
+   (if (vector? bands)
+     (owl-some affects
+               (sequence-pattern bands)))))
 
 ;; AUXILIARY FUNCTIONS
 (defn- get-affects
@@ -69,9 +75,9 @@ ontology O."
 (defn affects3-driver
   "Driver -- Returns the updated class definition of CLAZZ in ontology O."
   [o clazz]
-  (let [bands (get-affects o clazz)]
+  (let [bands (remove nil? (get-affects o clazz))]
     (if (= (count bands) 0)
       clazz
-      (refine clazz
-              :ontology o
+      (refine o
+              clazz
               :subclass bands))))
