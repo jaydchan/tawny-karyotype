@@ -13,14 +13,17 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.karyotype
+(ns ^{:doc "TODO"
+      :author "Jennifer Warrender"}
+  ncl.karyotype.karyotype
   (:use [tawny.owl]))
 
 (defontology karyotype
-  :iri "http://ncl.ac.uk/karyotype/karyotype"
-  :prefix "kar:")
+  :iri "http://www.purl.org/captau/karyotype/karyotype"
+  :prefix "kar:"
+  :comment "TODO")
 
 ;; OWL CLASSES
 (as-disjoint

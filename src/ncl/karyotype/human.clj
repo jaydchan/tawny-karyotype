@@ -13,7 +13,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
 (ns ^{:doc "Creating human chromosomal information."
       :author "Jennifer Warrender"}
@@ -24,7 +24,7 @@
             [ncl.karyotype [karyotype :as k]]))
 
 (defontology human
-  :iri "http://ncl.ac.uk/karyotype/human"
+  :iri "http://www.purl.org/captau/karyotype/human"
   :prefix "hum:"
   :comment "Human Chromosome ontology for Human Karyotype Ontology,
   written using the tawny-owl library.")

@@ -13,7 +13,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
 (ns ^{:doc "Translation of OWL karyotype classes to string and vice
 versa. Limitation - only available for addition and deletion events."
@@ -31,7 +31,7 @@ versa. Limitation - only available for addition and deletion events."
             [tawny [render :as r]]))
 
 (defontology parse
-  :iri "http://ncl.ac.uk/karyotype/parse"
+  :iri "http://www.purl.org/captau/karyotype/parse"
   :prefix "par:"
   :comment "'Parse' ontology for Human Karyotype Ontology, written
   using the tawny-owl library")

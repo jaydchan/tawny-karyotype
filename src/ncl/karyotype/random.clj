@@ -13,7 +13,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
 (ns ^{:doc "Creation of random karyotypes which may include addition
 and/or deletion events for scaling purposes. Limitation - only
@@ -21,18 +21,19 @@ utilises 300-band chromosome bands."
       :author "Jennifer Warrender"}
   ncl.karyotype.random
   (:use [tawny.owl])
-  (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]
-            [ncl.karyotype [events :as e]]
-            [ncl.karyotype [features :as f]]
-            [ncl.karyotype [base :as b]]
-            [ncl.karyotype [parse :as p]]))
+  (:require [ncl.karyotype
+             [karyotype :as k]
+             [human :as h]
+             [events :as e]
+             [features :as f]
+             [base :as b]
+             [parse :as p]]))
 
 (defontology random
-  :iri "http://ncl.ac.uk/karyotype/random"
+  :iri "http://www.purl.org/captau/karyotype/random"
   :prefix "rkar:"
   :comment "'Random' ontology for Human Karyotype Ontology, written
-  using the tawny-owl library")
+  using the Tawny-OWL library")
 
 (defclass RandomKaryotype
   :subclass k/Karyotype)

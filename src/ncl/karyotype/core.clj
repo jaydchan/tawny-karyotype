@@ -15,7 +15,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program. If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.core
+(ns ^{:doc "Base karyotype information for human karyotypes."
+      :author "Jennifer Warrender"}
+  ncl.karyotype.core
   (:use [ncl.karyotype.generic :only [save-ontology]])
   (:require [ncl.karyotype karyotype human resolutions events features
              base named iscnexamples parse random affects1 affects2

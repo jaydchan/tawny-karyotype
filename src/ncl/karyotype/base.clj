@@ -13,18 +13,19 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
 (ns ^{:doc "Base karyotype information for human karyotypes."
       :author "Jennifer Warrender"}
   ncl.karyotype.base
   (:use [tawny.owl])
-  (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [events :as e]]
-            [ncl.karyotype [features :as f]]))
+  (:require [ncl.karyotype
+             [karyotype :as k]
+             [events :as e]
+             [features :as f]]))
 
 (defontology base
-  :iri "http://ncl.ac.uk/karyotype/base"
+  :iri "http://www.purl.org/captau/karyotype/base"
   :prefix "base:"
   :comment "Base (karyotype) ontology for Human Karyotype Ontology,
   written using the tawny-owl library.")

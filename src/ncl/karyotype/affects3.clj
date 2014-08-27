@@ -13,21 +13,22 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
 (ns ^{:doc "Redefining chromosomal band addition and deletion event
 definitions to include affects object property and sequence pattern"
       :author "Jennifer Warrender"}
   ncl.karyotype.affects3
   (:use [tawny.owl])
-  (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]
-            [ncl.karyotype [events :as e]]
-            [ncl.karyotype [base :as b]]
-            [ncl.karyotype [affects1 :as a]]))
+  (:require [ncl.karyotype
+             [karyotype :as k]
+             [human :as h]
+             [events :as e]
+             [base :as b]
+             [affects1 :as a]]))
 
 (defontology affects3
-  :iri "http://ncl.ac.uk/karyotype/affects3"
+  :iri "http://www.purl.org/captau/karyotype/affects3"
   :prefix "af3:"
   :comment "Affects (take 3) ontology for Human Karyotype Ontology,
   written using the tawny-owl library.")

@@ -13,7 +13,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
 (ns ^{:doc "Defining event information for human karyotypes."
       :author "Jennifer Warrender"}
@@ -28,7 +28,7 @@
              [render :as ren]]))
 
 (defontology events
-  :iri "http://ncl.ac.uk/karyotype/events"
+  :iri "http://www.purl.org/captau/karyotype/events"
   :prefix "evn:"
   :comment "Event ontology for Human Karyotype Ontology, written using
   the tawny-owl library.")

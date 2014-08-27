@@ -13,19 +13,20 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
 (ns ^{:doc "Translating resolution information for human chromosomal
 bands."
       :author "Jennifer Warrender"}
   ncl.karyotype.resolutions
   (:use [tawny.owl])
-  (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]
+  (:require [ncl.karyotype
+             [karyotype :as k]
+             [human :as h]]
             [clojure.java.io :as io]))
 
 (defontology resolutions
-  :iri "http://ncl.ac.uk/karyotype/resolutions"
+  :iri "http://www.purl.org/captau/karyotype/resolutions"
   :prefix "res:"
   :comment "Resolution ontology for Human Karyotype Ontology,
   written using the tawny-owl library")

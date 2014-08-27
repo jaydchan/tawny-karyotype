@@ -13,21 +13,22 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
 (ns ^{:doc "Defining example karyotypes from the ISCN2013."
       :author "Jennifer Warrender"}
   ncl.karyotype.iscnexamples
   (:use [tawny.owl])
-  (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]
-            [ncl.karyotype [events :as e]]
-            [ncl.karyotype [features :as f]]
-            [ncl.karyotype [base :as b]]
-            [ncl.karyotype [named :as n]]))
+  (:require [ncl.karyotype
+             [karyotype :as k]
+             [human :as h]
+             [events :as e]
+             [features :as f]
+             [base :as b]
+             [named :as n]]))
 
 (defontology iscnexamples
-  :iri "http://ncl.ac.uk/karyotype/iscnexamples"
+  :iri "http://www.purl.org/captau/karyotype/iscnexamples"
   :prefix "iex:"
   :comment "ISCN Example Karyotypes ontology for Human Karyotype
   Ontology, written using the tawny-owl library.")

@@ -13,18 +13,22 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see http://www.gnu.org/licenses/.
+;; along with this program. If not, see http://www.gnu.org/licenses/.
 
-(ns ncl.karyotype.named
+(ns ^{:doc "TODO"
+      :author "Jennifer Warrender"}
+  ncl.karyotype.named
   (:use [tawny.owl])
-  (:require [ncl.karyotype [karyotype :as k]]
-            [ncl.karyotype [human :as h]]
-            [ncl.karyotype [events :as e]]
-            [ncl.karyotype [base :as b]]))
+  (:require [ncl.karyotype
+             [karyotype :as k]
+             [human :as h]
+             [events :as e]
+             [base :as b]]))
 
 (defontology named
-  :iri "http://ncl.ac.uk/karyotype/named"
-  :prefix "nmd:")
+  :iri "http://www.purl.org/captau/karyotype/named"
+  :prefix "nmd:"
+  :comment "TODO")
 
 ;; import all ncl.karyotype axioms
 (owl-import k/karyotype)
