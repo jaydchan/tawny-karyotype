@@ -20,8 +20,8 @@
   ncl.karyotype.core
   (:use [ncl.karyotype.generic :only [save-ontology]])
   (:require [ncl.karyotype karyotype human resolutions events features
-             base named iscnexamples parse random affects1 affects2
-             affects3 generate_iscnexamples_test])
+             base named iscnexamples parse random
+             generate_iscnexamples_test])
   (:gen-class))
 
 (defn -main
@@ -59,13 +59,4 @@
 
   (save-ontology ncl.karyotype.random/random "random.omn" :omn)
   (save-ontology ncl.karyotype.random/random "random.owl" :owl)
-
-  (save-ontology ncl.karyotype.affects1/affects1 "affects1.omn" :omn)
-  (save-ontology ncl.karyotype.affects1/affects1 "affects1.owl" :owl)
-
-  (save-ontology ncl.karyotype.affects2/affects2 "affects2.omn" :omn)
-  (save-ontology ncl.karyotype.affects2/affects2 "affects2.owl" :owl)
-
-  (save-ontology ncl.karyotype.affects3/affects3 "affects3.omn" :omn)
-  (save-ontology ncl.karyotype.affects3/affects3 "affects3.owl" :owl)
 )
