@@ -19,7 +19,8 @@
 bands."
       :author "Jennifer Warrender"}
   ncl.karyotype.resolutions
-  (:use [tawny.owl])
+  (:use [tawny.owl]
+        [ncl.karyotype.generic :only [get-lines]])
   (:require [ncl.karyotype
              [karyotype :as k]
              [human :as h]]
@@ -47,12 +48,6 @@ bands."
   :range Resolution)
 
 ;; Auxiliary functions
-(defn get-lines
-  "Reads in file-name line by line. Returns a java.lang.Cons"
-  [file-name]
-  (with-open [r (io/reader file-name)]
-    (doall (line-seq r))))
-
 (defn get-band
   "Returns (finds) human chromosome band."
   [string] {:post [(h/band? %)]}

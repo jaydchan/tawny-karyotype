@@ -42,7 +42,7 @@
     (catch
         Exception exp (println error exp))))
 
-(defn- get-lines
+(defn get-lines
   "Reads in FILE line by line. Returns a java.long.Cons"
   [file]
   (with-open [r (reader file)]
