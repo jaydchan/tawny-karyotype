@@ -12,3 +12,5 @@
 
 (add-to-list 'lentic-init-functions
              'lentic-karyotype-init)
+
+(provide 'lentic-karyotype)
