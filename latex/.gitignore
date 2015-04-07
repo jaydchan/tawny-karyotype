@@ -1,4 +1,9 @@
 # Ignore everything in this directory
 *
-# Except this file
+
+# Except these files
 !.gitignore
+!master.tex
+!style/clojure.sty
+!style/tawny.sty
+!style/karyotype.sty
