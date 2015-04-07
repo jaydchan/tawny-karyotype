@@ -1,0 +1,41 @@
+\documentclass{book}
+
+\usepackage{style/clojure}
+\usepackage{style/tawny}
+\usepackage{style/karyotype}
+
+\begin{document}
+
+\lstMakeShortInline[style=kstyle]|
+
+\lstnewenvironment{code}[1][]%
+{\lstset{style=kstyle,frame=shadowbox,#1}}{}
+
+\title{Documenting tawny-karyotype}
+
+\author{Jennifer D. Warrender}
+
+\date{March 2015}
+
+\maketitle
+
+%% force lentic to build necessary .tex files
+
+%% ko auxiliary files
+\include{core}
+\include{generic}
+\include{generate_iscnexamples_test}
+\include{parse}
+\include{random}
+
+%% ko files
+\include{karyotype}
+\include{human}
+\include{base}
+\include{events}
+\include{features}
+\include{named}
+\include{iscnexamples}
+\include{resolutions}
+
+\end{document}
