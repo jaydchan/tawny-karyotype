@@ -1,0 +1,73 @@
+\ProvidesPackage{karyotype}
+%% This defines a new language style for the listings package (adapted
+%% from omn.sty).
+%% Stick
+%% \usepackage{karyotype}
+%% Into your preamble and all should work.
+%% This supports Clojure, Tawny-OWL and tawny-karyotype.
+
+% Available colors:
+% http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/contrib/xcolor/xcolor.pdf
+
+%% JEN EDIT -- added generate-named-pizza, add, neocentromere,
+%% pseudo-dicentric, pseudo-isodicentric, tas, uniparentaldisomy
+
+\RequirePackage{xcolor}
+\RequirePackage{listings}
+\RequirePackage{style/clojure}
+\RequirePackage{style/tawny}
+
+\lstdefinelanguage{tawny-karyotype}%
+{%
+  language=clojure,%
+  alsolanguage=tawny,%
+  keywords=[5]{abnormalities, addition, addition, addition-band,
+    addition-chromosome, adjust-bands, affects-band, affects1-driver,
+    affects2-driver, affects3-driver, band-filter, band-range, band?,
+    cen?, chrom-filter, chrom-sort, chromosome?, clean-up,
+    create-class-with-superclasses, create-karyotype-string,
+    create-karyotype-string0, define-event, deletion, deletion-band,
+    deletion-band-driver, deletion-chromosome, deletions, derivative,
+    dicentric, direct-event, direct-feature, directlyFollows,
+    directlyPrecedes, duplication, duplication-pattern, event,
+    exactly-direct-event, exactly-direct-feature, exactly-event,
+    exactly-feature, feature, filter-parent-axioms, fission, follows,
+    fragilesite, get-affects, get-axiom-string, get-band,
+    get-band-range, get-bands, get-base, get-breakpoints,
+    get-centromere-string, get-chromosome, get-chromosome0,
+    get-derived-from, get-direction, get-event-string, get-lines,
+    get-no-of-Y, get-ordinal, get-resolution, get-subclasses,
+    get-telomere, get-telomere-string, group-for-band, hsr,
+    human-filter, human-sub-band, humanbands, humanbands0, insertion,
+    insertion-pattern, inversion, inversion-pattern, isochromosome,
+    isoderivative, isodicentric, karyotype-class, make-safe, marker,
+    not-breakpoint?, parentband?, parse-karyotype-class,
+    parse-karyotype-string, pband?, pseudo_dicentric,
+    pseudo_isodicentric, qband?, quadruplication, random-abnormality,
+    random-abnormality-driver, random-band, random-band-addition,
+    random-band-deletion, random-chromosome,
+    random-chromosome-addition, random-chromosome-deletion,
+    random-interstitial-deletion, random-karyotype,
+    random-karyotype-driver, random-karyotype0, random-sex,
+    random-terminal-deletion, refine-label, resolution, results, ring,
+    robertsonian, seenAtResolution, sequence-odp, sex,
+    some-direct-event, some-direct-feature, some-event, some-feature,
+    split-bands, str-cen?, str-pband?, str-qband?, str-ter?,
+    string-results, subset, telomere-band, telomere-component, ter?,
+    test-addition-band, test-addition-both, test-addition-chromosome,
+    test-both-events, test-deletion-band-terminal,
+    test-deletion-chromosome, test-deletion-one-band,
+    test-deletion-two-bands, translocation, tricentric, triplication,
+    triplication-pattern, generate-named-pizza, add, neocentromere,
+    pseudo-dicentric, pseudo-isodicentric, tas, uniparentaldisomy,
+    whodunit, str-name, load-labels, load-props, get-start-ordinal,
+    get-finish-ordinal},%
+  alsoletter={-,?,|,&,0,1,2,3,*,>,!,:},%
+}
+
+\lstdefinestyle{kstyle}
+{%
+  style=tawnystyle,%
+  language=tawny-karyotype,%
+  keywordstyle=[5]\color{blue},%
+}
