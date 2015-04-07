@@ -1,19 +1,24 @@
-;; The contents of this file are subject to the LGPL License, Version 3.0.
+;; \chapter{Karyotype unit tests}
+;; \label{chap:iscnexamples}
 
-;; Copyright (C) 2013, Newcastle University
+;; %% The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; This program is free software: you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
+;; %% Copyright (C) 2012-2015, Newcastle University
 
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-;; GNU General Public License for more details.
+;; %% This program is free software: you can redistribute it and/or modify
+;; %% it under the terms of the GNU General Public License as published by
+;; %% the Free Software Foundation, either version 3 of the License, or
+;; %% (at your option) any later version.
 
-;; You should have received a copy of the GNU General Public License
-;; along with this program. If not, see http://www.gnu.org/licenses/.
+;; %% This program is distributed in the hope that it will be useful,
+;; %% but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; %% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;; %% GNU General Public License for more details.
+
+;; %% You should have received a copy of the GNU General Public License
+;; %% along with this program. If not, see http://www.gnu.org/licenses/.
+
+;; \begin{code}
 
 (ns ^{:doc "Defining example karyotypes from the ISCN2013."
       :author "Jennifer Warrender"}
@@ -2831,3 +2836,9 @@ k46_XX_der!1!t!1_3!!p32_q21!inv!1!!p22q21!t!1_11!!q25_q13!_der!3!t!1_3!_der!11!t
    (data-has-value hasMosiac (literal 20))))
 
 ;; (println "TOTAL" (count (direct-subclasses iscnexamples ISCNExampleKaryotype)))
+
+;; \end{code}
+
+;; %%% Local Variables:
+;; %%% TeX-master: "master.tex"
+;; %%% End:

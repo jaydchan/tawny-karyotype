@@ -1,6 +1,5 @@
-;; \documentclass{article}
-
-;; \begin{document}
+;; \chapter{Modelling chromosome components}
+;; \label{chap:human}
 
 ;; %% The contents of this file are subject to the LGPL License, Version 3.0.
 
@@ -1065,4 +1064,6 @@ PARENT, which is either p or q band."
 
 ;; \end{code}
 
-;; \end{document}
+;; %%% Local Variables:
+;; %%% TeX-master: "master.tex"
+;; %%% End:
