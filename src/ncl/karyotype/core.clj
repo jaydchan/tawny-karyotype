@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2012, Newcastle University
+;; Copyright (C) 2012-2015, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
   ncl.karyotype.core
   (:use [ncl.karyotype.generic :only [save-ontology]])
   (:require [ncl.karyotype karyotype human resolutions events features
-             base named iscnexamples parse random
+             base named iscnexamples random ;; parse
              generate_iscnexamples_test])
   (:gen-class))
 
@@ -54,8 +54,8 @@
   (save-ontology
    ncl.karyotype.iscnexamples/iscnexamples "iscnexamples.owl" :owl)
 
-  (save-ontology ncl.karyotype.parse/parse "parse.omn" :omn)
-  (save-ontology ncl.karyotype.parse/parse "parse.owl" :owl)
+  ;; (save-ontology ncl.karyotype.parse/parse "parse.omn" :omn)
+  ;; (save-ontology ncl.karyotype.parse/parse "parse.owl" :owl)
 
   (save-ontology ncl.karyotype.random/random "random.omn" :omn)
   (save-ontology ncl.karyotype.random/random "random.owl" :owl)

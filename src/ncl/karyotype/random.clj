@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2013, Newcastle University
+;; Copyright (C) 2012-2015, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ utilises 300-band chromosome bands."
              [parse :as p]]))
 
 (defontology random
-  :iri "http://www.purl.org/captau/karyotype/random"
+  :iri "http://www.purl.org/ontolink/karyotype/random"
   :prefix "rkar:"
   :comment "'Random' ontology for Human Karyotype Ontology, written
   using the Tawny-OWL library")

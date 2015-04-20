@@ -14,3 +14,7 @@ Jennifer Warrender, Newcastle University.
 The contents of this project are subject to the [LGPL License, Version 3.0](LICENSE).
 
 Copyright (C) 2012-2014, Newcastle University
+
+## Ontology
+
+The Karyotype Ontology can be found [here](http://homepages.cs.ncl.ac.uk/jennifer.warrender/karyotype/latest/).

@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2012, Newcastle University
+;; Copyright (C) 2012-2015, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
             [ncl.karyotype [karyotype :as k]]))
 
 (defontology human
-  :iri "http://www.purl.org/captau/karyotype/human"
+  :iri "http://www.purl.org/ontolink/karyotype/human"
   :prefix "hum:"
   :comment "Human Chromosome ontology for Human Karyotype Ontology,
   written using the tawny-owl library.")

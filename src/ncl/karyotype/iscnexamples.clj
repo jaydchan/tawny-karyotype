@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2013, Newcastle University
+;; Copyright (C) 2012-2015, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
              [named :as n]]))
 
 (defontology iscnexamples
-  :iri "http://www.purl.org/captau/karyotype/iscnexamples"
+  :iri "http://www.purl.org/ontolink/karyotype/iscnexamples"
   :prefix "iex:"
   :comment "ISCN Example Karyotypes ontology for Human Karyotype
   Ontology, written using the tawny-owl library.")
