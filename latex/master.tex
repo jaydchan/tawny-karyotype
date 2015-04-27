@@ -1,15 +1,36 @@
-\documentclass{book}
+\documentclass{article}
 
+%%Syntax highlighting for \cloj, \tawny & tawny-karyotype
 \usepackage{style/clojure}
 \usepackage{style/tawny}
 \usepackage{style/karyotype}
 
-\begin{document}
-
+% coding environment for tawny code
+\usepackage{listings}
 \lstMakeShortInline[style=kstyle]|
-
 \lstnewenvironment{code}[1][]%
 {\lstset{style=kstyle,frame=shadowbox,#1}}{}
+
+% Acronym stuff
+\usepackage[printonlyused]{acronym} 
+
+% Used for spacing in macros.
+\usepackage{xspace}
+
+%For setting line spacing and switching between single/double spacing
+\usepackage{setspace}
+
+% Force stop is file is missing
+% \todo{Use script to force lentic to build necessary .tex files}
+% http://tex.stackexchange.com/questions/219086/how-to-force-stop-on-missing-input-file
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\@include\@input@\input{}{}
+
+%For references
+\usepackage[numbers,sort&compress]{natbib}
+
+\begin{document}
 
 \title{Documenting tawny-karyotype}
 
@@ -19,23 +40,53 @@
 
 \maketitle
 
-%% force lentic to build necessary .tex files
+\include{commands}
 
-%% ko auxiliary files
-\include{core}
-\include{generic}
-\include{generate_iscnexamples_test}
-\include{parse}
-\include{random}
+% \listoffigures
+% \listoftables
+\include{acronyms}
+
+% Fix overfull problems
+% http://www.latex-community.org/forum/viewtopic.php?f=5&t=578
+\begin{sloppypar}
 
 %% ko files
-\include{karyotype}
-\include{human}
-\include{base}
-\include{events}
-\include{features}
-\include{named}
-\include{iscnexamples}
-\include{resolutions}
+% \include{karyotype}
+% \include{human}
+% \include{base}
+% \include{events}
+% \include{features}
+% \include{named}
+% \include{iscnexamples}
+% \include{resolutions}
+
+%% ko files for downstream usage
+% \include{random}
+\end{sloppypar}
+
+%--------------------------------------------------------------------------
+% Appendix
+
+\begin{appendix}
+
+%% ko auxiliary files i.e. appendices?
+% \include{core}
+% \include{generic}
+% \include{generate_iscnexamples_test}
+% \include{parse}
+
+\end{appendix}
+
+%--------------------------------------------------------------------------
+% Bibliography
+
+%Can also change name bibliography of section
+\renewcommand{\bibname}{References}
+
+\bibliographystyle{newPlain} %other options: agsm, ieeetr
+\begin{singlespace}
+\pagestyle{plain}
+\bibliography{bibliography}
+\end{singlespace}
 
 \end{document}
