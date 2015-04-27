@@ -7,3 +7,4 @@ iscnexamplesB_test.clj
 target/
 output/
 core_test.clj
+/.cask/
