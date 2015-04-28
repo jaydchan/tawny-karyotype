@@ -25,10 +25,11 @@
              [events :as e]
              [features :as f]
              [base :as b]
-             [named :as n]]))
+             [named :as n]
+             [generic :as g :only [tk-iri]]]))
 
 (defontology iscnexamples
-  :iri "http://www.purl.org/ontolink/karyotype/iscnexamples"
+  :iri (clojure.core/str g/tk-iri "iscnexamples")
   :prefix "iex:"
   :comment "ISCN Example Karyotypes ontology for Human Karyotype
   Ontology, written using the tawny-owl library.")

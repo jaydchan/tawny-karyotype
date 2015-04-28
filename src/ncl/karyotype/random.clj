@@ -27,10 +27,11 @@ utilises 300-band chromosome bands."
              [events :as e]
              [features :as f]
              [base :as b]
-             [parse :as p]]))
+             [parse :as p]
+             [generic :as g :only [tk-iri]]]))
 
 (defontology random
-  :iri "http://www.purl.org/ontolink/karyotype/random"
+  :iri (clojure.core/str g/tk-iri "random")
   :prefix "rkar:"
   :comment "'Random' ontology for Human Karyotype Ontology, written
   using the Tawny-OWL library")

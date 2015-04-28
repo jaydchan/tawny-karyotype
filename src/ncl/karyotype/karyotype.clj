@@ -18,10 +18,13 @@
 (ns ^{:doc "TODO"
       :author "Jennifer Warrender"}
   ncl.karyotype.karyotype
-  (:use [tawny.owl]))
+  (:use [tawny.owl])
+  (:require
+   [ncl.karyotype.generic :as g
+    :only [tk-iri]]))
 
 (defontology karyotype
-  :iri "http://www.purl.org/ontolink/karyotype/karyotype"
+  :iri (clojure.core/str g/tk-iri "karyotype")
   :prefix "kar:"
   :comment "TODO")
 

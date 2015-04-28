@@ -22,6 +22,9 @@
         [clojure.java.io :only [as-file reader]])
   (:require [tawny.owl :only save-ontology]))
 
+(defonce
+  tk-iri "https://w3id.org/ontolink/karyotype/")
+
 (defonce output-file-path "./output/")
 
 (if-not (.exists (clojure.java.io/as-file output-file-path))

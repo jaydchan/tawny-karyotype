@@ -21,7 +21,8 @@ versa. Limitation - only available for addition and deletion events."
   ncl.karyotype.parse
   (:use [tawny.owl])
   (:require [ncl.karyotype
-             [generic :as g :only [get-entity-short-string]]
+             [generic :as g :only
+              [get-entity-short-string tk-iri]]
              [karyotype :as k]
              [human :as h]
              [base :as b]
@@ -30,8 +31,9 @@ versa. Limitation - only available for addition and deletion events."
              [iscnexamples :as i]]
             [tawny [render :as r]]))
 
+;; will be deleted at one point
 (defontology parse
-  :iri "http://www.purl.org/ontolink/karyotype/parse"
+  :iri (clojure.core/str g/tk-iri "parse")
   :prefix "par:"
   :comment "'Parse' ontology for Human Karyotype Ontology, written
   using the tawny-owl library")

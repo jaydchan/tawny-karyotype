@@ -22,10 +22,11 @@
   (:require [ncl.karyotype
              [karyotype :as k]
              [events :as e]
-             [features :as f]]))
+             [features :as f]
+             [generic :as g :only [tk-iri]]]))
 
 (defontology base
-  :iri "http://www.purl.org/ontolink/karyotype/base"
+  :iri (clojure.core/str g/tk-iri "base")
   :prefix "base:"
   :comment "Base (karyotype) ontology for Human Karyotype Ontology,
   written using the tawny-owl library.")

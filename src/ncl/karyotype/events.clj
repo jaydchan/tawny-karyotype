@@ -20,7 +20,8 @@
   ncl.karyotype.events
   (:use [tawny.owl])
   (:require [ncl.karyotype
-             [generic :as g]
+             [generic :as g :only
+              [get-entity-short-string tk-iri]]
              [karyotype :as k]
              [human :as h]]
             [tawny
@@ -28,7 +29,7 @@
              [render :as ren]]))
 
 (defontology events
-  :iri "http://www.purl.org/ontolink/karyotype/events"
+  :iri (clojure.core/str g/tk-iri "events")
   :prefix "evn:"
   :comment "Event ontology for Human Karyotype Ontology, written using
   the tawny-owl library.")

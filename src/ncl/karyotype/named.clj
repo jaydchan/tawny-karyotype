@@ -23,10 +23,11 @@
              [karyotype :as k]
              [human :as h]
              [events :as e]
-             [base :as b]]))
+             [base :as b]
+             [generic :as g :only [tk-iri]]]))
 
 (defontology named
-  :iri "http://www.purl.org/ontolink/karyotype/named"
+  :iri (clojure.core/str g/tk-iri "named")
   :prefix "nmd:"
   :comment "TODO")
 

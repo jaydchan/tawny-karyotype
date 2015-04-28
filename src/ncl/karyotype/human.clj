@@ -21,10 +21,12 @@
   (:use [tawny.owl])
   (:require [tawny.read]
             [tawny [reasoner :as rea]]
-            [ncl.karyotype [karyotype :as k]]))
+            [ncl.karyotype
+             [karyotype :as k]
+             [generic :as g :only [tk-iri]]]))
 
 (defontology human
-  :iri "http://www.purl.org/ontolink/karyotype/human"
+  :iri (clojure.core/str g/tk-iri "human")
   :prefix "hum:"
   :comment "Human Chromosome ontology for Human Karyotype Ontology,
   written using the tawny-owl library.")

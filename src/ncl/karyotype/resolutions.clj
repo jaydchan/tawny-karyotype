@@ -19,15 +19,16 @@
 bands."
       :author "Jennifer Warrender"}
   ncl.karyotype.resolutions
-  (:use [tawny.owl]
-        [ncl.karyotype.generic :only [get-lines]])
+  (:use [tawny.owl])
   (:require [ncl.karyotype
              [karyotype :as k]
-             [human :as h]]
+             [human :as h]
+             [generic :as g :only
+              [get-lines tk-iri]]]
             [clojure.java.io :as io]))
 
 (defontology resolutions
-  :iri "http://www.purl.org/ontolink/karyotype/resolutions"
+  :iri (clojure.core/str g/tk-iri "resolutions")
   :prefix "res:"
   :comment "Resolution ontology for Human Karyotype Ontology,
   written using the tawny-owl library")
@@ -77,7 +78,7 @@ resolution information."
 ;; MAIN
 (def ^{:doc "The resolution information read in from resources text
   file as java.lang.Cons."}
-  string-results (get-lines (.getFile (io/resource "resolutions.txt"))))
+  string-results (g/get-lines (.getFile (io/resource "resolutions.txt"))))
 
 (def ^{:doc "The resolution information read in from resources text
   file as LazySeq."}
