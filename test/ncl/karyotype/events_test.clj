@@ -85,12 +85,14 @@
   (let [inputs [h/HumanChromosome1Bandp h/HumanChromosome1Bandp10 e/Addition]
         property k/isBandOf
         expected [(list (o/owl-some k/isBandOf h/HumanChromosome1))
-                  (list (o/owl-some k/isBandOf h/HumanChromosome1Centromere)
-                        (o/owl-some k/isBandOf h/HumanChromosome1))
+                  (sort
+                   (list
+                    (o/owl-some k/isBandOf h/HumanChromosome1Centromere)
+                    (o/owl-some k/isBandOf h/HumanChromosome1)))
                   (list)]
-        actual (into [] (map #(#'ncl.karyotype.events/filter-parent-axioms
-                               %1 property) inputs))]
-    
+        actual (into [] (map
+                         #(sort (#'ncl.karyotype.events/filter-parent-axioms
+                                 %1 property)) inputs))]
     (is (= actual expected))))
 
 (deftest get-chromosome0
