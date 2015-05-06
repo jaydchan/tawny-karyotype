@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2013, Newcastle University
+;; Copyright (C) 2012-2015, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
     [parse :as p]]
    [tawny.owl :as o]
    [tawny.reasoner :as r]
+   [tawny.render :as ren :only [as-form]]
    [clojure.java.io :as io]))
 
 (defn ontology-reasoner-fixture [tests]
@@ -185,23 +186,31 @@
           labels (into [] ($ :Label)) ;; get label (values)
           filtered ;; filter for 'valid' labels
           (filter #(= (get parse? (.indexOf labels %)) 1.0) labels)
-          clazzes (map p/parse-karyotype-string filtered) ;; create classes
-          ;; strings ;; create labels
-          ;; (map #(p/parse-karyotype-class p/parse %) clazzes)
           ]
 
-      ;; errors parsing str->clazz
+      ;; (clojure.core/println "STR2OWL")
       (doseq [f filtered]
-        (try (p/parse-karyotype-string f)
-             (catch Exception e (println (str "Error: str->clazz " f)))))
+        (let [cname (#'ncl.karyotype.parse/make-safe f)]
+               ;; (clojure.core/println (str "STRING: " f))
+               ;; (clojure.core/println (str "NAME: " cname))
+               (try (p/parse-karyotype-string f)
+                    ;; (clojure.core/println (ren/as-form (o/owl-class p/parse cname)))
+                    (catch Exception e (println (str "Error: str->owl " f))))))
 
-      ;; ;; errors parsing clazz->str
+      ;; Incomplete! Errors when parsing owl->str for dup,inv,qdp,trp,fis
+      ;; (clojure.core/println "OWL2STR")
       ;; (doseq [f filtered]
-      ;;   (try (p/parse-karyotype-class p/parse (p/parse-karyotype-string f))
-      ;;        (catch Exception e (println (str "Error: clazz->str " f)))))
+      ;;   (let [cname (#'ncl.karyotype.parse/make-safe f)]
+      ;;     ;; (clojure.core/println (str "STRING: " f))
+      ;;     ;; (clojure.core/println (str "NAME: " cname))
+      ;;     (try (p/parse-karyotype-class p/parse cname)
+      ;;          ;; (clojure.core/println (p/parse-karyotype-class p/parse cname))
+      ;;          (catch Exception e (println (str "Error: owl->str " f))))))
 
-      ;; ;; make sure they match
-      ;; (doseq [string strings]
-      ;;   (println (str string " " (get filtered (.indexOf strings string))))
-      ;;   (is (= string (get filtered (.indexOf strings string)))))
+      ;; Incomplete! See above
+      ;; Make sure they match
+      ;; (doseq [f filtered]
+      ;;   (let [cname (#'ncl.karyotype.parse/make-safe f)]
+      ;;     (is (= (p/parse-karyotype-class p/parse cname)
+      ;;            f))))
 )))

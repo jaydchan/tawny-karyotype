@@ -36,10 +36,12 @@ versa. Limitation - only available for addition and deletion events."
   :iri (clojure.core/str g/tk-iri "parse")
   :prefix "par:"
   :comment "'Parse' ontology for Human Karyotype Ontology, written
-  using the tawny-owl library")
+  using the tawny-owl library"
+  :noname true)
 
 ;; FUNCTIONS
-(defn- make-safe
+;; needs + else there are printing? issues
+(defn make-safe
   "Returns a 'safe' string name for the OWL class.
 karyotype is of type String."
   [karyotype]
@@ -59,7 +61,7 @@ s id of type String."
 
 ;; assume that you are unable to have +Y when youre a female
 (defn- get-derived-from
-  "Obtains the derivedFrom subclass"
+  "Obtains the derivedFrom superclass"
   [karyotype]
   (let [value (read-string (first (clojure.string/split karyotype #",")))]
     (cond
@@ -215,11 +217,11 @@ s id of type String."
      (throw (IllegalArgumentException.
              (str "Event syntax not recognised: " event))))))
 
-(defn- get-subclasses
-  "Obtains the other associated subclass"
+(defn- get-superclasses
+  "Obtains the other associated superclasses"
   [class karyotype]
-  (doseq [subclass (rest (rest (clojure.string/split karyotype #",")))]
-    (add-subclass class (define-event subclass))))
+  (doseq [superclass (rest (rest (clojure.string/split karyotype #",")))]
+    (add-superclass class (define-event superclass))))
 
 (defn parse-karyotype-string
   "Creates OWL entity equivalent of ISCN String"
@@ -228,10 +230,10 @@ s id of type String."
     (tawny.read/intern-entity
      (owl-class name
                 :label (str "The " karyotype " karyotype")
-                :subclass i/ISCNExampleKaryotype
+                :super i/ISCNExampleKaryotype
                 (if-not (re-find #"c" karyotype)
                   (owl-some b/derivedFrom (get-derived-from karyotype)))))
-    (get-subclasses (owl-class name) karyotype)))
+    (get-superclasses (owl-class name) karyotype)))
 
 
 ;; CREATE KARYOTYPE STRING FUNCTIONS
@@ -242,16 +244,17 @@ s id of type String."
   [clazz]
   (let [s (g/get-entity-short-string clazz)]
     (cond
-     (subclass? b/base b/BaseKaryotype clazz)
-     (clojure.string/replace s #"k" "")
-     (h/chromosome? clazz)
-     (clojure.string/replace s #"HumanChromosome" "")
-     (h/band? clazz)
-     (clojure.string/replace s #"HumanChromosome[XY\d]+Band" "")
-     :default
-     (throw
-      (IllegalArgumentException.
-       (str "Clean-up expects a BaseKaryotype, Chromosome or Band
+      ;; super? does not exist in tawny-owl
+      (subclass? b/base b/BaseKaryotype clazz)
+      (clojure.string/replace s #"k" "")
+      (h/chromosome? clazz)
+      (clojure.string/replace s #"HumanChromosome" "")
+      (h/band? clazz)
+      (clojure.string/replace s #"HumanChromosome[XY\d]+Band" "")
+      :default
+      (throw
+       (IllegalArgumentException.
+        (str "Clean-up expects a BaseKaryotype, Chromosome or Band
        Class. Got:" clazz))))))
 
 (defn- get-base
@@ -457,3 +460,5 @@ detail is of type boolean. NAME is of type String."
 ;; 4. Other event types
 
 ;; 5. Include o arg in parse-karyotype-string
+
+;; 6. Handle constitutional events
