@@ -15,9 +15,9 @@
 ;; You should have received a copy of the GNU Lesser General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(defproject ncl.karyotype "1.0.0-SNAPSHOT"
+(defproject ncl.karyotype "1.0.0"
   :description "Modelling karyotypes in OWL"
-  :dependencies [[uk.org.russet/tawny-owl "1.3.0-SNAPSHOT"]
+  :dependencies [[uk.org.russet/tawny-owl "1.3.1-SNAPSHOT"]
                  [incanter "1.5.5"]]
   :scm {:url "https://github.com/jaydchan/tawny-karyotype.git"
         :name "git"}
