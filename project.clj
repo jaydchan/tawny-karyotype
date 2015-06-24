@@ -17,7 +17,7 @@
 
 (defproject ncl.karyotype "1.0.0"
   :description "Modelling karyotypes in OWL"
-  :dependencies [[uk.org.russet/tawny-owl "1.3.1-SNAPSHOT"]
+  :dependencies [[uk.org.russet/tawny-owl "1.3.0"]
                  [incanter "1.5.5"]]
   :scm {:url "https://github.com/jaydchan/tawny-karyotype.git"
         :name "git"}
