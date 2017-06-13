@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2012-2015, Newcastle University
+;; Copyright (C) 2012-2017, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU Lesser General Public License as published by
@@ -15,9 +15,9 @@
 ;; You should have received a copy of the GNU Lesser General Public License
 ;; along with this program.  If not, see http://www.gnu.org/licenses/.
 
-(defproject ncl.karyotype "1.0.0"
+(defproject ncl.karyotype "1.1.0"
   :description "Modelling karyotypes in OWL"
-  :dependencies [[uk.org.russet/tawny-owl "1.3.0"]
+  :dependencies [[uk.org.russet/tawny-owl "2.0.0-SNAPSHOT"]
                  [incanter "1.5.5"]]
   :scm {:url "https://github.com/jaydchan/tawny-karyotype.git"
         :name "git"}
