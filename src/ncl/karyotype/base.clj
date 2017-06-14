@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2012-2015, Newcastle University
+;; Copyright (C) 2012-2017, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -47,13 +47,13 @@
 ;; due to build dependancy, the subproperty chain axiom for
 ;; hasDerivedEvent and isDerivedEventOf is defined here i.e. after
 ;; derivedFrom and derivedTo have been defined.
-(add-subchain e/hasDerivedEvent (list derivedFrom e/hasDirectEvent))
-(add-subchain e/isDerivedEventOf (list e/isDirectEventOf derivedTo))
+(add-subchain base e/hasDerivedEvent (list derivedFrom e/hasDirectEvent))
+(add-subchain base e/isDerivedEventOf (list e/isDirectEventOf derivedTo))
 
 ;; hasDerivedFeature and isDerivedFeatureOf is defined here i.e. after
 ;; derivedFrom and derivedTo have been defined.
-(add-subchain f/hasDerivedFeature (list derivedFrom f/hasDirectFeature))
-(add-subchain f/isDerivedFeatureOf (list f/isDirectFeatureOf derivedTo))
+(add-subchain base f/hasDerivedFeature (list derivedFrom f/hasDirectFeature))
+(add-subchain base f/isDerivedFeatureOf (list f/isDirectFeatureOf derivedTo))
 
 ;; define all the baseKaryotypes
 ;; we have to pass these in as strings because they start with

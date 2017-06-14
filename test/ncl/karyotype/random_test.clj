@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2013, Newcastle University
+;; Copyright (C) 2013-2017, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -51,8 +51,8 @@
     ;; testing random-sex function
     (is (instance? org.semanticweb.owlapi.model.OWLClassExpression random))
     ;; TODO equivalency for owl classes
-    (is (some #(= (o/iri-for-name random)
-                  (o/iri-for-name %)) test_sex))
+    (is (some #(= (o/iri-for-name b/base random)
+                  (o/iri-for-name b/base %)) test_sex))
     (is (o/superclass? b/base random b/k46_XN))))
 
 (deftest Karyotype-Class
@@ -79,13 +79,13 @@
           [clazz (ran/karyotype-class
                   ran/random
                   1 (e/deletion 1 h/HumanChromosome1Bandp36.3))]
-          (-> (o/superclass? ran/random "r1" ran/RandomKaryotype))))))
+          (-> (o/superclass? ran/random (o/owl-class "r1") ran/RandomKaryotype))))))
 
 (deftest Get-Band
   (let [band (ran/get-band 1 "p36.3")]
     (is (instance? org.semanticweb.owlapi.model.OWLClassExpression band))
-    (is (= (o/iri-for-name h/HumanChromosome1Bandp36.3)
-           (o/iri-for-name band)))))
+    (is (= (o/iri-for-name h/human h/HumanChromosome1Bandp36.3)
+           (o/iri-for-name h/human band)))))
 
 (deftest Random-Band
   (let [random (ran/random-band)]
@@ -103,8 +103,8 @@
 
     ;; testing random-chromosome function
     (is (instance? org.semanticweb.owlapi.model.OWLClassExpression random))
-    (is (some #(= (o/iri-for-name random)
-                  (o/iri-for-name %)) test_chrom))
+    (is (some #(= (o/iri-for-name h/human random)
+                  (o/iri-for-name h/human %)) test_chrom))
     (is (r/isuperclass? h/human random h/HumanChromosome))))
 
 (deftest Random-Terminal-Deletion
@@ -231,21 +231,21 @@
       (is (instance? org.semanticweb.owlapi.model.OWLObjectExactCardinality
                      random)))))
 
-(deftest Refine-Label
-  (let [clazz (ran/karyotype-class
-               ran/random 1 (e/addition 1 h/HumanChromosome1Bandp36.3))
-        axioms (.getAnnotations clazz ran/random)
-        sex (re-find #"XX|XY" (str (ren/as-form clazz)))
-        parse (str "46," sex ",add(1p36.3)")
-        string (str "The " parse " Karyotype")]
+;; (deftest Refine-Label
+;;   (let [clazz (ran/karyotype-class
+;;                ran/random 1 (e/addition 1 h/HumanChromosome1Bandp36.3))
+;;         axioms (.getAnnotations clazz ran/random)
+;;         sex (re-find #"XX|XY" (str (ren/as-form clazz)))
+;;         parse (str "46," sex ",add(1p36.3)")
+;;         string (str "The " parse " Karyotype")]
 
-    ;; (println clazz)
-    ;; (println (ren/as-form clazz))
-    ;; (ran/refine-label clazz)
-    ;; (println (ren/as-form clazz))
-    ;; (println sex)
+;;     ;; (println clazz)
+;;     ;; (println (ren/as-form clazz))
+;;     ;; (ran/refine-label clazz)
+;;     ;; (println (ren/as-form clazz))
+;;     ;; (println sex)
 
-    (o/remove-entity ran/random clazz)))
+;;     (o/remove-entity ran/random clazz)))
 
 ;; TODO - Check number of axioms for clazz <= 3
 ;; (deftest Random-Karyotype

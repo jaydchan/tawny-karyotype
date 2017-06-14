@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2012-2015, Newcastle University
+;; Copyright (C) 2012-2017, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 (ns ^{:doc "Creating human chromosomal information."
       :author "Jennifer Warrender"}
   ncl.karyotype.human
-  (:use [tawny.owl])
+  (:use [tawny.owl :exclude [owl-some]])
   (:require [tawny.read]
             [tawny [reasoner :as rea]]
             [ncl.karyotype
@@ -52,11 +52,18 @@
   [band]
   (re-find #"0" band))
 
+(defn- owl-some
+  "TODO Hack as owl-some no longer allows strings"
+  [r s]
+  (tawny.owl/owl-some r (owl-class s)))
+
 (defn create-class-with-superclasses
   "Generic pattern - creates a class with given name and superclasses"
   [name & parents]
   (tawny.read/intern-entity
-   (owl-class name :subclass parents)))
+   *ns*
+   (owl-class name
+              :super (map #(if (string? %) (owl-class %) %) parents))))
 
 (defn group-for-band
   "Given a band return the appropriate bandgroup"
@@ -72,25 +79,25 @@
 
 ;; define classes
 (defclass HumanChromosome
-  :subclass k/Chromosome)
+  :super k/Chromosome)
 
 (defclass HumanChromosomeBand
-  :subclass k/ChromosomeBand)
+  :super k/ChromosomeBand)
 
 (defclass HumanCentromere
-  :subclass k/Centromere)
+  :super k/Centromere)
 
 (defclass HumanTelomere
-  :subclass k/Telomere)
+  :super k/Telomere)
 
 ;; include disjoint axiom for autosome and allosome
 (as-disjoint
  (defclass HumanAutosome
-   :subclass HumanChromosome)
+   :super HumanChromosome)
 
  (defclass HumanSexChromosome
    :comment "AKA Human Allosome"
-   :subclass HumanChromosome))
+   :super HumanChromosome))
 
 ;; define all the human autosomes, as disjoint
 (apply as-disjoint
@@ -102,10 +109,10 @@
 ;; define all the human allosomes, as disjoint
 (as-disjoint
  (defclass HumanChromosomeX
-   :subclass HumanSexChromosome)
+   :super HumanSexChromosome)
 
  (defclass HumanChromosomeY
-   :subclass HumanSexChromosome))
+   :super HumanSexChromosome))
 
 ;; define associated telomere, centromere and parent p and q bands for each
 ;; human chromosome
@@ -143,15 +150,15 @@
 
 ;; add disjoint axiom for the children of HumanCentromere
 (disjoint-classes
- (into () (direct-subclasses HumanCentromere)))
+ human (into () (direct-subclasses HumanCentromere)))
 
 ;; add disjoint axiom for the children of HumanChromosomeBand
 (disjoint-classes
- (into () (direct-subclasses HumanChromosomeBand)))
+ human (into () (direct-subclasses HumanChromosomeBand)))
 
 ;; add disjoint axiom for the children of HumanTelomere
 (disjoint-classes
- (into () (direct-subclasses HumanTelomere)))
+ human (into () (direct-subclasses HumanTelomere)))
 
 ;; private functions
 (defn- human-sub-band
