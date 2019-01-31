@@ -24,8 +24,8 @@ Jennifer D. Warrender.
 
 The contents of this project are subject to the [LGPL License, Version 3.0](LICENSE).
 
-Copyright (C) 2012-2015, Newcastle University
+Copyright (C) 2012-2019, Newcastle University
 
 ## Ontology
 
-The Karyotype Ontology (KO) can be found [here](https://w3id.org/ontolink/karyotype).
+The Karyotype Ontology (KO) can be found [here](http://www.purl.org/ontolink/karyotype).
