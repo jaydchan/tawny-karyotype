@@ -177,40 +177,40 @@
 ;; (deftest Parse-Karyotype-Class)
 ;; (deftest Create-Karyotype-String0)
 
-(deftest Roundtrip
-  ;; Read data from .xlsx file
-  (with-data (read-xls
-              (.getFile (io/resource "iscnexamples_test.xlsx")))
+;; (deftest Roundtrip
+;;   ;; Read data from .xlsx file
+;;   (with-data (read-xls
+;;               (.getFile (io/resource "iscnexamples_test.xlsx")))
 
-    (let [parse? (into [] ($ :Parse)) ;; get parse (values)
-          labels (into [] ($ :Label)) ;; get label (values)
-          filtered ;; filter for 'valid' labels
-          (filter #(= (get parse? (.indexOf labels %)) 1.0) labels)
-          ]
+;;     (let [parse? (into [] ($ :Parse)) ;; get parse (values)
+;;           labels (into [] ($ :Label)) ;; get label (values)
+;;           filtered ;; filter for 'valid' labels
+;;           (filter #(= (get parse? (.indexOf labels %)) 1.0) labels)
+;;           ]
 
-      ;; (clojure.core/println "STR2OWL")
-      (doseq [f filtered]
-        (let [cname (#'ncl.karyotype.parse/make-safe f)]
-               ;; (clojure.core/println (str "STRING: " f))
-               ;; (clojure.core/println (str "NAME: " cname))
-               (try (p/parse-karyotype-string f)
-                    ;; (clojure.core/println (ren/as-form (o/owl-class p/parse cname)))
-                    (catch Exception e (println (str "Error: str->owl " f))))))
+;;       ;; (clojure.core/println "STR2OWL")
+;;       (doseq [f filtered]
+;;         (let [cname (#'ncl.karyotype.parse/make-safe f)]
+;;                ;; (clojure.core/println (str "STRING: " f))
+;;                ;; (clojure.core/println (str "NAME: " cname))
+;;                (try (p/parse-karyotype-string f)
+;;                     ;; (clojure.core/println (ren/as-form (o/owl-class p/parse cname)))
+;;                     (catch Exception e (println (str "Error: str->owl " f))))))
 
-      ;; Incomplete! Errors when parsing owl->str for dup,inv,qdp,trp,fis
-      ;; (clojure.core/println "OWL2STR")
-      ;; (doseq [f filtered]
-      ;;   (let [cname (#'ncl.karyotype.parse/make-safe f)]
-      ;;     ;; (clojure.core/println (str "STRING: " f))
-      ;;     ;; (clojure.core/println (str "NAME: " cname))
-      ;;     (try (p/parse-karyotype-class p/parse cname)
-      ;;          ;; (clojure.core/println (p/parse-karyotype-class p/parse cname))
-      ;;          (catch Exception e (println (str "Error: owl->str " f))))))
+;;       ;; Incomplete! Errors when parsing owl->str for dup,inv,qdp,trp,fis
+;;       ;; (clojure.core/println "OWL2STR")
+;;       ;; (doseq [f filtered]
+;;       ;;   (let [cname (#'ncl.karyotype.parse/make-safe f)]
+;;       ;;     ;; (clojure.core/println (str "STRING: " f))
+;;       ;;     ;; (clojure.core/println (str "NAME: " cname))
+;;       ;;     (try (p/parse-karyotype-class p/parse cname)
+;;       ;;          ;; (clojure.core/println (p/parse-karyotype-class p/parse cname))
+;;       ;;          (catch Exception e (println (str "Error: owl->str " f))))))
 
-      ;; Incomplete! See above
-      ;; Make sure they match
-      ;; (doseq [f filtered]
-      ;;   (let [cname (#'ncl.karyotype.parse/make-safe f)]
-      ;;     (is (= (p/parse-karyotype-class p/parse cname)
-      ;;            f))))
-)))
+;;       ;; Incomplete! See above
+;;       ;; Make sure they match
+;;       ;; (doseq [f filtered]
+;;       ;;   (let [cname (#'ncl.karyotype.parse/make-safe f)]
+;;       ;;     (is (= (p/parse-karyotype-class p/parse cname)
+;;       ;;            f))))
+;; )))
