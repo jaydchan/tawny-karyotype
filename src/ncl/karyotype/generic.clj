@@ -23,7 +23,7 @@
   (:require [tawny.owl :only save-ontology]))
 
 (defonce
-  tk-iri "https://w3id.org/ontolink/karyotype/")
+  tk-iri "http://www.purl.org/ontolink/karyotype/")
 
 (defonce output-file-path "./output/")
 
