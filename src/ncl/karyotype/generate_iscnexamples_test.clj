@@ -59,7 +59,7 @@ ISCN2013."
                   (map
                    #(get-entity-short-string %)
                    (direct-subclasses i/iscnexamples i/ISCNExampleKaryotype)))
-            spreadsheet_data (into #{} ($ :Name))
+            spreadsheet_data (into #{} ($ "Name"))
             missing_clojure (clojure.set/difference spreadsheet_data clojure_file)
             missing_spreadsheet (clojure.set/difference
                                  clojure_file spreadsheet_data)]
@@ -73,24 +73,24 @@ ISCN2013."
 
       ;; TODO Still looks U--GLY
       ;; Generate tests for iscnexamples
-      (let [names (into [] ($ :Name))
-            tests {:Male "MaleKaryotype" :Female "FemaleKaryotype"
-                   :Haploid "HaploidKaryotype" :Diploid "DiploidKaryotype"
-                   :Triploid "TriploidKaryotype" :Tetraploid "TetraploidKaryotype"
-                   ;; :AllosomalGain "NumericalAbnormalKaryotypeAllosomalGain"
-                   ;; :AllosomalLoss "NumericalAbnormalKaryotypeAllosomalLoss"
-                   ;; :AutosomalGain "NumericalAbnormalKaryotypeAutosomalGain"
-                   ;; :AutosomalLoss "NumericalAbnormalKaryotypeAutosomalGain"
-                   ;; :Turner "TurnerSyndrome"
-                   :Addition "StructuralAbnormalKaryotypeAddition"
-                   :Deletion "StructuralAbnormalKaryotypeDeletion"
-                   :Duplication "StructuralAbnormalKaryotypeDuplication"
-                   :Fission "StructuralAbnormalKaryotypeFission"
-                   :Insertion "StructuralAbnormalKaryotypeInsertion"
-                   :Inversion "StructuralAbnormalKaryotypeInversion"
-                   :Quadruplication "StructuralAbnormalKaryotypeQuadruplication"
-                   :Translocation "StructuralAbnormalKaryotypeTranslocation"
-                   :Triplication "StructuralAbnormalKaryotypeTriplication"
+      (let [names (into [] ($ "Name"))
+            tests {"Male" "MaleKaryotype" "Female" "FemaleKaryotype"
+                   "Haploid" "HaploidKaryotype" "Diploid" "DiploidKaryotype"
+                   "Triploid" "TriploidKaryotype" "Tetraploid" "TetraploidKaryotype"
+                   ;; "AllosomalGain" "NumericalAbnormalKaryotypeAllosomalGain"
+                   ;; "AllosomalLoss" "NumericalAbnormalKaryotypeAllosomalLoss"
+                   ;; "AutosomalGain" "NumericalAbnormalKaryotypeAutosomalGain"
+                   ;; "AutosomalLoss" "NumericalAbnormalKaryotypeAutosomalGain"
+                   ;; "Turner" "TurnerSyndrome"
+                   "Addition" "StructuralAbnormalKaryotypeAddition"
+                   "Deletion" "StructuralAbnormalKaryotypeDeletion"
+                   "Duplication" "StructuralAbnormalKaryotypeDuplication"
+                   "Fission" "StructuralAbnormalKaryotypeFission"
+                   "Insertion" "StructuralAbnormalKaryotypeInsertion"
+                   ;; "Inversion" "StructuralAbnormalKaryotypeInversion"
+                   ;; "Quadruplication" "StructuralAbnormalKaryotypeQuadruplication"
+                   "Translocation" "StructuralAbnormalKaryotypeTranslocation"
+                   "Triplication" "StructuralAbnormalKaryotypeTriplication"
                    }]
 
         (doseq [test (keys tests)]
