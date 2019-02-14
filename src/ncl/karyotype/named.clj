@@ -1,6 +1,6 @@
 ;; The contents of this file are subject to the LGPL License, Version 3.0.
 
-;; Copyright (C) 2012-2015, Newcastle University
+;; Copyright (C) 2012-2019, Newcastle University
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -459,7 +459,7 @@
   :equivalent
   (owl-and
    (owl-some b/derivedFrom b/k46_XN)
-   (e/event nil (e/deletion-band h/HumanChromosome15Bandq11.2))))
+   (e/event nil (e/deletion-band h/HumanChromosome15Bandq11.2 h/HumanChromosome15Bandq11.2))))
 
 ;; An individual with a segment of the long arm of chromosome 15 missing
 (defclass PraderWilliSyndrome
@@ -467,7 +467,7 @@
   :equivalent
   (owl-and
    (owl-some b/derivedFrom b/k46_XN)
-   (e/event nil (e/deletion-band h/HumanChromosome15Bandq11.2))))
+   (e/event nil (e/deletion-band h/HumanChromosome15Bandq11.2 h/HumanChromosome15Bandq11.2))))
 
 ;; ;; TODO An individual with ... chromosome 17
 ;; (defclass MillerDiekerSyndrome
