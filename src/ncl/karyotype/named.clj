@@ -453,13 +453,21 @@
 ;; (defclass JacobsenSyndrome
 ;;   :subclass NamedKaryotype)
 
-;; ;; TODO An individual with a segment of the long arm of chromosome 15 missing
-;; (defclass AngelmanSyndrome
-;;   :subclass NamedKaryotype)
+;; An individual with a segment of the long arm of chromosome 15 missing
+(defclass AngelmanSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/event nil (e/deletion-band h/HumanChromosome15Bandq11.2))))
 
-;; ;; TODO An individual with a segment of the long arm of chromosome 15 missing
-;; (defclass PraderWilliSyndrome
-;;   :subclass NamedKaryotype)
+;; An individual with a segment of the long arm of chromosome 15 missing
+(defclass PraderWilliSyndrome
+  :subclass NamedKaryotype
+  :equivalent
+  (owl-and
+   (owl-some b/derivedFrom b/k46_XN)
+   (e/event nil (e/deletion-band h/HumanChromosome15Bandq11.2))))
 
 ;; ;; TODO An individual with ... chromosome 17
 ;; (defclass MillerDiekerSyndrome
