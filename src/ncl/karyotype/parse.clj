@@ -19,7 +19,8 @@
 versa. Limitation - only available for addition and deletion events."
       :author "Jennifer Warrender"}
   ncl.karyotype.parse
-  (:use [tawny.owl])
+  (:use [tawny.owl]
+        [tawny.reasoner])
   (:require [ncl.karyotype
              [generic :as g :only
               [get-entity-short-string tk-iri]]
@@ -436,6 +437,23 @@ detail is of type boolean. NAME is of type String."
       [(println (str "NAME: " name))
        (println (str "CLASS: " class))
        (println (str "STRING: " (parse-karyotype-class o clazz)))])))
+
+;; NEW TESTING
+(let [clazz   
+      (owl-class (make-safe "46,XX,del(5)(q13q33)")
+                 :super i/ISCNExampleKaryotype)]
+  (direct-superclasses parse clazz))
+
+;; use to replace the line above
+(direct-superclasses i/ISCNExampleKaryotype)
+
+(direct-subclasses i/ISCNExampleKaryotype)
+
+(isuperclasses i/ISCNExampleKaryotype)
+
+(isubclasses i/ISCNExampleKaryotype)
+
+(direct-superclasses i/iscnexamples i/ISCNExampleKaryotype) ;; with specific namespace
 
 ;; ;; TESTING
 ;; ;; get ISCN String
