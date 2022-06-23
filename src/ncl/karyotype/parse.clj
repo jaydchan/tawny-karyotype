@@ -445,17 +445,21 @@ CLAZZ is of type ISCNExampleKaryotype."
 detail is of type boolean. NAME is of type String."
   [o detail name]
   (let [clazz (owl-class (make-safe name))]
+    (get-superclasses clazz name) ;;tested works as expected
     ;; If true, print the name, owl class, and resulting string.
     (if (true? detail)
       [(println (str "NAME: " name))
        (println (str "CLASS: " class))
-       (println (str "STRING: " (parse-karyotype-class o clazz)))])))
+       (println (str "TEST:" (direct-superclasses parse clazz)));; tested Can get superclasses as expected
+       ;;(println (str "STRING: " (parse-karyotype-class o clazz)));; throw exception cant compile with this fn
+       ]))) 
 
 ;; NEW TESTING
 (let [clazz   
       (owl-class (make-safe "46,XX,del(5)(q13q33)")
                  :super i/ISCNExampleKaryotype)]
   (direct-superclasses parse clazz))
+;;"46,XX,del(5)(q13q33)" this owl-class will have an extra super class ISCNExampleKaryotype
 
 ;; use to replace the line above
 (direct-superclasses i/ISCNExampleKaryotype)
@@ -474,16 +478,22 @@ detail is of type boolean. NAME is of type String."
 ;;   mean that the output is elided."} create-karyotype-string
 ;;   (partial create-karyotype-string0 parse false))
 
-;; (def ^{:doc "Partial function for creating a karyotype string. TRUE
-;;   mean that the output is shown."} create-karyotype-string
-;;   (partial create-karyotype-string0 parse true))
+(def ^{:doc "Partial function for creating a karyotype string. TRUE
+  mean that the output is shown."} create-karyotype-string
+  (partial create-karyotype-string0 parse true))
 
 ;; TODO
 ;; 1. Order of bands
-;; (create-karyotype-string "46,XX,del(5)(q13q33)")
 
-;; 2. Starting sex chromosome description i.e 45,X,-X not 45,XX,-X
-;; (create-karyotype-string "46,Y,del(X)(p21p21)")
+(create-karyotype-string "46,XX,del(5)(q13q33)")
+;; out comes
+; Execution error (ClassCastException) at ncl.karyotype.parse/parse-karyotype-class$fn (parse.clj:421).
+; class clojure.lang.PersistentVector cannot be cast to class java.lang.CharSequence 
+; (clojure.lang.PersistentVector is in unnamed module of loader 'app'; java.lang.CharSequence 
+; is in module java.base of loader 'bootstrap')
+
+;; 2. Starting sex chromosome description i.e 45,X,-X not 45,XX,-X 
+(create-karyotype-string "46,Y,del(X)(p21p21)")
 
 ;; 3. Unknown chromosomes or chromosomes
 ;; (create-karyotype-string "46,XX,del(5)(q?)")
