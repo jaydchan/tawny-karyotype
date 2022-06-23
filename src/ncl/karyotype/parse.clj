@@ -394,7 +394,7 @@ EVENT is of type hasEvent."
   [entity] {:pre [(instance?
                    org.semanticweb.owlapi.model.OWLRestriction entity)]}
   (cond
-   (= (.getProperty entity) b/derivedFrom)
+   (= (.getProperty entity) b/derivedFrom)  ;;currently return false (no derivedFrom)
    (get-base entity)
    (= (.getProperty entity) e/hasDirectEvent)
    (get-event-string entity)
@@ -440,6 +440,29 @@ CLAZZ is of type ISCNExampleKaryotype."
         ]
     (if (nil? base-string) "ERROR" (clojure.string/join "," all))))
 
+(defn- parse-test
+  [o clazz]
+  (let [parents (direct-superclasses o clazz)
+        restrictions (filter
+                      #(instance?
+                        org.semanticweb.owlapi.model.OWLRestriction %) parents) ;; ObjectExactCardinality  hasDirectEvent
+        strings (map get-axiom-string restrictions)
+        ;;tempFirst (first strings)
+        ;;temp (rest strings)
+        sorted (sort-by first chrom-sort (rest strings))  ;; first are direct events   rest is derived from
+        ;;add (count (filter #(re-find #"\+" %) (map second sorted)))
+        ;;del (count (filter #(re-find #"\-" %) (map second sorted)))
+        ;;base-string (first (filter #(re-find #"\d+,\w" %) strings))
+        ;;incase (if (nil? base-string) "46,XX" base-string)
+        ;;base (clojure.string/split incase #",")
+        ;;total (- (+ (read-string (get base 0)) add) del)
+        ;;all (flatten (merge '() (map second sorted) (get base 1) total))
+        ]
+    (println strings)
+    ;;(println tempFirst)
+    (println sorted)
+    ))
+
 (defn- create-karyotype-string0
   "Prints details of the string input - used for testing purposes.
 detail is of type boolean. NAME is of type String."
@@ -452,13 +475,19 @@ detail is of type boolean. NAME is of type String."
        (println (str "CLASS: " class))
        (println (str "TEST:" (direct-superclasses parse clazz)));; tested Can get superclasses as expected
        ;;(println (str "STRING: " (parse-karyotype-class o clazz)));; throw exception cant compile with this fn
+       (parse-test o clazz)
        ]))) 
 
 ;; NEW TESTING
 (let [clazz   
       (owl-class (make-safe "46,XX,del(5)(q13q33)")
-                 :super i/ISCNExampleKaryotype)]
-  (direct-superclasses parse clazz))
+                 :label (str "The 46,XX,del(5)(q13q33) karyotype")
+                 :super i/ISCNExampleKaryotype
+                 (if-not (re-find #"c" "46,XX,del(5)(q13q33)")
+                   (owl-some b/derivedFrom (get-derived-from "46,XX,del(5)(q13q33)")))
+                 )]
+  (direct-superclasses parse clazz)
+  )
 ;;"46,XX,del(5)(q13q33)" this owl-class will have an extra super class ISCNExampleKaryotype
 
 ;; use to replace the line above
