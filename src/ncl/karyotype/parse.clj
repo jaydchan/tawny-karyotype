@@ -222,7 +222,15 @@ s id of type String."
   "Obtains the other associated superclasses"
   [class karyotype]
   (doseq [superclass (rest (rest (clojure.string/split karyotype #",")))]
-    (add-superclass class (define-event superclass))))
+    (println superclass) ;;test
+    (add-superclass parse class (define-event superclass)) ;; add ontology namespace
+    (direct-superclasses parse class) ;;test
+    ))
+
+;; NEW TESTING
+;;(let [name (make-safe "46,XX,del(5)(q13q33)")]
+;;  (get-superclasses (owl-class name) "46,XX,del(5)(q13q33)"))
+;;works as expected
 
 (defn parse-karyotype-string
   "Creates OWL entity equivalent of ISCN String"
