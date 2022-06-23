@@ -237,12 +237,17 @@ s id of type String."
   [karyotype]
   (let [name (make-safe karyotype)]
     (tawny.read/intern-entity
+     ;; ns
      (owl-class name
                 :label (str "The " karyotype " karyotype")
                 :super i/ISCNExampleKaryotype
                 (if-not (re-find #"c" karyotype)
                   (owl-some b/derivedFrom (get-derived-from karyotype)))))
     (get-superclasses (owl-class name) karyotype)))
+
+;; NEW TESTING
+;;(parse-karyotype-string "46,XX,del(5)(q13q33)")
+;; Execution error (ArityException)  Wrong number of args (1) passed to: tawny.read/intern-entity
 
 
 ;; CREATE KARYOTYPE STRING FUNCTIONS
