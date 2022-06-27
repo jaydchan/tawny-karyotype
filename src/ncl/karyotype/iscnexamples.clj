@@ -84,6 +84,24 @@
   (e/deletion 1 h/HumanChromosome5)
   (e/deletion 1 h/HumanChromosome21))
 
+;; NEW TESTING
+
+;; a test about direct-superclasses
+;; (direct-superclasses  k89_XXYY_-1_-3_-5_+8_-21)
+;; works as expected
+
+;; a test about restrictions function
+;;  (let [parents (direct-superclasses k89_XXYY_-1_-3_-5_+8_-21)
+;;         restrictions (filter
+;;                       #(instance?
+;;                         org.semanticweb.owlapi.model.OWLRestriction %) parents)
+;;        _(println "start")
+;;        ;;_ (println parents)
+;;        _ (println restrictions)
+;;        _(println "end")
+;;        ])
+;; works as expected
+
 ;; mos 47,XY,+21[12]/46,XY[18]
 ;; 76~102<4n>,XXXX,...
 ;; 58<2n>,XY,+X,+4,+6,+8,+10,+11,+14,+14,+17,+18,+21,+21[10]

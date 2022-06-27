@@ -83,6 +83,11 @@
  (defoproperty isDirectEventOf
    :subproperty isEventOf))
 
+;; NEW TESTING
+(subproperties hasDirectEvent)
+(superproperties hasDirectEvent)
+
+
 ;; due to build dependancy, the subproperty chain axiom will be added
 ;; in named-clj
 (as-inverse

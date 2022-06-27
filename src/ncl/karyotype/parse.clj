@@ -19,7 +19,8 @@
 versa. Limitation - only available for addition and deletion events."
       :author "Jennifer Warrender"}
   ncl.karyotype.parse
-  (:use [tawny.owl])
+  (:use [tawny.owl]
+        [tawny.reasoner])
   (:require [ncl.karyotype
              [generic :as g :only
               [get-entity-short-string tk-iri]]
@@ -221,19 +222,33 @@ s id of type String."
   "Obtains the other associated superclasses"
   [class karyotype]
   (doseq [superclass (rest (rest (clojure.string/split karyotype #",")))]
-    (add-superclass class (define-event superclass))))
+    (println superclass) ;;test
+    (add-superclass parse class (define-event superclass)) ;; add ontology namespace
+    (direct-superclasses parse class) ;;test
+    ))
+
+;; NEW TESTING
+;;(let [name (make-safe "46,XX,del(5)(q13q33)")]
+;;  (get-superclasses (owl-class name) "46,XX,del(5)(q13q33)"))
+;;works as expected
 
 (defn parse-karyotype-string
   "Creates OWL entity equivalent of ISCN String"
   [karyotype]
   (let [name (make-safe karyotype)]
     (tawny.read/intern-entity
+     ;; ns
      (owl-class name
                 :label (str "The " karyotype " karyotype")
                 :super i/ISCNExampleKaryotype
                 (if-not (re-find #"c" karyotype)
                   (owl-some b/derivedFrom (get-derived-from karyotype)))))
-    (get-superclasses (owl-class name) karyotype)))
+    (get-superclasses (owl-class name) karyotype)
+    ))
+
+;; NEW TESTING
+;;(parse-karyotype-string "46,XX,del(5)(q13q33)")
+;; Execution error (ArityException)  Wrong number of args (1) passed to: tawny.read/intern-entity
 
 
 ;; CREATE KARYOTYPE STRING FUNCTIONS
@@ -322,12 +337,17 @@ AXIOM."
   [chromosome] {:pre [(h/chromosome? chromosome)]}
   [(clean-up chromosome) (str "-" (clean-up chromosome))])
 
+; tested works as expected
 (defn- deletion-band
   "Returns a vector [chromosome and band deletion string] based on
   given AXIOM."
   [chromosome bands]
   [chromosome (str "del(" chromosome ")(" bands ")")])
 
+;; NEW TESTING 
+;(deletion-band "5" "q33q13")
+
+; tested
 (defn- deletion-band-driver
   "TODO"
   [bands] {:pre [(every? h/band? bands)]}
@@ -336,13 +356,14 @@ AXIOM."
         band-info (for [band adjusted
                         :let [string (clean-up band)]
                         :when (not (h/ter? band))]
-                    string)]
-    (deletion-band (clean-up (e/get-chromosome (first bands)))
-                   (apply str band-info))))
+                    string)] ; ("q33" "q13")
+    (deletion-band (clean-up (e/get-chromosome (first bands))) ; "5"
+                   (apply str band-info)))) ; "q33q13"
 
+; tested works as expected
 (defn- deletion
   "Returns a vector [chromosome and deletion string] based on given
-AXIOM."
+AXIOM. i.e. [5 del(5)(q33q13)]"
   [axiom]
   (let [chrom_band (human-filter axiom)]
     (cond
@@ -356,6 +377,7 @@ AXIOM."
        (str "Deletion expects a Chromosome or Band
        Class. Got:" axiom))))))
 
+; tested works as expected
 (defn- get-event-string
   "Returns the String representation of the event restriction.
 EVENT is of type hasEvent."
@@ -375,11 +397,13 @@ EVENT is of type hasEvent."
        event))))))
 
 ;; Could filter by instance of OWLRestiction instead of use condition
+; tested works as expected?
 (defn- get-axiom-string
   "Returns the string representation of the given ENTITY."
   [entity] {:pre [(instance?
                    org.semanticweb.owlapi.model.OWLRestriction entity)]}
-  (cond
+  ;; hasDirectEvent goes first, then derivedFrom
+  (cond 
    (= (.getProperty entity) b/derivedFrom)
    (get-base entity)
    (= (.getProperty entity) e/hasDirectEvent)
@@ -390,6 +414,7 @@ EVENT is of type hasEvent."
      (str "Get-axiom-string expects a derivedFrom or hasDirectEvent
         restriction. Got:" (.getProperty entity))))))
 
+; tested
 (defn chrom-sort
   "Comprator used to sort chromosomes in ISCN order - i.e. X,Y then
 1-22."
@@ -398,7 +423,7 @@ EVENT is of type hasEvent."
    (re-find #"X|Y" x)
    +1
    (re-find #"X|Y" y)
-   -1
+   -1 
    (= (type x) (type y))
    (compare (read-string x) (read-string y))
    :default
@@ -426,16 +451,67 @@ CLAZZ is of type ISCNExampleKaryotype."
         ]
     (if (nil? base-string) "ERROR" (clojure.string/join "," all))))
 
+(defn- parse-test
+  [o clazz]
+  (let [parents (direct-superclasses o clazz)
+        restrictions (filter
+                      #(instance?
+                        org.semanticweb.owlapi.model.OWLRestriction %) parents) ;; ObjectExactCardinality  hasDirectEvent
+        strings (map get-axiom-string restrictions) ;;two parts first is direct events   rest is derived from
+        sorted (sort-by first chrom-sort (rest strings)) ;; chrom-sort as comparator
+        ;add (count (filter #(re-find #"\+" %) (map second sorted)))  ;; cant works as expected
+        ;del (count (filter #(re-find #"\-" %) (map second sorted))) ;; cant works as expected, sorts may not be expected
+        ;;base-string (first (filter #(re-find #"\d+,\w" %) strings))
+        ;;incase (if (nil? base-string) "46,XX" base-string)
+        ;;base (clojure.string/split incase #",")
+        ;;total (- (+ (read-string (get base 0)) add) del)
+        ;;all (flatten (merge '() (map second sorted) (get base 1) total))
+        ]
+    (println strings)
+    ;(println temp) ;=>nil
+    ;(println del)
+    ))
+
+(defn- test-owl-class
+  [karyotype]
+  (let [clazz
+        (owl-class (make-safe karyotype)
+                   :label (str "The " karyotype " karyotype")
+                   :super i/ISCNExampleKaryotype
+                   (if-not (re-find #"c" karyotype)
+                     (owl-some b/derivedFrom (get-derived-from karyotype))))]
+    ;;(get-superclasses (owl-class name) karyotype)  ;;may need (tawny.read/intern-entity
+    ))
+
 (defn- create-karyotype-string0
   "Prints details of the string input - used for testing purposes.
 detail is of type boolean. NAME is of type String."
   [o detail name]
   (let [clazz (owl-class (make-safe name))]
+    (test-owl-class name) ;; add defination
+    (get-superclasses clazz name) ;;tested works as expected
     ;; If true, print the name, owl class, and resulting string.
     (if (true? detail)
       [(println (str "NAME: " name))
        (println (str "CLASS: " class))
-       (println (str "STRING: " (parse-karyotype-class o clazz)))])))
+       ;;(println (str "TEST:" (direct-superclasses parse clazz)));; tested Can get superclasses as expected
+       ;;(println (str "STRING: " (parse-karyotype-class o clazz)));; throw exception cant compile with this fn
+       (parse-test o clazz)
+       ]))) 
+
+;; NEW TESTING
+;;(test-owl-class "46,Y,del(X)(p21p21)")
+
+;; use to replace the line above
+;; (direct-superclasses i/ISCNExampleKaryotype)
+;; 
+;; (direct-subclasses i/ISCNExampleKaryotype)
+;; 
+;; (isuperclasses i/ISCNExampleKaryotype)
+;; 
+;; (isubclasses i/ISCNExampleKaryotype)
+;; 
+;; (direct-superclasses i/iscnexamples i/ISCNExampleKaryotype) ;; with specific namespace
 
 ;; ;; TESTING
 ;; ;; get ISCN String
@@ -443,16 +519,22 @@ detail is of type boolean. NAME is of type String."
 ;;   mean that the output is elided."} create-karyotype-string
 ;;   (partial create-karyotype-string0 parse false))
 
-;; (def ^{:doc "Partial function for creating a karyotype string. TRUE
-;;   mean that the output is shown."} create-karyotype-string
-;;   (partial create-karyotype-string0 parse true))
+(def ^{:doc "Partial function for creating a karyotype string. TRUE
+  mean that the output is shown."} create-karyotype-string
+  (partial create-karyotype-string0 parse true))
 
 ;; TODO
 ;; 1. Order of bands
-;; (create-karyotype-string "46,XX,del(5)(q13q33)")
 
-;; 2. Starting sex chromosome description i.e 45,X,-X not 45,XX,-X
-;; (create-karyotype-string "46,Y,del(X)(p21p21)")
+(create-karyotype-string "46,XX,del(5)(q13q33)")
+;; out comes
+; Execution error (ClassCastException) at ncl.karyotype.parse/parse-karyotype-class$fn (parse.clj:421).
+; class clojure.lang.PersistentVector cannot be cast to class java.lang.CharSequence 
+; (clojure.lang.PersistentVector is in unnamed module of loader 'app'; java.lang.CharSequence 
+; is in module java.base of loader 'bootstrap')
+
+;; 2. Starting sex chromosome description i.e 45,X,-X not 45,XX,-X 
+(create-karyotype-string "46,Y,del(X)(p21p21)")
 
 ;; 3. Unknown chromosomes or chromosomes
 ;; (create-karyotype-string "46,XX,del(5)(q?)")
