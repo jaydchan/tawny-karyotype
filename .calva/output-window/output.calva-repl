@@ -6,6 +6,8 @@
 
 ; Jacking in...
 ; Starting Jack-in Terminal: cmd.exe /d /c lein update-in :dependencies conj [nrepl,"0.9.0"] -- update-in :plugins conj [cider/cider-nrepl,"0.27.4"] -- update-in [:repl-options,:nrepl-middleware] conj '["cider.nrepl/cider-middleware"]' -- repl :headless
+; Jacking in...
+; Starting Jack-in Terminal: cmd.exe /d /c lein update-in :dependencies conj [nrepl,"0.9.0"] -- update-in :plugins conj [cider/cider-nrepl,"0.27.4"] -- update-in [:repl-options,:nrepl-middleware] conj '["cider.nrepl/cider-middleware"]' -- repl :headless
 ; Hooking up nREPL sessions...
 ; Connected session: clj
 ; TIPS:
@@ -18,85 +20,112 @@
 clj꞉ncl.karyotype.core꞉>  ; Use `alt+enter` to evaluate
 ; Jack-in done.
 clj꞉ncl.karyotype.core꞉> 
-; Syntax error macroexpanding clojure.core/let at (parse.clj:459:3).
-; [parents (direct-superclasses o clazz) restrictions (filter (fn* [p1__7131#] (instance? org.semanticweb.owlapi.model.OWLRestriction p1__7131#)) parents) strings (map get-axiom-string restrictions) (print strings)] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
+; Execution error (ArityException) at ncl.karyotype.parse/eval7305 (form-init5233416558392670453.clj:430).
+; Wrong number of args (1) passed to: ncl.karyotype.parse/chrom-sort
 clj꞉ncl.karyotype.parse꞉> 
-; Syntax error macroexpanding clojure.core/let at (parse.clj:459:3).
-; [parents (direct-superclasses o clazz) restrictions (filter (fn* [p1__7133#] (instance? org.semanticweb.owlapi.model.OWLRestriction p1__7133#)) parents) strings (map get-axiom-string restrictions) (println strings)] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
-clj꞉ncl.karyotype.parse꞉> 
-; Syntax error macroexpanding clojure.core/let at (parse.clj:459:3).
-; [parents (direct-superclasses o clazz) restrictions (filter (fn* [p1__7135#] (instance? org.semanticweb.owlapi.model.OWLRestriction p1__7135#)) parents) strings (map get-axiom-string restrictions) (println strings)] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-; Syntax error compiling at (parse.clj:465:9).
-; Unable to resolve symbol: base-string in this context
-clj꞉ncl.karyotype.parse꞉> 
-; Syntax error compiling at (parse.clj:473:36).
-; Unable to resolve symbol: all in this context
-clj꞉ncl.karyotype.parse꞉> 
-; Syntax error compiling at (parse.clj:473:9).
-; Unable to resolve symbol: base-string in this context
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-; Syntax error macroexpanding clojure.core/let at (parse.clj:459:3).
-; [parents (direct-superclasses o clazz) restrictions (filter (fn* [p1__7183#] (instance? org.semanticweb.owlapi.model.OWLRestriction p1__7183#)) parents) strings (map get-axiom-string restrictions) (println strings)] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
-clj꞉ncl.karyotype.parse꞉> 
-; Syntax error macroexpanding clojure.core/let at (parse.clj:459:3).
-; [parents (direct-superclasses o clazz) restrictions (filter (fn* [p1__7185#] (instance? org.semanticweb.owlapi.model.OWLRestriction p1__7185#)) parents) strings (map get-axiom-string restrictions) (rest strings)] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-; Syntax error macroexpanding clojure.core/let at (parse.clj:459:3).
-; [parents (direct-superclasses o clazz) restrictions (filter (fn* [p1__7192#] (instance? org.semanticweb.owlapi.model.OWLRestriction p1__7192#)) parents) strings (map get-axiom-string restrictions) (rest strings)] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
+-1
 clj꞉ncl.karyotype.parse꞉> 
 #'ncl.karyotype.parse/parse-test
 clj꞉ncl.karyotype.parse꞉> 
 #'ncl.karyotype.parse/create-karyotype-string0
 clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/create-karyotype-string0
+#'ncl.karyotype.parse/create-karyotype-string
 clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-del(X)(p21p21)
-NAME: 46,Y,del(X)(p21p21)
-CLASS: clojure.core$class@43cf97a8
-TEST:[ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosomeXBandp21>)))]
-[nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/create-karyotype-string0
-clj꞉ncl.karyotype.parse꞉> 
-del(X)(p21p21)
-NAME: 46,Y,del(X)(p21p21)
-CLASS: clojure.core$class@43cf97a8
-TEST:[ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosomeXBandp21>)))]
-[nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/create-karyotype-string0
-clj꞉ncl.karyotype.parse꞉> 
-del(X)(p21p21)
-NAME: 46,Y,del(X)(p21p21)
-CLASS: clojure.core$class@43cf97a8
-TEST:[ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosomeXBandp21>)))]
+del(5)(q13q33)
+NAME: 46,XX,del(5)(q13q33)
+CLASS: clojure.core$class@6705fb02
+([5 del(5)(q33q13)] 46,XX)
+(46,XX)
 [nil nil nil]
 clj꞉ncl.karyotype.parse꞉> 
 #'ncl.karyotype.parse/parse-test
 clj꞉ncl.karyotype.parse꞉> 
-del(X)(p21p21)
-NAME: 46,Y,del(X)(p21p21)
-CLASS: clojure.core$class@43cf97a8
-TEST:[ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosomeXBandp21>)))]
+#'ncl.karyotype.parse/create-karyotype-string0
+clj꞉ncl.karyotype.parse꞉> 
+del(5)(q13q33)
+NAME: 46,XX,del(5)(q13q33)
+CLASS: clojure.core$class@6705fb02
+([5 del(5)(q33q13)] 46,XX)
+(46,XX)
 [nil nil nil]
 clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/parse-test
+clj꞉ncl.karyotype.parse꞉> 
 #'ncl.karyotype.parse/create-karyotype-string0
+clj꞉ncl.karyotype.parse꞉> 
+del(5)(q13q33)
+NAME: 46,XX,del(5)(q13q33)
+CLASS: clojure.core$class@6705fb02
+([5 del(5)(q33q13)] 46,XX)
+(46,XX)
+[nil nil nil]
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/parse-test
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/create-karyotype-string0
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/create-karyotype-string
+clj꞉ncl.karyotype.parse꞉> 
+del(5)(q13q33)
+NAME: 46,XX,del(5)(q13q33)
+CLASS: clojure.core$class@6705fb02
+([5 del(5)(q33q13)] 46,XX)
+(46,XX)
+[nil nil nil]
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/parse-test
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/create-karyotype-string0
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/create-karyotype-string
+clj꞉ncl.karyotype.parse꞉> 
+del(5)(q13q33)
+NAME: 46,XX,del(5)(q13q33)
+CLASS: clojure.core$class@6705fb02
+([5 del(5)(q33q13)] 46,XX)
+(46,XX) test1
+[nil nil nil]
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/parse-test
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/create-karyotype-string0
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/create-karyotype-string
+clj꞉ncl.karyotype.parse꞉> 
+del(5)(q13q33)
+NAME: 46,XX,del(5)(q13q33)
+CLASS: clojure.core$class@6705fb02
+; Execution error (AssertionError) at ncl.karyotype.parse/get-axiom-string (parse.clj:396).
+; Assert failed: (instance? org.semanticweb.owlapi.model.OWLRestriction entity)
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/deletion-band-driver
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/deletion
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/parse-test
+clj꞉ncl.karyotype.parse꞉> 
+del(5)(q13q33)
+NAME: 46,XX,del(5)(q13q33)
+CLASS: clojure.core$class@6705fb02
+([5 del(5)(q33q13)] 46,XX)
+[nil nil nil]
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/deletion-band
+clj꞉ncl.karyotype.parse꞉> 
+del(5)(q13q33)
+NAME: 46,XX,del(5)(q13q33)
+CLASS: clojure.core$class@6705fb02
+QUIT
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/parse-test
+clj꞉ncl.karyotype.parse꞉> 
+del(5)(q13q33)
+NAME: 46,XX,del(5)(q13q33)
+CLASS: clojure.core$class@6705fb02
+QUIT
 clj꞉ncl.karyotype.parse꞉> 
 ; Jacking in...
 ; nREPL Connection was closed
-; Starting Jack-in Terminal: cmd.exe /d /c lein update-in :dependencies conj [nrepl,"0.9.0"] -- update-in :plugins conj [cider/cider-nrepl,"0.27.4"] -- update-in [:repl-options,:nrepl-middleware] conj '["cider.nrepl/cider-middleware"]' -- repl :headless
-; Jacking in...
 ; Starting Jack-in Terminal: cmd.exe /d /c lein update-in :dependencies conj [nrepl,"0.9.0"] -- update-in :plugins conj [cider/cider-nrepl,"0.27.4"] -- update-in [:repl-options,:nrepl-middleware] conj '["cider.nrepl/cider-middleware"]' -- repl :headless
 ; Hooking up nREPL sessions...
 ; Connected session: clj
@@ -110,187 +139,19 @@ clj꞉ncl.karyotype.parse꞉> 
 clj꞉ncl.karyotype.core꞉> 
 ; Jack-in done.
 clj꞉ncl.karyotype.core꞉> 
-#'ncl.karyotype.parse/create-karyotype-string0
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-([5 del(5)(q33q13)])
-()
-[nil nil nil nil]
+#'ncl.karyotype.parse/deletion-band-driver
 clj꞉ncl.karyotype.parse꞉> 
 #'ncl.karyotype.parse/parse-test
 clj꞉ncl.karyotype.parse꞉> 
 del(5)(q13q33)
 NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-([5 del(5)(q33q13)])
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-([5 del(5)(q33q13)])
-[5 del(5)(q33q13)]
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-del(X)(p21p21)
-NAME: 46,Y,del(X)(p21p21)
-CLASS: clojure.core$class@74267ece
-TEST:[ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosomeXBandp21>)))]
-([X del(X)(p21p21)])
-[X del(X)(p21p21)]
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-([5 del(5)(q33q13)])
-[5 del(5)(q33q13)]
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/get-axiom-string
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-([5 del(5)(q33q13)])
-[5 del(5)(q33q13)]
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-del(X)(p21p21)
-NAME: 46,Y,del(X)(p21p21)
-CLASS: clojure.core$class@74267ece
-TEST:[ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosomeXBandp21>)))]
-([X del(X)(p21p21)])
-[X del(X)(p21p21)]
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-([5 del(5)(q33q13)])
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-true
-clj꞉ncl.karyotype.parse꞉> 
-false
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-; java.lang.IllegalArgumentException: No matching field found: getProperty for class clojure.lang.LazySeq
-clj꞉ncl.karyotype.parse꞉> 
-([5 del(5)(q33q13)])
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-; Syntax error compiling at (events.clj:86:1).
-; Unable to resolve symbol: subproperty in this context
-clj꞉ncl.karyotype.events꞉> 
-nil
-clj꞉ncl.karyotype.events꞉> 
-nil
-clj꞉ncl.karyotype.events꞉> 
-true
-clj꞉ncl.karyotype.events꞉> 
-[]
-clj꞉ncl.karyotype.events꞉> 
-[#[Class 0x6215efaa "Event"@en]]
-clj꞉ncl.karyotype.events꞉> 
-; Syntax error compiling at (events.clj:89:1).
-; Unable to resolve symbol: see-all-property in this context
-clj꞉ncl.karyotype.events꞉> 
-; Execution error (IllegalArgumentException) at tawny.owl/ensure-property (owl.clj:1719).
-; No matching clause: :tawny.owl/class
-clj꞉ncl.karyotype.events꞉> 
-#{}
-clj꞉ncl.karyotype.events꞉> 
-#{}
-clj꞉ncl.karyotype.events꞉> 
-#{#[Property 0x761318b8 "hasEvent"@en]}
-clj꞉ncl.karyotype.events꞉> 
-#{}
-clj꞉ncl.karyotype.events꞉> 
-#'ncl.karyotype.parse/create-karyotype-string0
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-; Execution error (IllegalArgumentException) at ncl.karyotype.parse/eval7215$parse-test (form-init12183360385566253131.clj:514).
-; No matching field found: getProperty for class clojure.lang.LazySeq
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-([5 del(5)(q33q13)])
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-test
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>)))]
-([5 del(5)(q33q13)])
-()
-[nil nil nil nil]
-clj꞉ncl.karyotype.parse꞉> 
-#'ncl.karyotype.parse/parse-karyotype-string
-clj꞉ncl.karyotype.parse꞉> 
-; Execution error (ClassCastException) at tawny.owl/intern-owl-string (owl.clj:766).
-; class uk.ac.manchester.cs.owl.owlapi.concurrent.ConcurrentOWLOntologyImpl cannot be cast to class clojure.lang.Symbol (uk.ac.manchester.cs.owl.owlapi.concurrent.ConcurrentOWLOntologyImpl and clojure.lang.Symbol are in unnamed module of loader 'app')
-clj꞉ncl.karyotype.parse꞉> 
-; Execution error (ArityException) at ncl.karyotype.parse/eval7277 (form-init12183360385566253131.clj:249).
-; Wrong number of args (1) passed to: ncl.karyotype.parse/parse-karyotype-string
-clj꞉ncl.karyotype.parse꞉> 
-; Syntax error compiling at (parse.clj:484:25).
-; Unable to resolve symbol: karyotype in this context
-clj꞉ncl.karyotype.parse꞉> 
-[#[Class 0x616d7493 "ISCNExampleKaryotype"@en] #[ObjectExactCardinality 0x3598d936 "hasDirectEvent"@en #[ObjectIntersectionOf 0x79c1d6a "Deletion"@en #[ObjectSomeValuesFrom 0x18d9dca1 "hasBreakPoint"@en "HumanChromosome5Bandq13"@en] #[ObjectSomeValuesFrom 0x6b7bf7e5 "hasBreakPoint"@en "HumanChromosome5Bandq33"@en]]] #[ObjectSomeValuesFrom 0x1c364b12 "derivedFrom"@en "k46_XX"@en]]
-clj꞉ncl.karyotype.parse꞉> 
-del(5)(q13q33)
-NAME: 46,XX,del(5)(q13q33)
-CLASS: clojure.core$class@74267ece
-TEST:[<http://www.purl.org/ontolink/karyotype/iscnexamples#ISCNExampleKaryotype>, ObjectExactCardinality(1 <http://www.purl.org/ontolink/karyotype/events#hasDirectEvent> ObjectIntersectionOf(<http://www.purl.org/ontolink/karyotype/events#Deletion> ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq13>) ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/events#hasBreakPoint> <http://www.purl.org/ontolink/karyotype/human#HumanChromosome5Bandq33>))), ObjectSomeValuesFrom(<http://www.purl.org/ontolink/karyotype/base#derivedFrom> <http://www.purl.org/ontolink/karyotype/base#k46_XX>)]
+CLASS: clojure.core$class@6705fb02
 ([5 del(5)(q33q13)] 46,XX)
-(46,XX)
-[nil nil nil nil]
+[nil nil nil]
+clj꞉ncl.karyotype.parse꞉> 
+["5" "del(5)(q33q13)"]
+clj꞉ncl.karyotype.parse꞉> 
+#'ncl.karyotype.parse/deletion-band
+clj꞉ncl.karyotype.parse꞉> 
+["5" "del(5)(q33q13)"]
 clj꞉ncl.karyotype.parse꞉> 

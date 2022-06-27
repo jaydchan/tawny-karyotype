@@ -243,7 +243,8 @@ s id of type String."
                 :super i/ISCNExampleKaryotype
                 (if-not (re-find #"c" karyotype)
                   (owl-some b/derivedFrom (get-derived-from karyotype)))))
-    (get-superclasses (owl-class name) karyotype)))
+    (get-superclasses (owl-class name) karyotype)
+    ))
 
 ;; NEW TESTING
 ;;(parse-karyotype-string "46,XX,del(5)(q13q33)")
@@ -336,12 +337,17 @@ AXIOM."
   [chromosome] {:pre [(h/chromosome? chromosome)]}
   [(clean-up chromosome) (str "-" (clean-up chromosome))])
 
+; tested works as expected
 (defn- deletion-band
   "Returns a vector [chromosome and band deletion string] based on
   given AXIOM."
   [chromosome bands]
   [chromosome (str "del(" chromosome ")(" bands ")")])
 
+;; NEW TESTING 
+;(deletion-band "5" "q33q13")
+
+; tested
 (defn- deletion-band-driver
   "TODO"
   [bands] {:pre [(every? h/band? bands)]}
@@ -350,13 +356,14 @@ AXIOM."
         band-info (for [band adjusted
                         :let [string (clean-up band)]
                         :when (not (h/ter? band))]
-                    string)]
-    (deletion-band (clean-up (e/get-chromosome (first bands)))
-                   (apply str band-info))))
+                    string)] ; ("q33" "q13")
+    (deletion-band (clean-up (e/get-chromosome (first bands))) ; "5"
+                   (apply str band-info)))) ; "q33q13"
 
+; tested works as expected
 (defn- deletion
   "Returns a vector [chromosome and deletion string] based on given
-AXIOM."
+AXIOM. i.e. [5 del(5)(q33q13)]"
   [axiom]
   (let [chrom_band (human-filter axiom)]
     (cond
@@ -370,6 +377,7 @@ AXIOM."
        (str "Deletion expects a Chromosome or Band
        Class. Got:" axiom))))))
 
+; tested works as expected
 (defn- get-event-string
   "Returns the String representation of the event restriction.
 EVENT is of type hasEvent."
@@ -389,12 +397,14 @@ EVENT is of type hasEvent."
        event))))))
 
 ;; Could filter by instance of OWLRestiction instead of use condition
+; tested works as expected?
 (defn- get-axiom-string
   "Returns the string representation of the given ENTITY."
   [entity] {:pre [(instance?
                    org.semanticweb.owlapi.model.OWLRestriction entity)]}
-  (cond
-   (= (.getProperty entity) b/derivedFrom)  ;;currently return false (no derivedFrom)
+  ;; hasDirectEvent goes first, then derivedFrom
+  (cond 
+   (= (.getProperty entity) b/derivedFrom)
    (get-base entity)
    (= (.getProperty entity) e/hasDirectEvent)
    (get-event-string entity)
@@ -404,6 +414,7 @@ EVENT is of type hasEvent."
      (str "Get-axiom-string expects a derivedFrom or hasDirectEvent
         restriction. Got:" (.getProperty entity))))))
 
+; tested
 (defn chrom-sort
   "Comprator used to sort chromosomes in ISCN order - i.e. X,Y then
 1-22."
@@ -412,7 +423,7 @@ EVENT is of type hasEvent."
    (re-find #"X|Y" x)
    +1
    (re-find #"X|Y" y)
-   -1
+   -1 
    (= (type x) (type y))
    (compare (read-string x) (read-string y))
    :default
@@ -446,12 +457,10 @@ CLAZZ is of type ISCNExampleKaryotype."
         restrictions (filter
                       #(instance?
                         org.semanticweb.owlapi.model.OWLRestriction %) parents) ;; ObjectExactCardinality  hasDirectEvent
-        strings (map get-axiom-string restrictions)
-        ;;tempFirst (first strings)
-        ;;temp (rest strings)
-        sorted (sort-by first chrom-sort (rest strings))  ;; first are direct events   rest is derived from
-        ;;add (count (filter #(re-find #"\+" %) (map second sorted)))
-        ;;del (count (filter #(re-find #"\-" %) (map second sorted)))
+        strings (map get-axiom-string restrictions) ;;two parts first is direct events   rest is derived from
+        sorted (sort-by first chrom-sort (rest strings)) ;; chrom-sort as comparator
+        ;add (count (filter #(re-find #"\+" %) (map second sorted)))  ;; cant works as expected
+        ;del (count (filter #(re-find #"\-" %) (map second sorted))) ;; cant works as expected, sorts may not be expected
         ;;base-string (first (filter #(re-find #"\d+,\w" %) strings))
         ;;incase (if (nil? base-string) "46,XX" base-string)
         ;;base (clojure.string/split incase #",")
@@ -459,8 +468,19 @@ CLAZZ is of type ISCNExampleKaryotype."
         ;;all (flatten (merge '() (map second sorted) (get base 1) total))
         ]
     (println strings)
-    ;;(println tempFirst)
-    (println sorted)
+    ;(println temp) ;=>nil
+    ;(println del)
+    ))
+
+(defn- test-owl-class
+  [karyotype]
+  (let [clazz
+        (owl-class (make-safe karyotype)
+                   :label (str "The " karyotype " karyotype")
+                   :super i/ISCNExampleKaryotype
+                   (if-not (re-find #"c" karyotype)
+                     (owl-some b/derivedFrom (get-derived-from karyotype))))]
+    ;;(get-superclasses (owl-class name) karyotype)  ;;may need (tawny.read/intern-entity
     ))
 
 (defn- create-karyotype-string0
@@ -468,38 +488,30 @@ CLAZZ is of type ISCNExampleKaryotype."
 detail is of type boolean. NAME is of type String."
   [o detail name]
   (let [clazz (owl-class (make-safe name))]
+    (test-owl-class name) ;; add defination
     (get-superclasses clazz name) ;;tested works as expected
     ;; If true, print the name, owl class, and resulting string.
     (if (true? detail)
       [(println (str "NAME: " name))
        (println (str "CLASS: " class))
-       (println (str "TEST:" (direct-superclasses parse clazz)));; tested Can get superclasses as expected
+       ;;(println (str "TEST:" (direct-superclasses parse clazz)));; tested Can get superclasses as expected
        ;;(println (str "STRING: " (parse-karyotype-class o clazz)));; throw exception cant compile with this fn
        (parse-test o clazz)
        ]))) 
 
 ;; NEW TESTING
-(let [clazz   
-      (owl-class (make-safe "46,XX,del(5)(q13q33)")
-                 :label (str "The 46,XX,del(5)(q13q33) karyotype")
-                 :super i/ISCNExampleKaryotype
-                 (if-not (re-find #"c" "46,XX,del(5)(q13q33)")
-                   (owl-some b/derivedFrom (get-derived-from "46,XX,del(5)(q13q33)")))
-                 )]
-  (direct-superclasses parse clazz)
-  )
-;;"46,XX,del(5)(q13q33)" this owl-class will have an extra super class ISCNExampleKaryotype
+;;(test-owl-class "46,Y,del(X)(p21p21)")
 
 ;; use to replace the line above
-(direct-superclasses i/ISCNExampleKaryotype)
-
-(direct-subclasses i/ISCNExampleKaryotype)
-
-(isuperclasses i/ISCNExampleKaryotype)
-
-(isubclasses i/ISCNExampleKaryotype)
-
-(direct-superclasses i/iscnexamples i/ISCNExampleKaryotype) ;; with specific namespace
+;; (direct-superclasses i/ISCNExampleKaryotype)
+;; 
+;; (direct-subclasses i/ISCNExampleKaryotype)
+;; 
+;; (isuperclasses i/ISCNExampleKaryotype)
+;; 
+;; (isubclasses i/ISCNExampleKaryotype)
+;; 
+;; (direct-superclasses i/iscnexamples i/ISCNExampleKaryotype) ;; with specific namespace
 
 ;; ;; TESTING
 ;; ;; get ISCN String
